@@ -24,6 +24,7 @@
 package dev.ukanth.ufirewall.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import java.util.concurrent.ExecutorService;
@@ -45,17 +46,24 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 
 public abstract class DataDumpActivity extends AppCompatActivity {
@@ -70,7 +78,21 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     protected static final int MENU_ZOOM_IN = 22;
     protected static final int MENU_ZOOM_OUT = 23;
     TextView scaleGesture;
-    ScrollView mScrollView;
+    View mScrollView;  // Can be either ScrollView or NestedScrollView
+    
+    // Modern layout components
+    private TextView rulesTitle;
+    private TextView rulesStatus;
+    private TextView rulesContent;
+    private TextView interfacesContent;
+    private TextView systemContent;
+    private TextView preferencesContent;
+    private TextView logcatContent;
+    private CardView interfacesCard;
+    private CardView systemCard;
+    private CardView preferencesCard;
+    private CardView logcatCard;
+    private boolean useModernLayout = true;
 
     protected Menu mainMenu;
     protected static String dataText;
@@ -84,22 +106,187 @@ public abstract class DataDumpActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
 
+    private void initModernViews() {
+        rulesTitle = findViewById(R.id.rules_title);
+        rulesStatus = findViewById(R.id.rules_status);
+        rulesContent = findViewById(R.id.rules_content);
+        interfacesContent = findViewById(R.id.interfaces_content);
+        systemContent = findViewById(R.id.system_content);
+        preferencesContent = findViewById(R.id.preferences_content);
+        logcatContent = findViewById(R.id.logcat_content);
+        interfacesCard = findViewById(R.id.interfaces_card);
+        systemCard = findViewById(R.id.system_card);
+        preferencesCard = findViewById(R.id.preferences_card);
+        logcatCard = findViewById(R.id.logcat_card);
+    }
+
     protected void setData(final String data) {
         dataText = data;
         Handler refresh = new Handler(Looper.getMainLooper());
         refresh.post(() -> {
-            scaleGesture = findViewById(R.id.rules);
-            scaleGesture.setText(data);
-            scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
+            if (useModernLayout) {
+                parseAndDisplayModernData(data);
+            } else {
+                scaleGesture = findViewById(R.id.rules);
+                scaleGesture.setText(data);
+                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, G.ruleTextSize());
+            }
         });
     }
 
-    private void initTheme() {
-        switch (G.getSelectedTheme()) {
-            case "D" -> setTheme(R.style.AppDarkTheme);
-            case "L" -> setTheme(R.style.AppLightTheme);
-            case "B" -> setTheme(R.style.AppBlackTheme);
+    @SuppressLint("SetTextI18n")
+    private void parseAndDisplayModernData(String data) {
+        // Initialize all sections as empty and hide cards
+        rulesContent.setText("");
+        interfacesContent.setText("");
+        systemContent.setText("");
+        preferencesContent.setText("");
+        logcatContent.setText("");
+        
+        interfacesCard.setVisibility(View.GONE);
+        systemCard.setVisibility(View.GONE);
+        preferencesCard.setVisibility(View.GONE);
+        logcatCard.setVisibility(View.GONE);
+
+        // Parse sections more intelligently by looking for section headers
+        String[] lines = data.split("\n");
+        StringBuilder currentSection = new StringBuilder();
+        String currentSectionType = null;
+        
+        for (String line : lines) {
+            // Check if this is a section header (starts with =, contains title, ends with =)
+            if (line.matches("^=+$")) {
+                // Skip separator lines
+                continue;
+            }
+            
+            // Check if this line is a section title
+            String sectionType = detectSectionType(line.trim());
+            
+            if (sectionType != null) {
+                // Process previous section if it exists
+                if (currentSectionType != null && currentSection.length() > 0) {
+                    processSectionContent(currentSectionType, currentSection.toString());
+                }
+                
+                // Start new section
+                currentSectionType = sectionType;
+                currentSection = new StringBuilder();
+                continue;
+            }
+            
+            // Add line to current section
+            if (currentSectionType != null) {
+                currentSection.append(line).append("\n");
+            }
         }
+        
+        // Process the last section
+        if (currentSectionType != null && currentSection.length() > 0) {
+            processSectionContent(currentSectionType, currentSection.toString());
+        }
+        
+        // Set font sizes for all content views
+        float textSize = G.ruleTextSize();
+        rulesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        interfacesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        systemContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        preferencesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        logcatContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+        // Keep the hidden TextView updated for backward compatibility (export, copy functions)
+        TextView hiddenRules = findViewById(R.id.rules);
+        hiddenRules.setText(data);
+    }
+    
+    private String detectSectionType(String line) {
+        String trimmed = line.trim();
+        if (trimmed.equals(getString(R.string.ipv4_rules_title))) {
+            return "ipv4_rules";
+        } else if (trimmed.equals(getString(R.string.ipv6_rules_title))) {
+            return "ipv6_rules";
+        } else if (trimmed.contains("Network interfaces")) {
+            return "interfaces";
+        } else if (trimmed.contains("ifconfig")) {
+            return "ifconfig";
+        } else if (trimmed.contains("System info")) {
+            return "system";
+        } else if (trimmed.contains("Preferences")) {
+            return "preferences";
+        } else if (trimmed.contains("Logcat")) {
+            return "logcat";
+        }
+        return null;
+    }
+    
+    private void processSectionContent(String sectionType, String content) {
+        String trimmedContent = content.trim();
+        if (trimmedContent.isEmpty()) return;
+        
+        switch (sectionType) {
+            case "ipv4_rules":
+                rulesTitle.setText(getString(R.string.ipv4_rules_title));
+                rulesStatus.setText(getString(R.string.ready));
+                rulesContent.setText(trimmedContent);
+                break;
+                
+            case "ipv6_rules":
+                rulesTitle.setText(getString(R.string.ipv6_rules_title));
+                rulesStatus.setText(getString(R.string.ready));
+                rulesContent.setText(trimmedContent);
+                break;
+                
+            case "interfaces":
+            case "ifconfig":
+                interfacesCard.setVisibility(View.VISIBLE);
+                String existingInterfaces = interfacesContent.getText().toString();
+                if (!existingInterfaces.isEmpty()) {
+                    interfacesContent.setText(existingInterfaces + "\n\n" + trimmedContent);
+                } else {
+                    interfacesContent.setText(trimmedContent);
+                }
+                break;
+                
+            case "system":
+                systemCard.setVisibility(View.VISIBLE);
+                systemContent.setText(trimmedContent);
+                break;
+                
+            case "preferences":
+                preferencesCard.setVisibility(View.VISIBLE);
+                String existingPrefs = preferencesContent.getText().toString();
+                if (!existingPrefs.isEmpty()) {
+                    preferencesContent.setText(existingPrefs + "\n\n" + trimmedContent);
+                } else {
+                    preferencesContent.setText(trimmedContent);
+                }
+                break;
+                
+            case "logcat":
+                logcatCard.setVisibility(View.VISIBLE);
+                logcatContent.setText(trimmedContent);
+                break;
+        }
+    }
+
+    private void updateModernTextSize(float sizeDelta) {
+        float currentSize = G.ruleTextSize();
+        float newSize = currentSize + sizeDelta;
+        
+        if (newSize < 8.0f) newSize = 8.0f;  // Minimum size
+        if (newSize > 30.0f) newSize = 30.0f; // Maximum size
+        
+        G.ruleTextSize((int) newSize);
+        
+        if (rulesContent != null) rulesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (interfacesContent != null) interfacesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (systemContent != null) systemContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (preferencesContent != null) preferencesContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+        if (logcatContent != null) logcatContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+    }
+
+    private void initTheme() {
+        ThemeHelper.applyTheme(this);
     }
 
     @Override
@@ -108,7 +295,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         initTheme();
-        setContentView(R.layout.rules);
+        if (useModernLayout) {
+            setContentView(R.layout.rules_modern);
+            initModernViews();
+        } else {
+            setContentView(R.layout.rules);
+        }
 
         Toolbar toolbar = findViewById(R.id.rule_toolbar);
         //toolbar.setTitle(getString(R.string.showrules_title));
@@ -172,15 +364,23 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                 return true;
             }
             case MENU_ZOOM_IN -> {
-                newSize = scaleGesture.getTextSize() + 2.0f;
-                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
-                G.ruleTextSize((int) newSize);
+                if (useModernLayout) {
+                    updateModernTextSize(2.0f);
+                } else {
+                    newSize = scaleGesture.getTextSize() + 2.0f;
+                    scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+                    G.ruleTextSize((int) newSize);
+                }
                 return false;
             }
             case MENU_ZOOM_OUT -> {
-                newSize = scaleGesture.getTextSize() - 2.0f;
-                scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
-                G.ruleTextSize((int) newSize);
+                if (useModernLayout) {
+                    updateModernTextSize(-2.0f);
+                } else {
+                    newSize = scaleGesture.getTextSize() - 2.0f;
+                    scaleGesture.setTextSize(TypedValue.COMPLEX_UNIT_PX, newSize);
+                    G.ruleTextSize((int) newSize);
+                }
                 return false;
             }
             default -> {
@@ -194,10 +394,12 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         private final Context ctx;
         private final WeakReference<DataDumpActivity> activityReference;
         private final Handler handler = new Handler(Looper.getMainLooper());
+        private final File selectedDirectory;
 
         // only retain a weak reference to the activity
-        Task(DataDumpActivity context) {
+        Task(DataDumpActivity context, File directory) {
             this.ctx = context;
+            this.selectedDirectory = directory;
             activityReference = new WeakReference<>(context);
         }
 
@@ -207,13 +409,29 @@ public abstract class DataDumpActivity extends AppCompatActivity {
             boolean res = false;
 
             try {
+                // Generate timestamped filename
+                String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date());
+                String baseFileName = sdDumpFile.replace(".log", "");
+                String timestampedFileName = baseFileName + "-" + timestamp + ".log";
+
                 File file;
-                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
+                if (selectedDirectory != null) {
+                    // Use user-selected directory
+                    if (!selectedDirectory.exists()) {
+                        selectedDirectory.mkdirs();
+                    }
+                    file = new File(selectedDirectory, timestampedFileName);
+                } else if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
                     File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" );
                     dir.mkdirs();
-                    file = new File(dir, sdDumpFile);
+                    file = new File(dir, timestampedFileName);
                 } else{
-                    file = new File(ctx.getExternalFilesDir(null) + "/" + sdDumpFile) ;
+                    // Use Documents/AFWall directory for user-friendly access
+                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "AFWall");
+                    if (!dir.exists()) {
+                        dir.mkdirs();
+                    }
+                    file = new File(dir, timestampedFileName);
                 }
                 output = new FileOutputStream(file);
                 output.write(dataText.getBytes());
@@ -247,20 +465,54 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     }
 
     private void exportToSD() {
+        try {
+            // Get default path for file dialog
+            File defaultPath;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                defaultPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "AFWall");
+            } else {
+                defaultPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
+            }
+            if (!defaultPath.exists()) {
+                defaultPath.mkdirs();
+            }
 
-        if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
-            // Do some stuff
-            ExecutorService executor = Executors.newSingleThreadExecutor();
-            executor.execute(new Task(this));
-        } else {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // permissions have not been granted.
-                ActivityCompat.requestPermissions(DataDumpActivity.this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-            } else{
-                new Task(this).run();
+            // Show directory picker dialog
+            FileDialog fileDialog = new FileDialog(this, defaultPath, true);
+            fileDialog.setSelectDirectoryOption(true);
+            fileDialog.addDirectoryListener(directory -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    executor.execute(new Task(DataDumpActivity.this, directory));
+                    executor.shutdown();
+                } else {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(DataDumpActivity.this,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                    } else {
+                        new Task(DataDumpActivity.this, directory).run();
+                    }
+                }
+            });
+            fileDialog.showDialog();
+        } catch (Exception e) {
+            // Fallback to default behavior if file dialog fails
+            Log.e(TAG, "FileDialog failed, using default path", e);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(new Task(this, null));
+                executor.shutdown();
+            } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(DataDumpActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+                } else {
+                    new Task(this, null).run();
+                }
             }
         }
     }

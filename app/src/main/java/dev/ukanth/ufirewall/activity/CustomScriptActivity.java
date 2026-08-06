@@ -31,8 +31,9 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,34 +45,34 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 /**
  * Custom scripts activity.
  * This screen is displayed to change the custom scripts.
  */
 public class CustomScriptActivity extends AppCompatActivity implements OnClickListener {
-    private EditText script;
-    private EditText script2;
+    private TextInputEditText script;
+    private TextInputEditText script2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         initTheme();
-        final View view = getLayoutInflater().inflate(R.layout.customscript, null);
+        setContentView(R.layout.customscript);
 
-        view.findViewById(R.id.customscript_ok).setOnClickListener(this);
-        view.findViewById(R.id.customscript_cancel).setOnClickListener(this);
-        ((TextView) view.findViewById(R.id.customscript_link)).setMovementMethod(LinkMovementMethod.getInstance());
+        findViewById(R.id.customscript_ok).setOnClickListener(this);
+        findViewById(R.id.customscript_cancel).setOnClickListener(this);
+        ((TextView) findViewById(R.id.customscript_link)).setMovementMethod(LinkMovementMethod.getInstance());
 
         final SharedPreferences prefs = getSharedPreferences(Api.PREFS_NAME, 0);
-        this.script = view.findViewById(R.id.customscript);
+        this.script = findViewById(R.id.customscript);
         this.script.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT, ""));
-        this.script2 = view.findViewById(R.id.customscript2);
+        this.script2 = findViewById(R.id.customscript2);
         this.script2.setText(prefs.getString(Api.PREF_CUSTOMSCRIPT2, ""));
 
         setTitle(R.string.set_custom_script);
-        setContentView(view);
 
         Toolbar toolbar = findViewById(R.id.custom_toolbar);
         setSupportActionBar(toolbar);
@@ -84,17 +85,7 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
 
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
 
     @Override

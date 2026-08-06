@@ -2,75 +2,52 @@ package dev.ukanth.ufirewall.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
-
+import dev.ukanth.ufirewall.BuildConfig;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.ui.about.ViewPagerAdapter;
 import dev.ukanth.ufirewall.util.G;
-import dev.ukanth.ufirewall.util.SlidingTabLayout;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 
 public class HelpActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
-    private ViewPagerAdapter adapter;
-    private SlidingTabLayout tabs;
-	private final int count = 0;
-    private final int noOfTabs =2;
-
-
-	@Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            
-            String[] viewTitles = { getString(R.string.About), getString(R.string.FAQ) };
+        super.onCreate(savedInstanceState);
 
-            initTheme();
+        initTheme();
 
-            setContentView(R.layout.help_about);
+        setContentView(R.layout.help_about);
 
-            Toolbar toolbar = findViewById(R.id.help_toolbar);
-            setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.help_toolbar);
+        setSupportActionBar(toolbar);
 
-
-            // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-            adapter =  new ViewPagerAdapter(getSupportFragmentManager(), viewTitles, noOfTabs);
-
-            // Initilization
-            viewPager = findViewById(R.id.pager);
-
-            viewPager.setAdapter(adapter);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.help);
             getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
-            // Assiging the Sliding Tab Layout View
-            tabs = findViewById(R.id.tabs);
-            tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+        setupContent();
+    }
 
-            // Setting Custom Color for the Scroll bar indicator of the Tab View
-            tabs.setCustomTabColorizer(position -> ContextCompat.getColor(getApplicationContext(),R.color.white));
-
-            // Setting the ViewPager For the SlidingTabsLayout
-            tabs.setViewPager(viewPager);
+    private void setupContent() {
+        String version = BuildConfig.VERSION_NAME;
+        TextView titleText = findViewById(R.id.afwall_title);
+        String versionText = getString(R.string.app_name) + " (v" + version + ")";
+        if (G.isDonate() || G.isDoKey(this)) {
+            versionText = versionText + " (Donate) " + getString(R.string.donate_thanks) + " :)";
+        }
+        titleText.setText(versionText);
     }
 
 
+
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
 
      @Override

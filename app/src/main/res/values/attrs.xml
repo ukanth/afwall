@@ -5,4 +5,10 @@
     <attr name="buttonHighlightColor" format="reference" />
     <attr name="buttonTextColor" format="reference" />
     <attr name="primaryButtonTheme" format="reference" />
+    
+    <declare-styleable name="SeekBarPreference">
+        <attr name="android:max" />
+        <attr name="min" format="integer" />
+        <attr name="suffix" format="string" />
+    </declare-styleable>
 </resources>

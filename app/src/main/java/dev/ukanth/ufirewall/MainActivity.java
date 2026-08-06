@@ -113,6 +113,7 @@ import dev.ukanth.ufirewall.util.FileDialog;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import haibison.android.lockpattern.utils.AlpSettings;
 import kotlin.Suppress;
 
@@ -135,6 +136,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public static boolean dirty = false;
 
+    public static void requireFullApply() {
+        dirty = true;
+    }
+
+    public static void addToQueue(@NonNull Api.PackageInfoData data) {
+        dirty = true;
+    }
+
 
     private Menu mainMenu;
     private ListView listview = null;
@@ -148,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private Spinner mSpinner;
     private TextWatcher filterTextWatcher;
     private MaterialDialog runProgress;
-    private AlertDialog dialogLegend = null;
 
     private BroadcastReceiver uiProgressReceiver4, uiProgressReceiver6, toastReceiver, themeRefreshReceiver, uiRefreshReceiver;
     private IntentFilter uiFilter4, uiFilter6;
@@ -203,10 +211,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Toolbar toolbar = findViewById(R.id.main_toolbar);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
         setSupportActionBar(toolbar);
 
 
@@ -221,7 +225,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         AlpSettings.Display.setStealthMode(getApplicationContext(), G.enableStealthPattern());
         AlpSettings.Display.setMaxRetries(getApplicationContext(), G.getMaxPatternTry());
 
-        Api.assertBinaries(this, true);
+        // Move binary assertion to background thread to avoid blocking main thread
+        // This includes file I/O and process execution (waitFor) which can cause ANR
+        final Context appContext = getApplicationContext();
+        AsyncTask.execute(() -> Api.assertBinaries(appContext, true));
 
         initDone = 0;
         mSwipeLayout = findViewById(R.id.swipe_container);
@@ -235,6 +242,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
+            // Ensure FirewallService is started if firewall is enabled
+            if (Api.isEnabled(this)) {
+                Api.setEnabled(this, true, false);
+            }
         }
         registerUIbroadcast4();
         registerUIbroadcast6();
@@ -353,17 +364,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initTheme() {
-        switch (G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
 
     private void initTextWatcher() {
@@ -387,10 +388,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
     private void registerNetworkObserver() {
-        startService(new Intent(getBaseContext(), FirewallService.class));
         //start log service
         if (G.enableLogService()) {
-            startService(new Intent(getBaseContext(), LogService.class));
+            Intent logIntent = new Intent(getBaseContext(), LogService.class);
+            startService(logIntent);
         }
     }
 
@@ -533,9 +534,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      * @param i
      */
     private void filterApps(int i) {
+        // Never run the (slow) app scan on the UI thread. If the cache was never
+        // built, load it asynchronously and let onPostExecute re-trigger the filter.
+        // (A non-null but empty cache means a scan already ran - show it, don't re-loop.)
+        if (Api.applications == null) {
+            showOrLoadApplications();
+            return;
+        }
         Set<PackageInfoData> returnList = new HashSet<>();
         List<PackageInfoData> inputList;
-        List<PackageInfoData> allApps = Api.getApps(getApplicationContext(), null);
+        List<PackageInfoData> allApps = Api.applications;
         if (i >= 0) {
             for (PackageInfoData infoData : allApps) {
                 if (infoData != null) {
@@ -556,7 +564,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             try {
                 Collections.sort(inputList, new PackageComparator());
             } catch (Exception e) {
-                Log.d(Api.TAG, "Exception in filter Sorting");
             }
             ArrayAdapter appAdapter;
             if (selectedColumns <= DEFAULT_VIEW_LIMIT) {
@@ -569,7 +576,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // restore
             this.listview.setSelectionFromTop(index, top);
         } else {
-            Log.d(Api.TAG, "Input list is empty");
         }
     }
 
@@ -725,15 +731,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         } else {
             hideColumns(R.id.img_tor);
         }
-
-
         updateRadioFilter();
 
         if (G.enableMultiProfile()) {
             setupMultiProfile();
         }
 
-        selectFilterGroup();
+        // Use async loading to avoid blocking the main thread
+        // If the app list is already cached, filterApps will use the cache (fast path)
+        // If not cached, showOrLoadApplications will load asynchronously with a progress dialog
+        if (Api.applications != null && Api.applications.size() > 0) {
+            // Cache is warm - use it directly (fast, non-blocking)
+            selectFilterGroup();
+        } else {
+            // Cache is cold - load asynchronously to avoid ANR
+            showOrLoadApplications();
+        }
     }
 
     private void clearNotification() {
@@ -907,7 +920,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             changed = true;
         }
         if (changed)
-            editor.commit();
+            editor.apply(); // Use apply() instead of commit() to avoid blocking main thread
     }
 
     /**
@@ -1022,6 +1035,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                     }
                 }
+                // Package names are stored separately from labels, so include them in search.
+                if (!unique.contains(app.uid) && app.pkgName != null
+                        && app.pkgName.toLowerCase().contains(searchStr.toLowerCase())) {
+                    searchApp.add(app);
+                    unique.add(app.uid);
+                    isResultsFound = true;
+                }
             }
         }
 
@@ -1030,6 +1050,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             apps2 = apps;
         } else if (isResultsFound || searchApp.size() > 0) {
             apps2 = searchApp;
+        } else {
+            apps2 = new ArrayList<>();
         }
         // Sort applications - selected first, then alphabetically
         try {
@@ -1046,7 +1068,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 this.listview.setSelectionFromTop(index, top);
             }
         } catch (Exception e) {
-            Log.d(Api.TAG, "Exception on Sorting");
         }
     }
 
@@ -1148,36 +1169,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         int selectedItem = item.getItemId();
-        if (selectedItem == R.id.menu_legend) {
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View view = inflater.inflate(R.layout.legend, null, false);
-            dialogLegend = new AlertDialog.Builder(this)
-                    .setView(view)
-                    .setCancelable(true)
-                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            dialogLegend = null;
-                        }
-                    })
-                    .create();
-            dialogLegend.show();
-            return true;
-        } else if (selectedItem == R.id.menu_toggle) {
+        if (selectedItem == R.id.menu_toggle) {
             disableOrEnable();
             return true;
         } else if (selectedItem == R.id.allowmode) {
             item.setChecked(true);
             Editor editor = getSharedPreferences(Api.PREFS_NAME, 0).edit();
             editor.putString(Api.PREF_MODE, Api.MODE_WHITELIST);
-            editor.commit();
+            editor.apply();
             refreshHeader();
             return true;
         } else if (selectedItem == R.id.blockmode) {
             item.setChecked(true);
             Editor editor2 = getSharedPreferences(Api.PREFS_NAME, 0).edit();
             editor2.putString(Api.PREF_MODE, Api.MODE_BLACKLIST);
-            editor2.commit();
+            editor2.apply();
             refreshHeader();
             return true;
         } else if (selectedItem == R.id.sort_default) {
@@ -1240,9 +1246,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         } else if (selectedItem == R.id.menu_import) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Do some stuff
+                // Copy old data and show import dialog when complete
                 copyOldExportedData();
-                showImportDialog();
             } else {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -1263,14 +1268,79 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void copyOldExportedData() {
         if (!G.hasCopyOld()) {
-            //using root to copy existing data to current directory on A11
-            String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
-            String targetDir = ctx.getExternalFilesDir(null) + "/";
-            String command = "cp -R " + existingDir + " " + targetDir;
-            Log.i(TAG, "Invoking migration script " + command);
-            com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
-            G.hasCopyOldExports(true);
+            copyOldExportedDataAsync(() -> {
+                // On completion, show import dialog
+                runOnUiThread(() -> {
+                    showImportDialog();
+                });
+            });
+        } else {
+            // Already copied, show dialog immediately
+            showImportDialog();
         }
+    }
+
+    private void copyOldExportedDataAsync(Runnable onComplete) {
+        // Show progress dialog
+        MaterialDialog progressDialog = null;
+        try {
+            progressDialog = new MaterialDialog.Builder(this)
+                    .title("Migrating Files")
+                    .content("Copying backup files to new location...")
+                    .progress(true, 0)
+                    .cancelable(false)
+                    .show();
+        } catch (Exception e) {
+            Log.w(TAG, "Could not show progress dialog due to MaterialDialog compatibility issue", e);
+            // Fallback: Show toast notification
+            Api.toast(this, "Migrating backup files to new location...");
+        }
+        
+        final MaterialDialog finalProgressDialog = progressDialog;
+        
+        // Run file copy operation in background thread
+        new Thread(() -> {
+            try {
+                //using root to copy existing data to current directory on A11+
+                String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
+                File targetFile = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R 
+                    ? ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) 
+                    : ctx.getExternalFilesDir(null);
+                String targetDir = (targetFile != null ? targetFile.getAbsolutePath() : ctx.getExternalFilesDir(null).getAbsolutePath()) + "/";
+                String command = "cp -R " + existingDir + " " + targetDir;
+                Log.i(TAG, "Invoking migration script " + command);
+                
+                com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
+                
+                if (result.getCode() == 0) {
+                    Log.i(TAG, "Migration script completed successfully");
+                    G.hasCopyOldExports(true);
+                } else {
+                    Log.w(TAG, "Migration script failed with code: " + result.getCode());
+                    Log.w(TAG, "Migration output: " + result.getOut());
+                }
+                
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                Log.w(TAG, "File migration rejected: " + e.getMessage());
+            } catch (Exception e) {
+                // Check if the cause is an InterruptedIOException
+                if (e.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "File migration interrupted: " + e.getCause().getMessage());
+                } else {
+                    Log.e(TAG, "Error during file migration", e);
+                }
+            } finally {
+                // Dismiss progress dialog and run completion callback on UI thread
+                runOnUiThread(() -> {
+                    if (finalProgressDialog != null && finalProgressDialog.isShowing()) {
+                        finalProgressDialog.dismiss();
+                    }
+                    if (onComplete != null) {
+                        onComplete.run();
+                    }
+                });
+            }
+        }).start();
     }
 
     private void search(MenuItem item) {
@@ -1302,22 +1372,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void showImportDialog() {
-        new MaterialDialog.Builder(this)
-                .title(R.string.imports)
-                .cancelable(false)
-                .items(new String[]{
-                        getString(R.string.import_rules),
-                        getString(R.string.import_all)})
-                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+        try {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.imports)
+                    .cancelable(false)
+                    .items(new String[]{
+                            getString(R.string.import_rules),
+                            getString(R.string.import_all) + (G.isDoKey(getApplicationContext()) || isDonate() ? "" : " (" + getString(R.string.donate_only_short) + ")")})
+                    .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
                             //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
                             //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
                             File mPath = null;
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                            } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                                if (extDir != null) {
+                                    extDir.mkdirs();
+                                    mPath = extDir;
+                                } else {
+                                    mPath = new File(ctx.getExternalFilesDir(null), "/");
+                                }
+                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 mPath = new File(ctx.getExternalFilesDir(null) + "/");
+                            } else {
+                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                             }
                             FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
 
@@ -1346,10 +1425,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             if (G.isDoKey(getApplicationContext()) || isDonate()) {
 
                                 File mPath2 = null;
-                                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                                } else {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                    File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                                    if (extDir != null) {
+                                        extDir.mkdirs();
+                                        mPath2 = extDir;
+                                    } else {
+                                        mPath2 = new File(ctx.getExternalFilesDir(null), "/");
+                                    }
+                                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     mPath2 = new File(ctx.getExternalFilesDir(null), "/");
+                                } else {
+                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
                                 }
                                 FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
                                 fileDialog2.addFileListener(file -> {
@@ -1381,28 +1468,61 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .positiveText(R.string.imports)
                 .negativeText(R.string.Cancel)
                 .show();
+        } catch (Exception e) {
+            Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
+            // Fallback: Show a simple toast message and try alternative approach
+            Api.toast(this, "Import dialog unavailable due to Android compatibility issue. Please use file manager to manually copy backup files to AFWall directory.");
+        }
     }
 
     private void showExportDialog() {
-        new MaterialDialog.Builder(this)
-                .title(R.string.exports)
-                .cancelable(false)
-                .items(new String[]{
-                        getString(R.string.export_rules),
-                        getString(R.string.export_all)})
-                .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
-                    switch (which) {
-                        case 0:
-                            Api.exportRulesToFileConfirm(MainActivity.this);
-                            break;
-                        case 1:
-                            Api.exportAllPreferencesToFileConfirm(MainActivity.this);
-                            break;
-                    }
-                    return true;
-                }).positiveText(R.string.exports)
-                .negativeText(R.string.Cancel)
-                .show();
+        try {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.exports)
+                    .cancelable(false)
+                    .items(new String[]{
+                            getString(R.string.export_rules),
+                            getString(R.string.export_all) + (G.isDoKey(getApplicationContext()) || isDonate() ? "" : " (" + getString(R.string.donate_only_short) + ")")})
+                    .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
+                        switch (which) {
+                            case 0:
+                                Api.exportRulesToFileWithPicker(MainActivity.this);
+                                break;
+                            case 1:
+                                if (G.isDoKey(getApplicationContext()) || isDonate()) {
+                                    Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+                                } else {
+                                    showExportAllWarningDialog();
+                                }
+                                break;
+                        }
+                        return true;
+                    }).positiveText(R.string.exports)
+                    .negativeText(R.string.Cancel)
+                    .show();
+        } catch (Exception e) {
+            Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
+            Api.toast(this, "Export dialog unavailable due to Android compatibility issue. Please use Settings > Export to access export functionality.");
+        }
+    }
+
+    private void showExportAllWarningDialog() {
+        try {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.export_all)
+                    .content(R.string.export_all_warning)
+                    .positiveText(R.string.exports)
+                    .negativeText(R.string.Cancel)
+                    .onPositive((dialog, which) -> {
+                        Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+                    })
+                    .show();
+        } catch (Exception e) {
+            Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
+            // Fallback: Just show the export directly with a toast warning
+            Api.toast(this, getString(R.string.export_all_warning));
+            Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+        }
     }
 
     private void showPreferences() {
@@ -2284,10 +2404,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (dialogLegend != null) {
-            dialogLegend.dismiss();
-            dialogLegend = null;
-        }
         if (getAppList != null) {
             getAppList.cancel(true);
         }
@@ -2307,6 +2423,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         if (uiRefreshReceiver != null) {
             unregisterReceiver(uiRefreshReceiver);
+        }
+        
+        // Clean up shell instances to prevent interruption crashes
+        try {
+            // Force close any existing shell instances
+            com.topjohnwu.superuser.Shell shell = com.topjohnwu.superuser.Shell.getCachedShell();
+            if (shell != null && !shell.isAlive()) {
+                shell.close();
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -2328,7 +2454,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         protected void onPreExecute() {
             progress = new MaterialDialog.Builder(activityReference.get())
                     .title(R.string.working)
-                    .cancelable(false)
+                    .cancelable(true)
                     .content(R.string.purging_rules)
                     .progress(true, 0)
                     .show();
@@ -2376,6 +2502,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     progress.dismiss();
                     progress = null;
                 } catch (Exception ex) {
+                } finally {
+                    assert progress != null;
+                    progress.dismiss();
+                    progress = null;
                 }
             }
         }
@@ -2391,14 +2521,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPreExecute() {
+            // Don't enumerate packages here - getInstalledApplications() on the UI thread
+            // blocks the main thread before the dialog even shows. Start with a placeholder
+            // max and update it from the background scan via doMaxProgress().
             plsWait = new MaterialDialog.Builder(activityReference.get()).cancelable(false).
-                    title(getString(R.string.reading_apps)).progress(false, getPackageManager().getInstalledApplications(0)
-                            .size(), true).show();
+                    title(getString(R.string.reading_apps)).progress(false, 1, true).show();
             doProgress(0);
         }
 
         public void doProgress(int value) {
             publishProgress(value);
+        }
+
+        public void doMaxProgress(int value) {
+            publishProgress(Integer.MIN_VALUE, Math.max(1, value));
         }
 
         @Override
@@ -2440,7 +2576,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected void onProgressUpdate(Integer... progress) {
 
-            if (progress[0] == 0 || progress[0] == -1) {
+            if (progress[0] == Integer.MIN_VALUE && progress.length > 1) {
+                if (plsWait != null && plsWait.isShowing()) {
+                    plsWait.setMaxProgress(Math.max(1, progress[1]));
+                }
+            } else if (progress[0] == 0 || progress[0] == -1) {
                 //do nothing
             } else {
                 if (plsWait != null) {
@@ -2503,6 +2643,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     } else {
                                         menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
                                         Api.setEnabled(activityReference.get(), enabled, true);
+                                        if (enabled && G.enableLogService()) {
+                                            LogService.ensureRunning(activityReference.get());
+                                        }
                                     }
                                     refreshHeader();
                                 });
@@ -2608,6 +2751,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startRootShell();
                 new SecurityUtil(MainActivity.this).passCheck();
                 registerNetworkObserver();
+                // Ensure FirewallService is started if firewall is enabled
+                if (Api.isEnabled(MainActivity.this)) {
+                    Api.setEnabled(MainActivity.this, true, false);
+                }
             }
         }
     }

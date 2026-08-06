@@ -19,8 +19,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.RootCommand;
@@ -30,12 +33,12 @@ import dev.ukanth.ufirewall.util.SecurityUtil;
 public class ToggleWidgetOldActivity extends Activity implements
         OnClickListener {
 
-    private static Button enableButton;
-    private static Button disableButton;
-    private static Button defaultButton;
-    private static Button profButton1;
-    private static Button profButton2;
-    private static Button profButton3;
+    private Button enableButton;
+    private Button disableButton;
+    private Button defaultButton;
+    private Button profButton1;
+    private Button profButton2;
+    private Button profButton3;
 
     private String profileName;
     private int buttonId;
@@ -202,6 +205,33 @@ public class ToggleWidgetOldActivity extends Activity implements
         profileName = ((Button) button).getText().toString();
         buttonId = button.getId();
 
+        if (buttonId == R.id.toggle_disable_firewall && G.enableConfirm()) {
+            confirmDisableFromWidget();
+            return;
+        }
+        continueClickAfterConfirmation();
+    }
+
+    private void confirmDisableFromWidget() {
+        new MaterialDialog.Builder(this)
+                .title(R.string.confirmMsg)
+                .cancelable(false)
+                .positiveText(R.string.Yes)
+                .negativeText(R.string.No)
+                .onPositive((dialog, which) -> {
+                    Log.i(Api.TAG, "Legacy widget firewall disable confirmed");
+                    dialog.dismiss();
+                    continueClickAfterConfirmation();
+                })
+                .onNegative((dialog, which) -> {
+                    Log.i(Api.TAG, "Legacy widget firewall disable canceled");
+                    dialog.dismiss();
+                    finish();
+                })
+                .show();
+    }
+
+    private void continueClickAfterConfirmation() {
         SecurityUtil util = new SecurityUtil(ToggleWidgetOldActivity.this);
         boolean passCheck = util.isPasswordProtected();
         if (!passCheck) {

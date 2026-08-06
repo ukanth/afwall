@@ -63,6 +63,7 @@ import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
+import dev.ukanth.ufirewall.util.ThemeHelper;
 import android.os.Handler;
 import android.os.Looper;
 import java.util.concurrent.ExecutorService;
@@ -78,7 +79,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     protected  static final int MENU_TOGGLE = -4;
     protected static final int MENU_CLEAR = 40;
-    protected static final int MENU_SWITCH_OLD = 42;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,17 +129,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     }
 
     private void initTheme() {
-        switch(G.getSelectedTheme()) {
-            case "D":
-                setTheme(R.style.AppDarkTheme);
-                break;
-            case "L":
-                setTheme(R.style.AppLightTheme);
-                break;
-            case "B":
-                setTheme(R.style.AppBlackTheme);
-                break;
-        }
+        ThemeHelper.applyTheme(this);
     }
     private void initializeRecyclerView(final Context ctx) {
         recyclerView.setHasFixedSize(true);
@@ -177,6 +167,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
     private class CollectLog implements Runnable {
         private Context context = null;
         MaterialDialog loadDialog = null;
+        private boolean fromSwipeRefresh = false;
 
         public CollectLog() {
         }
@@ -186,16 +177,26 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             return this;
         }
 
+        public CollectLog setFromSwipeRefresh(boolean fromSwipe) {
+            this.fromSwipeRefresh = fromSwipe;
+            return this;
+        }
+
         public void execute() {
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(() -> {
                 onPreExecute();
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.execute(this);
+                executor.shutdown();
             });
         }
 
         protected void onPreExecute() {
+            // Skip modal dialog if triggered by swipe refresh (animation already showing)
+            if (fromSwipeRefresh) {
+                return;
+            }
             loadDialog = new MaterialDialog.Builder(context).cancelable(false)
                     .title(getString(R.string.working))
                     .cancelable(false)
@@ -240,13 +241,13 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             if (logPresent != null && logPresent) {
                 recyclerViewAdapter.notifyDataSetChanged();
                 recyclerView.setVisibility(View.VISIBLE);
-                mSwipeLayout.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             } else {
-                mSwipeLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+            // Keep SwipeRefreshLayout visible to allow pull-to-refresh even when log is empty
+            mSwipeLayout.setVisibility(View.VISIBLE);
 
             recyclerView.getRecycledViewPool().clear();
             recyclerView.setRecycledViewPool(new RecyclerView.RecycledViewPool());
@@ -264,7 +265,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         // Common options: Copy, Export to SD Card, Refresh
         SubMenu sub = menu.addSubMenu(0, MENU_TOGGLE, 0, "").setIcon(R.drawable.ic_flow);
         sub.add(0, MENU_CLEAR, 0, R.string.clear_log).setIcon(R.drawable.ic_clearlog);
-        sub.add(0, MENU_SWITCH_OLD, 0, R.string.switch_old).setIcon(R.drawable.ic_log);
         //populateMenu(sub);
         sub.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         super.onCreateOptionsMenu(menu);
@@ -345,12 +345,6 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
             /*case MENU_EXPORT_LOG:
                 //exportToSD();
                 return true;*/
-            case MENU_SWITCH_OLD:
-                Intent i = new Intent(this, OldLogActivity.class);
-                G.oldLogView(true);
-                startActivity(i);
-                finish();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -384,7 +378,8 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        (new CollectLog()).setContext(this).run();
+        mSwipeLayout.setRefreshing(true);
+        (new CollectLog()).setContext(this).setFromSwipeRefresh(true).execute();
     }
 
 	/*@Override

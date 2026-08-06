@@ -1,4 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:key="uiPrefsScreen">
 
     <PreferenceCategory android:title="@string/rule_prefs_title">
@@ -14,6 +15,16 @@
             android:key="addDelay"
             android:summary="@string/add_delay_rules"
             android:title="@string/add_delay" />
+
+        <dev.ukanth.ufirewall.preferences.SeekBarPreference
+            android:defaultValue="2"
+            android:key="networkDebounceDelay"
+            android:max="10"
+            android:summary="@string/network_debounce_summary"
+            android:title="@string/network_debounce_title"
+            app:min="0"
+            app:suffix=" s" />
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:dependency="activeRules"
@@ -49,6 +60,14 @@
             android:key="enableTor"
             android:summary="@string/torSummary"
             android:title="@string/tor_profile" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="activeRules"
+            android:icon="@drawable/ic_custom_rules"
+            android:key="enableCustomRules"
+            android:summaryOff="@string/direct_rules_visibility_summary"
+            android:summaryOn="@string/direct_rules_visibility_summary"
+            android:title="@string/direct_rules_visibility_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/ui_chains_title">

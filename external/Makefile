@@ -7,7 +7,7 @@ ARCH    := arm
 GCCVER  := 4.9
 
 # You should be able to just 'make ARCH=x86' and it should DTRT.
-ARCH_LIST := arm arm64 x86 mips
+ARCH_LIST := arm arm64 x86
 APIVER := 21
 ifeq ($(ARCH),arm)
 TRIPLET := arm-linux-androideabi
@@ -24,11 +24,6 @@ ifeq ($(ARCH),x86)
 TRIPLET := i686-linux-android
 TOOLCHAIN := x86-$(GCCVER)
 NDK_ABINAME := x86
-endif
-ifeq ($(ARCH),mips)
-TRIPLET := mipsel-linux-android
-TOOLCHAIN := $(TRIPLET)-$(GCCVER)
-NDK_ABINAME := mips
 endif
 
 NDK_SYSROOT := $(NDK)/platforms/android-$(APIVER)/arch-$(ARCH)

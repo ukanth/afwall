@@ -60,7 +60,7 @@ import eu.chainfire.libsuperuser.Shell;
 public class RootShellService2 extends Service {
 
     public static final String TAG = "AFWall6";
-    public static final int NOTIFICATION_ID = 33347;
+    public static final int NOTIFICATION_ID = 1;
     public static final int EXIT_NO_ROOT_ACCESS = -1;
     public static final int NO_TOAST = -1;
     /* write command completion times to logcat */
@@ -90,8 +90,10 @@ public class RootShellService2 extends Service {
             Api.sendToastBroadcast(mContext, mContext.getString(state.failureToast));
         }
 
-        if (notificationManager != null) {
-            notificationManager.cancel(NOTIFICATION_ID);
+        // Refresh FirewallService notification after rules complete
+        if (FirewallService.isInstanceRunning()) {
+            Log.d(TAG, "Rules completed, refreshing FirewallService notification");
+            FirewallService.refreshNotification();
         }
     }
 
@@ -110,7 +112,6 @@ public class RootShellService2 extends Service {
             }
             if (state != null) {
                 //same as last one. ignore it
-                Log.i(TAG, "Start processing next state(6)");
                 if (enableProfiling) {
                     state.startTime = new Date();
                 }
@@ -120,9 +121,10 @@ public class RootShellService2 extends Service {
                     //continue;
                 } else if (rootState == ShellState2.READY) {
                     rootState = ShellState2.BUSY;
-                    if (G.isRun()) {
-                        createNotification(mContext);
-                    }
+                    // Don't create notification - let FirewallService handle it
+                    // if (G.isRun()) {
+                    //     createNotification(mContext);
+                    // }
                     processCommands(state);
                 }
             }
@@ -157,6 +159,16 @@ public class RootShellService2 extends Service {
                                         state.lastCommandResult.append(line).append("\n");
                                     }
                                 }
+                                // Special handling for exit code 126 (command not executable) - fallback to system iptables
+                                if (exitCode == 126 && shouldFallbackToSystem(state)) {
+                                    Log.w(TAG, "Built-in iptables failed with exit 126, attempting fallback to system iptables");
+                                    // Remember that built-in iptables failed for future preference
+                                    G.setBuiltinIptablesFailed(true);
+                                    fallbackToSystemBinary(state);
+                                    processCommands(state);
+                                    return;
+                                }
+                                
                                 if (exitCode >= 0 && exitCode == state.retryExitCode && state.retryCount < MAX_RETRIES) {
                                     //lets wait for few ms before trying ?
                                     state.retryCount++;
@@ -171,7 +183,7 @@ public class RootShellService2 extends Service {
 
                                 boolean errorExit = exitCode != 0 && !state.ignoreExitCode;
                                 if (state.commandIndex >= state.getCommmands().size() || errorExit) {
-                                    complete(state, exitCode);
+                                    complete(state, errorExit ? exitCode : 0);
                                     if (exitCode < 0) {
                                         rootState = ShellState2.FAIL;
                                         Log.e(TAG, "libsuperuser error " + exitCode + " on command '" + state.lastCommand + "'");
@@ -208,7 +220,7 @@ public class RootShellService2 extends Service {
 
     private void createNotification(Context context) {
 
-        String CHANNEL_ID = "firewall.apply";
+        String CHANNEL_ID = "firewall.service";
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
 
@@ -216,7 +228,7 @@ public class RootShellService2 extends Service {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             /* Create or update. */
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.runNotification),
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getString(R.string.firewall_service),
                     NotificationManager.IMPORTANCE_LOW);
             channel.setDescription("");
             channel.setShowBadge(false);
@@ -238,7 +250,7 @@ public class RootShellService2 extends Service {
 
         int notifyType = G.getNotificationPriority();
 
-        Notification notification = builder.setSmallIcon(R.drawable.ic_apply)
+        Notification notification = builder.setSmallIcon(R.drawable.notification)
                 .setAutoCancel(false)
                 .setContentTitle(context.getString(R.string.applying_rules))
                 .setTicker(context.getString(R.string.app_name))
@@ -310,7 +322,6 @@ public class RootShellService2 extends Service {
 
 
     public void runScriptAsRoot(Context ctx, List<String> cmds, RootCommand state) {
-        Log.i(TAG, "Received cmds: #" + cmds.size());
         state.setCommmands(cmds);
         state.commandIndex = 0;
         state.retryCount = 0;
@@ -346,6 +357,61 @@ public class RootShellService2 extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+    
+    /**
+     * Check if fallback to system binary should be attempted for exit code 126
+     * Only fallback once per command to avoid infinite loops
+     */
+    private boolean shouldFallbackToSystem(RootCommand state) {
+        if (state.lastCommand == null) {
+            return false;
+        }
+        
+        // Check if command contains built-in iptables path and hasn't been fallback attempted
+        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        return state.lastCommand.contains(builtinDir) && 
+               !state.lastCommand.contains("__FALLBACK_ATTEMPTED__");
+    }
+    
+    /**
+     * Replace built-in iptables/ip6tables paths with system paths in the current command
+     */
+    private void fallbackToSystemBinary(RootCommand state) {
+        if (state.lastCommand == null) {
+            return;
+        }
+        
+        String builtinDir = getApplicationContext().getDir("bin", 0).getAbsolutePath();
+        String originalCommand = state.lastCommand;
+        
+        // Try to find system iptables
+        String systemIptables = Api.findSystemBinary("iptables");
+        String systemIp6tables = Api.findSystemBinary("ip6tables");
+        
+        if (systemIptables != null || systemIp6tables != null) {
+            String updatedCommand = originalCommand;
+            
+            // Replace built-in paths with system paths
+            if (systemIptables != null) {
+                updatedCommand = updatedCommand.replace(builtinDir + "/iptables", systemIptables);
+            }
+            if (systemIp6tables != null) {
+                updatedCommand = updatedCommand.replace(builtinDir + "/ip6tables", systemIp6tables);
+            }
+            
+            // Mark as fallback attempted to prevent infinite loops
+            updatedCommand += " # __FALLBACK_ATTEMPTED__";
+            
+            // Update the command in the current state
+            List<String> commands = state.getCommmands();
+            if (state.commandIndex < commands.size()) {
+                commands.set(state.commandIndex, updatedCommand);
+                Log.i(TAG, "Fallback applied: " + originalCommand + " -> " + updatedCommand);
+            }
+        } else {
+            Log.w(TAG, "No system iptables found for fallback");
+        }
     }
 
     public enum ShellState2 {

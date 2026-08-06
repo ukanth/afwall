@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Base widget background -->
+    <item android:drawable="@drawable/widget_on" />
+    
+    <!-- Processing overlay -->
+    <item android:gravity="center">
+        <shape android:shape="oval">
+            <size android:width="16dp" android:height="16dp" />
+            <solid android:color="#80F44336" />
+        </shape>
+    </item>
+</layer-list>

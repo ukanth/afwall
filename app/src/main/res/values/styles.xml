@@ -33,6 +33,40 @@
         <item name="tint">@color/black</item>
     </style>
 
+    <!-- High-contrast light theme for E-paper displays (Issue #1308) -->
+    <style name="AppLightHighContrastTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/black</item>
+
+        <!-- White toolbar for maximum contrast with black text -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/black</item>
+
+        <item name="itemBackground">@color/white</item>
+
+        <!-- Ensure all text is pure black -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+
+        <!-- Checkbox colors - pure black for maximum contrast -->
+        <item name="colorControlNormal">@color/black</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/black</item>
+        <item name="android:colorControlNormal">@color/black</item>
+        <item name="android:colorControlActivated">@color/black</item>
+        <item name="tint">@color/black</item>
+
+        <!-- Explicit checkbox style -->
+        <item name="checkboxStyle">@style/HighContrastCheckBox</item>
+    </style>
+
+    <!-- High contrast checkbox style for e-paper displays -->
+    <style name="HighContrastCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:buttonTint">@color/black</item>
+        <item name="buttonTint">@color/black</item>
+    </style>
+
     <!-- Dark style for all standard Locale and Locale plug-in Activity instances -->
     <style name="Theme.Locale.Dark" parent="android:Theme" />
 
@@ -78,12 +112,109 @@
     </style>
 
 
+    <style name="AppAmberTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorPrimary">@color/theme_amber_primary</item>
+        <item name="colorPrimaryDark">@color/theme_amber_primary_dark</item>
+        <item name="colorAccent">@color/theme_amber_accent</item>
+        <item name="itemBackground">@color/theme_amber_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:listViewStyle">@style/AmberListView</item>
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="AppOceanTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorPrimary">@color/theme_ocean_primary</item>
+        <item name="colorPrimaryDark">@color/theme_ocean_primary_dark</item>
+        <item name="colorAccent">@color/theme_ocean_accent</item>
+        <item name="itemBackground">@color/theme_ocean_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:listViewStyle">@style/OceanListView</item>
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="AppForestTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorPrimary">@color/theme_forest_primary</item>
+        <item name="colorPrimaryDark">@color/theme_forest_primary_dark</item>
+        <item name="colorAccent">@color/theme_forest_accent</item>
+        <item name="itemBackground">@color/theme_forest_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:listViewStyle">@style/ForestListView</item>
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="AppSlateTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorPrimary">@color/theme_slate_primary</item>
+        <item name="colorPrimaryDark">@color/theme_slate_primary_dark</item>
+        <item name="colorAccent">@color/theme_slate_accent</item>
+        <item name="itemBackground">@color/theme_slate_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:listViewStyle">@style/SlateListView</item>
+        <item name="tint">@color/white</item>
+    </style>
+
+    <style name="AppPlumTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="colorPrimary">@color/theme_plum_primary</item>
+        <item name="colorPrimaryDark">@color/theme_plum_primary_dark</item>
+        <item name="colorAccent">@color/theme_plum_accent</item>
+        <item name="itemBackground">@color/theme_plum_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:listViewStyle">@style/PlumListView</item>
+        <item name="tint">@color/white</item>
+    </style>
+
     <style name="DarkListView" parent="@android:style/Widget.ListView">
         <item name="android:background">@color/dark_bg</item>
     </style>
 
     <style name="BlackListView" parent="@android:style/Widget.ListView">
         <item name="android:background">@color/black</item>
+    </style>
+
+    <style name="AmberListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/theme_amber_background</item>
+    </style>
+
+    <style name="OceanListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/theme_ocean_background</item>
+    </style>
+
+    <style name="ForestListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/theme_forest_background</item>
+    </style>
+
+    <style name="SlateListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/theme_slate_background</item>
+    </style>
+
+    <style name="PlumListView" parent="@android:style/Widget.ListView">
+        <item name="android:background">@color/theme_plum_background</item>
+    </style>
+
+    <style name="ColorPickerDialogTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="FingerprintTheme" parent="android:Theme.Dialog">

@@ -49,11 +49,24 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 
-
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" tools:ignore="QueryAllPackagesPermission"/>
-
     <uses-permission
        android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <!-- Query visibility for installed apps on Android 11+ (replaces QUERY_ALL_PACKAGES) -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
 
     <!-- Screen support -->
     <supports-screens
@@ -152,6 +165,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
+        <activity
+            android:name=".activity.AppRulesActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="dev.ukanth.ufirewall.MainActivity" />
+        </activity>
 
         <!-- <activity android:name="dev.ukanth.ufirewall.AlertDialogActivity"/> -->
 
@@ -192,13 +212,21 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".broadcast.PackageBroadcast"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
         <!--<service android:name=".service.ApplyOnBootService" />-->
 
         <service
             android:name=".service.FirewallService"
             android:foregroundServiceType="specialUse"
-            android:exported="true"
-            android:launchMode="singleTop" >
+            android:exported="false" >
 
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Firewall service"/>
@@ -210,7 +238,8 @@
             android:icon="@drawable/notification_quest"
             android:exported="true"
             android:label="@string/widget_label_status"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            tools:targetApi="24">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
@@ -324,9 +353,15 @@
             android:exported="false" />
         <service
             android:name=".service.LogService"
+            android:foregroundServiceType="specialUse"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:enabled="true"
-            android:label="AFWallLogService" />
+            android:label="AFWallLogService" >
+
+            <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Log monitoring service"/>
+
+        </service>
 
         <!-- Samsung MultiWindow Support -->
         <uses-library
@@ -349,7 +384,7 @@
         <provider
             android:name=".preferences.ShareProfilePreference"
             android:authorities="${applicationId}"
-            android:exported="true"></provider>
+            android:exported="false"></provider>
 
         <service
             android:name=".service.RulesApplyService"

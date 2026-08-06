@@ -68,6 +68,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
+import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -105,6 +106,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -133,8 +135,13 @@ import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.service.RootShellService;
+import dev.ukanth.ufirewall.customrules.CustomRule;
+import dev.ukanth.ufirewall.customrules.CustomRule_Table;
+import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.widget.StatusWidget;
 
 /**
@@ -208,10 +215,21 @@ public final class Api {
     private static final int IPTABLES_TRY_AGAIN = 4;
     private static final String[] dynChains = {"-3g-postcustom", "-3g-fork", "-wifi-postcustom", "-wifi-fork"};
     private static final String[] natChains = {"", "-tor-check", "-tor-filter"};
-    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether"};
+    private static final String[] staticChains = {"", "-input", "-3g", "-wifi", "-reject", "-vpn", "-3g-tether", "-3g-home", "-3g-roam", "-wifi-tether", "-wifi-wan", "-wifi-lan", "-usb-tether", "-tor", "-tor-reject", "-tether", "-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+    // LAN-selected apps also need discovery destinations such as mDNS, SSDP, and broadcast.
+    private static final String[] LOCAL_RESERVED_IPV4_RANGES = {"10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "169.254.0.0/16", "224.0.0.0/4", "255.255.255.255/32"};
+    private static final String[] LOCAL_RESERVED_IPV6_RANGES = {"fc00::/7", "fe80::/10", "ff00::/8"};
     private static volatile boolean globalStatus = false;
 
     private static final Object GLOBAL_STATUS_LOCK = new Object();
+    
+    /**
+     * Check if rules are currently being applied
+     * @return true if rules application is in progress
+     */
+    public static boolean isRulesBeingApplied() {
+        return globalStatus;
+    }
 
     public static List<Integer> getListOfUids() {
         return listOfUids;
@@ -329,32 +347,110 @@ public final class Api {
     }
 
     public static String getBinaryPath(Context ctx, boolean setv6) {
-        boolean builtin;
         String ip_path = G.ip_path();
-
-        if (ip_path.equals("system")) {
-            builtin = false;
-        } else if(ip_path.equals("builtin")) {
-            builtin = true;
-        } else{
-            builtin = false;
+        String binaryName = setv6 ? "ip6tables" : "iptables";
+        
+        // If built-in binaries have previously failed with exit 126, prefer system binaries
+        if (G.isBuiltinIptablesFailed() && !ip_path.equals("builtin")) {
+            Log.i(TAG, "Built-in iptables previously failed, preferring system binary for " + binaryName);
+            String systemBinaryPath = findSystemBinary(binaryName);
+            if (systemBinaryPath != null) {
+                if (Api.bbPath == null) {
+                    Api.bbPath = getBusyBoxPath(ctx, true);
+                }
+                return systemBinaryPath;
+            }
+            Log.w(TAG, "System binary " + binaryName + " not found despite previous built-in failure");
         }
-
-        String dir = "";
-        if (builtin) {
-            dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
+        
+        // First priority: check system binary if preference is "system" or "auto"
+        if (ip_path.equals("system") || ip_path.equals("auto")) {
+            String systemBinaryPath = findSystemBinary(binaryName);
+            if (systemBinaryPath != null) {
+                if (Api.bbPath == null) {
+                    Api.bbPath = getBusyBoxPath(ctx, true);
+                }
+                return systemBinaryPath;
+            }
+            
+            // If system binary not found and preference is "system", log warning
+            if (ip_path.equals("system")) {
+                Log.w(TAG, "System binary " + binaryName + " not found, falling back to built-in");
+            }
         }
-
-        String ipPath = dir + (setv6 ?  "ip6tables" : "iptables" );
-
-        /*if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            dir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
-            ipPath = dir + "run_pie " + dir + (setv6 ? "ip6tables" : "iptables");
-        }*/
+        
+        // Second priority: use built-in binary
+        // Check if built-in binary exists for current architecture
+        String builtinDir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
+        String builtinPath = builtinDir + binaryName;
+        
+        File builtinFile = new File(builtinPath);
+        if (builtinFile.exists() && builtinFile.canExecute()) {
+            if (Api.bbPath == null) {
+                Api.bbPath = getBusyBoxPath(ctx, true);
+            }
+            return builtinPath;
+        }
+        
+        // Fallback: try to install built-in binaries if they don't exist
+        Log.w(TAG, "Built-in binary " + binaryName + " not found, attempting to install binaries");
+        if (assertBinaries(ctx, false)) {
+            if (Api.bbPath == null) {
+                Api.bbPath = getBusyBoxPath(ctx, true);
+            }
+            return builtinPath;
+        }
+        
+        // Last resort: return the path even if binary doesn't exist (will likely fail at runtime)
+        Log.e(TAG, "No working " + binaryName + " binary found, returning built-in path anyway");
         if (Api.bbPath == null) {
             Api.bbPath = getBusyBoxPath(ctx, true);
         }
-        return ipPath;
+        return builtinPath;
+    }
+
+    /**
+     * Find system binary by checking common system paths
+     *
+     * @param binaryName the name of the binary to find
+     * @return full path to the binary if found, null otherwise
+     */
+    public static String findSystemBinary(String binaryName) {
+        // Common paths where system iptables/ip6tables binaries are located
+        String[] systemPaths = {
+            "/system/bin/" + binaryName,
+            "/system/xbin/" + binaryName,
+            "/vendor/bin/" + binaryName,
+            "/sbin/" + binaryName,
+            "/usr/bin/" + binaryName,
+            "/bin/" + binaryName
+        };
+        
+        for (String path : systemPaths) {
+            File binaryFile = new File(path);
+            if (binaryFile.exists() && binaryFile.canExecute()) {
+                Log.i(TAG, "Found system binary: " + path);
+                return path;
+            }
+        }
+        
+        // Also try using 'which' command if available
+        try {
+            Shell.Result result = Shell.cmd("which " + binaryName).exec();
+            if (result.isSuccess() && !result.getOut().isEmpty()) {
+                String whichPath = result.getOut().get(0).trim();
+                File whichFile = new File(whichPath);
+                if (whichFile.exists() && whichFile.canExecute()) {
+                    Log.i(TAG, "Found system binary via 'which': " + whichPath);
+                    return whichPath;
+                }
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Unable to use 'which' command to find " + binaryName + ": " + e.getMessage());
+        }
+        
+        Log.d(TAG, "System binary " + binaryName + " not found in any standard location");
+        return null;
     }
 
     /**
@@ -365,45 +461,94 @@ public final class Api {
      * @return
      */
     public static String getBusyBoxPath(Context ctx, boolean considerSystem) {
-
-        if (G.bb_path().equals("system") && considerSystem) {
-            return "busybox ";
-        } else {
-            String dir = ctx.getDir("bin", 0).getAbsolutePath();
-            return dir + "/busybox ";
+        String bb_path = G.bb_path();
+        
+        // First priority: check system busybox if preference is "system" or "auto" and considerSystem is true
+        if (considerSystem && (bb_path.equals("system") || bb_path.equals("auto"))) {
+            String systemBusybox = findSystemBinary("busybox");
+            if (systemBusybox != null) {
+                return systemBusybox + " ";
+            }
+            
+            // If system busybox not found and preference is "system", log warning and fall back
+            if (bb_path.equals("system")) {
+                Log.w(TAG, "System busybox not found, falling back to built-in");
+            }
         }
+        
+        // Second priority: use built-in busybox
+        String dir = ctx.getDir("bin", 0).getAbsolutePath();
+        String builtinPath = dir + "/busybox";
+        
+        File builtinFile = new File(builtinPath);
+        if (builtinFile.exists() && builtinFile.canExecute()) {
+            return builtinPath + " ";
+        }
+        
+        // Fallback: return built-in path even if it doesn't exist yet (may be installed later)
+        if (!builtinFile.exists()) {
+            Log.w(TAG, "Built-in busybox not found at " + builtinPath + ", returning path anyway");
+        } else {
+            Log.w(TAG, "Built-in busybox exists but not executable at " + builtinPath + ", permissions: " + 
+                  (builtinFile.canRead() ? "R" : "-") + 
+                  (builtinFile.canWrite() ? "W" : "-") + 
+                  (builtinFile.canExecute() ? "X" : "-"));
+        }
+        return builtinPath + " ";
     }
 
     /**
-     * Get NFLog Path
+     * Get NFLog Path - Enhanced version with fallback support
      *
-     * @param ctx
-     * @returnC
+     * @param ctx Context
+     * @return path to best available nflog binary
      */
     public static String getNflogPath(Context ctx) {
         String dir = ctx.getDir("bin", 0).getAbsolutePath();
-        String nflogPath = dir + "/nflog";
+        String originalPath = dir + "/nflog";
+        File originalFile = new File(originalPath);
         
-        // Check if nflog binary exists and is executable
-        File nflogFile = new File(nflogPath);
-        if (!nflogFile.exists()) {
-            Log.w(TAG, "NFLOG binary not found at: " + nflogPath);
+        if (!originalFile.exists()) {
+            Log.w(TAG, "No NFLOG binary found at: " + originalPath);
             return null;
         }
         
-        if (!nflogFile.canExecute()) {
-            Log.w(TAG, "NFLOG binary not executable at: " + nflogPath);
+        if (!originalFile.canExecute()) {
+            Log.w(TAG, "NFLOG binary not executable at: " + originalPath);
             // Try to make it executable
             try {
-                nflogFile.setExecutable(true);
+                originalFile.setExecutable(true);
+                if (!originalFile.canExecute()) {
+                    Log.e(TAG, "Failed to make nflog executable");
+                    return null;
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Failed to make nflog executable: " + e.getMessage());
                 return null;
             }
         }
         
-        return nflogPath + " ";
+        Log.i(TAG, "Using original NFLOG binary");
+        return originalPath;
     }
+    
+    /**
+     * Get enhanced NFLOG command with optimized parameters
+     * 
+     * @param ctx Context
+     * @param queueNum NFLOG queue number
+     * @return complete command string with optimizations
+     */
+    public static String getEnhancedNflogCommand(Context ctx, int queueNum) {
+        String nflogPath = getNflogPath(ctx);
+        if (nflogPath == null) {
+            return null;
+        }
+        
+        // Use standard nflog command with queue number
+        return nflogPath + " " + queueNum;
+    }
+    
 
     /**
      * Copies a raw resource file, given its ID to the given location
@@ -429,7 +574,45 @@ public final class Api {
         is.close();
         // Change the permissions
 
-        Runtime.getRuntime().exec("chmod " + mode + " " + abspath).waitFor();
+        executeSecureCommand(new String[]{"chmod", mode, abspath});
+    }
+
+    /**
+     * Execute system commands securely using ProcessBuilder to prevent command injection
+     * 
+     * @param command Array of command and arguments (prevents shell interpretation)
+     * @throws IOException if command execution fails
+     * @throws InterruptedException if command is interrupted
+     */
+    private static void executeSecureCommand(String[] command) throws IOException, InterruptedException {
+        if (command == null || command.length == 0) {
+            throw new IllegalArgumentException("Command cannot be null or empty");
+        }
+        
+        // Validate command and arguments don't contain dangerous characters
+        for (String arg : command) {
+            if (arg == null || arg.contains("\n") || arg.contains("\r") || 
+                arg.contains(";") || arg.contains("&") || arg.contains("|") || 
+                arg.contains("`") || arg.contains("$")) {
+                Log.w(TAG, "Rejecting command with potentially dangerous characters: " + java.util.Arrays.toString(command));
+                throw new SecurityException("Command contains illegal characters");
+            }
+        }
+        
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.environment().clear(); // Clear environment to prevent injection via env vars
+        Process process = pb.start();
+        int exitCode = process.waitFor();
+        
+        if (exitCode != 0) {
+            // For chmod commands, permission denied is expected on Android - don't fail the installation
+            if (command.length > 0 && "chmod".equals(command[0])) {
+                Log.w(TAG, "chmod command failed (expected on Android without root): exit code " + exitCode + " for " + java.util.Arrays.toString(command));
+                return; // Don't throw exception for chmod failures
+            }
+            Log.w(TAG, "Command failed with exit code " + exitCode + ": " + java.util.Arrays.toString(command));
+            throw new IOException("Command execution failed with exit code: " + exitCode);
+        }
     }
 
     /**
@@ -491,28 +674,44 @@ public final class Api {
             }
 
             boolean kernel_checked = uids.contains(SPECIAL_UID_KERNEL);
+            
             if (whitelist) {
                 if (kernel_checked) {
                     // reject any other UIDs, but allow the kernel through
-                    cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + chain + "-reject");
+                    // Use fallback rule if owner module is not available
+                    if (G.hasOwnerModule()) {
+                        Log.d(TAG, "Adding whitelist kernel rule with owner module for chain " + chain);
+                        cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j " + chain + "-reject");
+                    } else {
+                        Log.w(TAG, "Owner module not available, using fallback rule for chain " + chain);
+                        cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    }
                 } else {
                     // kernel is blocked so reject everything
-                    cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    String rejectRule = "-A " + chain + " -j " + chain + "-reject";
+                    cmds.add(rejectRule);
                 }
             } else {
                 if (kernel_checked) {
                     // allow any other UIDs, but block the kernel
-                    cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
-                    cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    if (G.hasOwnerModule()) {
+                        cmds.add("-A " + chain + " -m owner --uid-owner 0:999999999 -j RETURN");
+                        cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    } else {
+                        Log.w(TAG, "Owner module not available, using fallback rule for chain " + chain);
+                        cmds.add("-A " + chain + " -j " + chain + "-reject");
+                    }
                 }
             }
 
             //add 1052 for LAN
-            if(G.enableLAN()) {
+            if(G.enableLAN() && G.hasOwnerModule()) {
                 cmds.add("-A " + "afwall-wifi-lan" + " -m owner --uid-owner 1052 -j RETURN");
             }
 
-            cmds.add("-A " + "afwall-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
+            if (G.hasOwnerModule()) {
+                cmds.add("-A " + "afwall-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
+            }
         }
     }
 
@@ -520,36 +719,69 @@ public final class Api {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
 
-        if (G.enableLogService()) {
-            if (G.logTarget().trim().equals("LOG")) {
-                //cmds.add("-A " + chainName  + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL-ALLOW}\" --log-level 4 --log-uid");
-                cmds.add("-A " + chainName + "-reject" + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options");
-            } else if (G.logTarget().trim().equals("NFLOG")) {
-                //cmds.add("-A " + chainName + " -j NFLOG --nflog-prefix \"{AFL-ALLOW}\" --nflog-group 40");
-                cmds.add("-A " + chainName + "-reject" + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40");
-            }
+        addLogRuleForRejectChain(cmds, chainName + "-reject");
+        String rejectRule = "-A " + chainName + "-reject" + " -j REJECT";
+        Log.d(TAG, "Adding final REJECT rule: " + rejectRule);
+        cmds.add(rejectRule);
+        
+        // Also populate individual reject chains that are used by whitelist mode
+        String[] rejectChainSuffixes = {"-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", 
+                                       "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+        for (String suffix : rejectChainSuffixes) {
+            String individualRejectChain = chainName + suffix;
+            Log.d(TAG, "Populating individual reject chain: " + individualRejectChain);
+            addLogRuleForRejectChain(cmds, individualRejectChain);
+            String individualRejectRule = "-A " + individualRejectChain + " -j REJECT";
+            Log.d(TAG, "Adding REJECT to individual reject chain: " + individualRejectRule);
+            cmds.add(individualRejectRule);
         }
-        cmds.add("-A " + chainName + "-reject" + " -j REJECT");
+    }
+
+    private static void addLogRuleForRejectChain(List<String> cmds, String rejectChain) {
+        if (!G.enableLogService()) {
+            return;
+        }
+        String logTarget = G.logTarget().trim();
+        if (logTarget.equals("LOG")) {
+            // Whitelist mode uses per-interface reject chains, so LOG must be
+            // added anywhere packets can be rejected, not only the shared chain.
+            String logRule = "-A " + rejectChain + " -m limit --limit 1000/min -j LOG --log-prefix \"{AFL}\" --log-level 4 --log-uid  --log-tcp-options --log-ip-options";
+            Log.d(TAG, "Adding LOG rule to reject chain: " + logRule);
+            cmds.add(logRule);
+        } else if (logTarget.equals("NFLOG")) {
+            String nflogRule = "-A " + rejectChain + " -j NFLOG --nflog-prefix \"{AFL}\" --nflog-group 40";
+            Log.d(TAG, "Adding NFLOG rule to reject chain: " + nflogRule);
+            cmds.add(nflogRule);
+        }
     }
 
     private static void addTorRules(List<String> cmds, List<Integer> uids, Boolean whitelist, Boolean ipv6, String chainName) {
+        Integer socks_port = 9050;
+        Integer http_port = 8118;
+        Integer dns_port = 5400;
+        Integer tcp_port = 9040;
+
+        Log.i(TAG, "Adding Tor redirect rules before interface filters");
+        // Tor selection is an outbound owner match; jumping from INPUT breaks on several iptables backends.
+
         for (Integer uid : uids) {
             if (uid != null && uid >= 0) {
-                if (G.enableInbound() || ipv6) {
+                if (ipv6) {
                     cmds.add("-A " + chainName + "-tor-reject -m owner --uid-owner " + uid + " -j " + chainName + "-reject");
                 }
                 if (!ipv6) {
                     cmds.add("-t nat -A " + chainName + "-tor-check -m owner --uid-owner " + uid + " -j " + chainName + "-tor-filter");
+                    // Tor rules run before interface chains so redirected traffic is not rejected as plain Wi-Fi/mobile.
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + socks_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + http_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p tcp --dport " + tcp_port + " -j ACCEPT");
+                    cmds.add("-A " + chainName + "-tor -m owner --uid-owner " + uid + " -d 127.0.0.1 -p udp --dport " + dns_port + " -j ACCEPT");
                 }
             }
         }
         if (ipv6) {
             cmds.add("-A " + chainName + " -j " + chainName + "-tor-reject");
         } else {
-            Integer socks_port = 9050;
-            Integer http_port = 8118;
-            Integer dns_port = 5400;
-            Integer tcp_port = 9040;
             cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + socks_port + " -j RETURN");
             cmds.add("-t nat -A " + chainName + "-tor-filter -d 127.0.0.1 -p tcp --dport " + http_port + " -j RETURN");
             cmds.add("-t nat -A " + chainName + "-tor-filter -p udp --dport 53 -j REDIRECT --to-ports " + dns_port);
@@ -559,47 +791,129 @@ public final class Api {
             cmds.add("-A " + chainName + "-tor -m mark --mark 0x500 -j " + chainName + "-reject");
             cmds.add("-A " + chainName + " -j " + chainName + "-tor");
         }
-        if (G.enableInbound()) {
-            cmds.add("-A " + chainName + "-input -j " + chainName + "-tor-reject");
-        }
     }
 
     private static String sanitizeRule(String rule) {
-        // Remove potentially dangerous characters and commands
-        if (rule.contains("&&") || rule.contains("||") || rule.contains(";") ||
-                rule.contains("|") || rule.contains("`") || rule.contains("$") ||
-                rule.contains("rm ") || rule.contains("dd ") || rule.contains("chmod ") ||
-                rule.contains("chown ") || rule.contains("su ") || rule.contains("sudo ")) {
-            Log.w(TAG, "Rejecting potentially dangerous custom rule: " + rule);
+        String trimmed = rule.trim();
+
+        // Check for dangerous command chaining/substitution
+        if (trimmed.contains("&&") || trimmed.contains("||") || trimmed.contains(";") ||
+                trimmed.contains("|") || trimmed.contains("`")) {
+            Log.w(TAG, "Rejecting potentially dangerous custom rule (command chaining): " + rule);
             return null;
         }
 
-        // Only allow basic iptables/ip6tables commands
-        if (!rule.startsWith("iptables ") && !rule.startsWith("ip6tables ") &&
-                !rule.startsWith("-A ") && !rule.startsWith("-I ") &&
-                !rule.startsWith("-D ") && !rule.startsWith("-F ") &&
-                !rule.startsWith("-P ") && !rule.startsWith("-N ")) {
+        // Check for dangerous commands
+        if (trimmed.contains("rm ") || trimmed.contains("dd ") ||
+                trimmed.contains("chmod ") || trimmed.contains("chown ") ||
+                trimmed.contains("su ") || trimmed.contains("sudo ")) {
+            Log.w(TAG, "Rejecting potentially dangerous custom rule (system modification): " + rule);
+            return null;
+        }
+
+        // Allow $ only for whitelisted variables
+        if (trimmed.contains("$")) {
+            // Check if it's using allowed variables
+            String tempRule = trimmed;
+            tempRule = tempRule.replace("$IPTABLES", "");
+            tempRule = tempRule.replace("$IP6TABLES", "");
+            tempRule = tempRule.replace("$BUSYBOX", "");
+            tempRule = tempRule.replace("$IPV6", "");
+
+            if (tempRule.contains("$")) {
+                Log.w(TAG, "Rejecting custom rule with non-whitelisted variables: " + rule);
+                return null;
+            }
+        }
+
+        // Reject file sourcing (dot-source) - potential command injection vector
+        if (trimmed.startsWith(". ") || trimmed.startsWith("source ")) {
+            Log.w(TAG, "Rejecting file sourcing in custom rule (security risk): " + rule);
+            return null;
+        }
+
+        // Allow basic iptables commands (keep existing check)
+        if (!trimmed.startsWith("iptables ") && !trimmed.startsWith("ip6tables ") &&
+                !trimmed.startsWith("$IPTABLES ") && !trimmed.startsWith("$IP6TABLES ") &&
+                !trimmed.startsWith("-A ") && !trimmed.startsWith("-I ") &&
+                !trimmed.startsWith("-D ") && !trimmed.startsWith("-F ") &&
+                !trimmed.startsWith("-P ") && !trimmed.startsWith("-N ")) {
             Log.w(TAG, "Rejecting non-iptables rule: " + rule);
             return null;
         }
 
-        return rule;
+        return trimmed;
+    }
+
+    public static String validateCustomRuleForStorage(String rule) {
+        if (rule == null) {
+            return null;
+        }
+        return sanitizeRule(rule);
     }
 
     private static void addCustomRules(String prefName, List<String> cmds) {
-        String customRulesStr = G.pPrefs.getString(prefName, "");
-        if (customRulesStr.isEmpty()) return;
+        addCustomRules(prefName, cmds, false);
+    }
 
-        String[] customRules = customRulesStr.split("[\\r\\n]+");
-        for (String rule : customRules) {
-            if (rule.matches(".*\\S.*")) {
-                // Sanitize the rule to prevent command injection
-                String sanitizedRule = sanitizeRule(rule.trim());
-                if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
-                    cmds.add("#LITERAL# " + sanitizedRule);
+    private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6) {
+        String customRulesStr = G.pPrefs.getString(prefName, "");
+        if (!customRulesStr.isEmpty()) {
+            String[] customRules = customRulesStr.split("[\\r\\n]+");
+            for (String rule : customRules) {
+                if (rule.matches(".*\\S.*")) {
+                    // Sanitize the rule to prevent command injection
+                    String sanitizedRule = sanitizeRule(rule.trim());
+                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                        cmds.add("#LITERAL# " + sanitizedRule);
+                    }
                 }
             }
         }
+
+        if (PREF_CUSTOMSCRIPT.equals(prefName) && !ipv6) {
+            addDatabaseCustomRules(cmds);
+        }
+    }
+
+    private static void addDatabaseCustomRules(List<String> cmds) {
+        try {
+            List<CustomRule> customRules = SQLite.select()
+                    .from(CustomRule.class)
+                    .where(CustomRule_Table.active.eq(true))
+                    .queryList();
+
+            for (CustomRule customRule : customRules) {
+                if (!AppRuleHelper.belongsToCurrentProfile(customRule)) {
+                    continue;
+                }
+                String rule = customRule.getRule();
+                if (rule != null && rule.matches(".*\\S.*")) {
+                    String sanitizedRule = sanitizeRule(rule.trim());
+                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
+                        cmds.add(sanitizedRule);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to load database custom rules", e);
+        }
+    }
+
+    private static Set<String> getLanDestinationRanges(InterfaceDetails cfg, boolean ipv6) {
+        LinkedHashSet<String> ranges = new LinkedHashSet<>();
+        if (ipv6) {
+            if (cfg != null) {
+                ranges.addAll(cfg.lanMaskV6);
+            }
+            ranges.addAll(Arrays.asList(LOCAL_RESERVED_IPV6_RANGES));
+        } else {
+            if (cfg != null) {
+                ranges.addAll(cfg.lanMaskV4);
+            }
+            ranges.addAll(Arrays.asList(LOCAL_RESERVED_IPV4_RANGES));
+        }
+        return ranges;
     }
 
     /**
@@ -612,6 +926,11 @@ public final class Api {
      * @param cmds command list
      */
     private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName) {
+        addInterfaceRouting(ctx, cmds, ipv6, chainName, null);
+    }
+
+    private static void addInterfaceRouting(Context ctx, List<String> cmds, boolean ipv6, String chainName,
+                                            List<Integer> lanList) {
         try {
             //force only for v4
             final InterfaceDetails cfg = InterfaceTracker.getCurrentCfg(ctx, !ipv6);
@@ -631,7 +950,7 @@ public final class Api {
                 } else {
                     cmds.add("-A " + chainName + "-wifi-postcustom -j " + chainName + "-wifi-fork");
                 }
-                
+
                 if (cfg.isUsbTethered) {
                     cmds.add("-A " + chainName + "-3g-postcustom -j " + chainName + "-usb-tether");
                 } else {
@@ -643,26 +962,24 @@ public final class Api {
             }
 
             if (G.enableLAN() && !cfg.isWifiTethered) {
-                if (ipv6) {
-                    if (!cfg.lanMaskV6.equals("")) {
-                        cmds.add("-A " + chainName + "-wifi-fork -d " + cfg.lanMaskV6 + " -j " + chainName + "-wifi-lan");
-                        cmds.add("-A " + chainName + "-wifi-fork '!' -d " + cfg.lanMaskV6 + " -j " + chainName + "-wifi-wan");
-                    } else {
-                        Log.i(TAG, "no ipv6 found: " + G.enableIPv6() + "," + cfg.lanMaskV6);
-                    }
-                } else {
-                    if (!cfg.lanMaskV4.equals("")) {
-                        cmds.add("-A " + chainName + "-wifi-fork -d " + cfg.lanMaskV4 + " -j " + chainName + "-wifi-lan");
-                        cmds.add("-A " + chainName + "-wifi-fork '!' -d " + cfg.lanMaskV4 + " -j " + chainName + "-wifi-wan");
-                    } else {
-                        Log.i(TAG, "no ipv4 found:" + G.enableIPv6() + "," + cfg.lanMaskV4);
-                    }
+                // Support multiple LAN subnets (Issue #1362) plus reserved local/discovery ranges.
+                // Subnet-specific rules are added first, then a catch-all routes remaining traffic to WAN.
+                Set<String> lanRanges = getLanDestinationRanges(cfg, ipv6);
+                if (lanRanges.isEmpty()) {
+                    Log.i(TAG, "no LAN ranges found: " + G.enableIPv6() + "," + (ipv6 ? cfg.lanMaskV6 : cfg.lanMaskV4));
                 }
-                if (cfg.lanMaskV4.equals("") && cfg.lanMaskV6.equals("")) {
-                    Log.i(TAG, "No ipaddress found for LAN");
-                    // lets find one more time
-                    //atleast allow internet - don't block completely
-                    cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
+                for (String subnet : lanRanges) {
+                    cmds.add("-A " + chainName + "-wifi-fork -d " + subnet + " -g " + chainName + "-wifi-lan");
+                }
+                // Catch-all: route everything not matching a LAN subnet to WAN
+                cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
+
+                // Rebuild the LAN chain's per-UID rules so fastApply is self-healing.
+                // If lanList is null this path is skipped (e.g., during a full apply that already
+                // rebuilds staticChains separately).
+                if (lanList != null) {
+                    cmds.add("#NOCHK# -F " + chainName + "-wifi-lan");
+                    addRulesForUidlist(cmds, lanList, chainName + "-wifi-lan", whitelist);
                 }
             } else {
                 cmds.add("-A " + chainName + "-wifi-fork -j " + chainName + "-wifi-wan");
@@ -674,32 +991,47 @@ public final class Api {
                 cmds.add("-A " + chainName + "-3g-fork -j " + chainName + "-3g-home");
             }
 
-
         } catch (Exception e) {
             Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
         }
+    }
 
+    /**
+     * Add or update the LAN chain rule for a single UID. Used for incremental per-uid updates
+     * so LAN-selected apps retain RFC1918/multicast access without a full rule rebuild.
+     */
+    static void addLanReservedUidDelta(List<String> cmds, int uid, String chainName, boolean whitelist) {
+        if (uid < 0) return;
+        String action = whitelist ? " -j RETURN" : " -j " + chainName + "-wifi-lan-reject";
+        // Remove any existing rule for this UID before re-adding (idempotent).
+        cmds.add("#NOCHK# -D " + chainName + "-wifi-lan -m owner --uid-owner " + uid + action);
+        cmds.add("-A " + chainName + "-wifi-lan -m owner --uid-owner " + uid + action);
     }
 
     public static String getSpecialAppName(int uid) {
+        // First, try special apps (AFWall+ specific entries)
         List<PackageInfoData> packageInfoData = getSpecialData();
         for (PackageInfoData infoData : packageInfoData) {
             if (infoData.uid == uid) {
                 return infoData.names.get(0);
             }
         }
-        return ctx.getString(R.string.unknown_item);
+        
+        // If not found in special apps, use comprehensive UID resolver
+        return UidResolver.resolveUid(ctx, uid);
     }
 
 
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
-        /*FIXME: Adding custom rules might increase the time */
         Log.i(TAG, "Applying custom rules");
-        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
         String chainName = getThreadSafeChainName();
-        addInterfaceRouting(ctx, cmds, ipv6, chainName);
+        // Pass the current LAN UID list so fastApply also rebuilds the -wifi-lan chain,
+        // keeping LAN access self-healing across network-change routing refreshes.
+        List<Integer> lanList = getDataSet().lanList;
+        addInterfaceRouting(ctx, cmds, ipv6, chainName, lanList);
         Log.i(TAG, "Setting OUTPUT chain to ACCEPT");
         cmds.add("-P OUTPUT ACCEPT");
     }
@@ -753,13 +1085,14 @@ public final class Api {
             cmds.add("-P OUTPUT DROP");
 
             // Create and flush all chains first to ensure they exist
+            // Use NOCHK to avoid errors if chain already exists, then flush to ensure clean state
             for (String s : staticChains) {
                 cmds.add("#NOCHK# -N " + chainName + s);
-                cmds.add("-F " + chainName + s);
+                cmds.add("#NOCHK# -F " + chainName + s);
             }
             for (String s : dynChains) {
                 cmds.add("#NOCHK# -N " + chainName + s);
-                cmds.add("-F " + chainName + s);
+                cmds.add("#NOCHK# -F " + chainName + s);
             }
             
 
@@ -782,17 +1115,34 @@ public final class Api {
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
-            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds);
+            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
+
+            // Loopback is self-device traffic, not LAN or WAN. Keep it out of
+            // the LAN split chains so local app services continue to work when
+            // LAN control is enabled in either firewall mode.
+            cmds.add("-A " + chainName + " -o lo -j RETURN");
+            if (G.enableInbound()) {
+                cmds.add("-A " + chainName + "-input -i lo -j RETURN");
+            }
 
             cmds.add("-A " + chainName + "-3g -j " + chainName + "-3g-postcustom");
             cmds.add("-A " + chainName + "-wifi -j " + chainName + "-wifi-postcustom");
             addRejectRules(cmds, chainName);
+            if (ipv6) {
+                addIpv6ControlTrafficRules(cmds, chainName);
+            }
 
             if (G.enableInbound()) {
                 // we don't have any rules in the INPUT chain prohibiting inbound traffic, but
                 // local processes can't reply to half-open connections without this rule
                 cmds.add("-A " + chainName + " -m state --state ESTABLISHED -j RETURN");
                 cmds.add("-A " + chainName + "-input -m state --state ESTABLISHED -j RETURN");
+            }
+
+            // Tor must redirect before interface chains so redirected traffic is not
+            // rejected as plain Wi-Fi/mobile before reaching the local Orbot ports.
+            if (G.enableTor()) {
+                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
             }
 
             addInterfaceRouting(ctx, cmds, ipv6, chainName);
@@ -819,6 +1169,13 @@ public final class Api {
                 }
             }
 
+            /*if (G.enableLAN()) {
+                // Allow all Android system UIDs (0-9999) on loopback unconditionally
+                cmds.add("-A " + chainName + " -o lo -m owner --uid-owner 0:9999 -j RETURN");
+                // Route remaining loopback traffic through the LAN chain for per-app control
+                cmds.add("-A " + chainName + " -o lo -j " + chainName + "-wifi-lan");
+            }*/
+
             for (final String itf : ITFS_WIFI) {
                 cmds.add("#NOCHK# -A " + chainName + " -o " + itf + " -j " + chainName + "-wifi");
             }
@@ -836,6 +1193,7 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-wifi-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-wifi-tether", action);
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-wifi-tether", "-p tcp --sport=53" + action);
@@ -846,13 +1204,15 @@ public final class Api {
             if (containsUidOrAny(ruleDataSet.wifiList, SPECIAL_UID_TETHER) || containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to USB tethered client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-usb-tether", "-p udp --sport=67 --dport=68" + action);
-                // DNS replies to USB tethered client  
+                addTetherDhcpReplyRule(cmds, chainName + "-usb-tether", action);
+                // DNS replies to USB tethered client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-usb-tether", "-p tcp --sport=53" + action);
             }
             if (containsUidOrAny(ruleDataSet.tetherList, SPECIAL_UID_TETHER)) {
                 // DHCP replies to client
                 addRuleForUsers(cmds, users_dhcp, "-A " + chainName + "-tether", "-p udp --sport=67 --dport=68" + action);
+                addTetherDhcpReplyRule(cmds, chainName + "-tether", action);
                 // DNS replies to client
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p udp --sport=53" + action);
                 addRuleForUsers(cmds, users_dns, "-A " + chainName + "-tether", "-p tcp --sport=53" + action);
@@ -878,7 +1238,7 @@ public final class Api {
             // on the LAN - use specific DNS servers instead of opening to all LAN hosts
             if (whitelist) {
                 // Add rules for specific DNS servers instead of all LAN hosts
-                addDnsServerRules(cmds, cfg, chainName + "-wifi-lan", false);
+                addDnsServerRules(cmds, cfg, chainName + "-wifi-lan", ipv6);
                 
                 // Fallback: if no specific DNS servers found, use the old broad rule
                 if (cfg.dnsServersV4.isEmpty() && cfg.dnsServersV6.isEmpty()) {
@@ -909,16 +1269,13 @@ public final class Api {
             addRulesForUidlist(cmds, ruleDataSet.lanList, chainName + "-wifi-lan", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.vpnList, chainName + "-vpn", whitelist);
             addRulesForUidlist(cmds, ruleDataSet.tetherList, chainName + "-tether", whitelist);
-            if (G.enableTor()) {
-                addTorRules(cmds, ruleDataSet.torList, whitelist, ipv6, chainName);
-            }
+
             cmds.add("-P OUTPUT ACCEPT");
         } catch (Exception e) {
             Log.e(e.getClass().getName(), e.getMessage(), e);
         }
 
         iptablesCommands(cmds, out, ipv6);
-        Log.i(TAG, "Total # of rules for " + (ipv6 ? "v6": "v4") + " " + cmds.size());
         return true;
     }
 
@@ -943,8 +1300,9 @@ public final class Api {
         String ipPath = getBinaryPath(G.ctx, ipv6);
 
         String waitTime = "";
-        if(G.ip_path().equals("system") && G.addDelay()) {
-            waitTime = " -w 1";
+        if(G.ip_path().equals("system")) {
+            // Always use wait flag with system iptables to prevent lock contention
+            waitTime = " -w 5";
         }
         boolean firstLit = true;
         for (String s : in) {
@@ -1004,54 +1362,126 @@ public final class Api {
         }
     }
 
+    private static void completeRootCommandFailure(Context ctx, RootCommand callback, String command, Throwable throwable) {
+        if (callback == null || callback.done) {
+            return;
+        }
+        callback.lastCommand = command;
+        if (throwable != null && throwable.getMessage() != null) {
+            callback.lastCommandResult = new StringBuilder(throwable.getMessage());
+        }
+        callback.exitCode = 1;
+        callback.done = true;
+        if (ctx != null && callback.failureToast != RootShellService.NO_TOAST) {
+            sendToastBroadcast(ctx.getApplicationContext(), ctx.getString(callback.failureToast));
+        }
+        if (callback.cb != null) {
+            callback.cb.cbFunc(callback);
+        }
+    }
+
+    // Wrap the caller-supplied callback so that globalStatus and the up-to-date flag are only
+    // reset once the entire (IPv4 + IPv6) command sequence has actually finished. Without this,
+    // the synchronous apply path used to clear globalStatus immediately after submission while
+    // the async root batches were still running.
+    private static RootCommand wrapApplyCompletionCallback(RootCommand callback) {
+        final RootCommand completionCallback = callback == null ? new RootCommand() : callback;
+        final RootCommand.Callback originalCallback = completionCallback.cb;
+        completionCallback.setCallback(new RootCommand.Callback() {
+            @Override
+            public void cbFunc(RootCommand state) {
+                try {
+                    if (originalCallback != null) {
+                        originalCallback.cbFunc(state);
+                    }
+                } finally {
+                    synchronized (GLOBAL_STATUS_LOCK) {
+                        globalStatus = false;
+                        setRulesUpToDate(state.exitCode == 0);
+                    }
+                }
+            }
+        });
+        return completionCallback;
+    }
+
+    private static RootCommand newIntermediateApplyCommand(RootCommand finalCallback) {
+        return new RootCommand()
+                .setFailureToast(finalCallback.failureToast)
+                .setReopenShell(finalCallback.reopenShell);
+    }
+
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
             if(!globalStatus) {
-                Log.i(TAG, "Using applySavedIptablesRules");
                 globalStatus = true;
-                
+                final RootCommand completionCallback = wrapApplyCompletionCallback(callback);
+
                 try {
+                    Log.i(TAG, "Starting full firewall rules apply");
                     RuleDataSet dataSet = getDataSet();
                     List<String> ipv4cmds = new ArrayList<>();
                     List<String> ipv6cmds = new ArrayList<>();
-                    
+
                     // Create thread-safe chain name for this execution
                     final String chainName = getThreadSafeChainName();
-                    
-                    // Apply IPv4 rules first (sequentially)
+
+                    // Apply IPv4 rules first. When IPv6 is enabled, wait for IPv4
+                    // completion before starting IPv6 so the apply dialog and final
+                    // callback represent the entire ruleset, not only IPv4.
                     try {
                         Log.i(TAG, "Applying IPv4 rules");
                         applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName);
-                        applySavedIp4tablesRules(ctx, ipv4cmds, callback);
-                        Log.i(TAG, "Successfully applied IPv4 rules");
+                        if (G.enableIPv6()) {
+                            final List<String> finalIpv6cmds = ipv6cmds;
+                            RootCommand ipv4Callback = newIntermediateApplyCommand(completionCallback)
+                                    .setCallback(new RootCommand.Callback() {
+                                        @Override
+                                        public void cbFunc(RootCommand state) {
+                                            if (state.exitCode != 0) {
+                                                completionCallback.cb.cbFunc(state);
+                                                return;
+                                            }
+                                            try {
+                                                Log.i(TAG, "Applying IPv6 rules");
+                                                applyIptablesRulesImpl(ctx, dataSet, showErrors, finalIpv6cmds, true, chainName);
+                                                if (applySavedIp6tablesRules(ctx, finalIpv6cmds, completionCallback)) {
+                                                    Log.i(TAG, "Submitted IPv6 rule commands");
+                                                } else {
+                                                    completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", null);
+                                                }
+                                            } catch (Exception e) {
+                                                Log.e(TAG, "Error applying IPv6 rules", e);
+                                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", e);
+                                            }
+                                        }
+                                    });
+                            if (applySavedIp4tablesRules(ctx, ipv4cmds, ipv4Callback)) {
+                                Log.i(TAG, "Submitted IPv4 rule commands");
+                            } else {
+                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
+                            }
+                        } else {
+                            if (applySavedIp4tablesRules(ctx, ipv4cmds, completionCallback)) {
+                                Log.i(TAG, "Submitted IPv4 rule commands");
+                            } else {
+                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
+                            }
+                        }
                     } catch (Exception e) {
                         Log.e(TAG, "Error applying IPv4 rules", e);
                         throw new RuntimeException(e);
                     }
 
-                    // Apply IPv6 rules second (sequentially after IPv4)
-                    if (G.enableIPv6()) {
-                        try {
-                            Log.i(TAG, "Applying IPv6 rules");
-                            applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true, chainName);
-                            applySavedIp6tablesRules(ctx, ipv6cmds, new RootCommand());
-                            Log.i(TAG, "Successfully applied IPv6 rules");
-                        } catch (Exception e) {
-                            Log.e(TAG, "Error applying IPv6 rules", e);
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    
-                    Log.i(TAG, "Successfully applied all firewall rules");
+                    Log.i(TAG, "Submitted firewall rule command sequence");
 
                 } catch (Exception e) {
                     Log.e(TAG, "Error applying rules", e);
-                } finally {
-                    globalStatus = false;
-                    setRulesUpToDate(true);
+                    completeRootCommandFailure(ctx, completionCallback, "applySavedIptablesRules", e);
                 }
             } else {
                 Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
+                completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", null);
             }
         }
     }
@@ -1068,8 +1498,19 @@ public final class Api {
         final String savedPkg_lan_uid = G.pPrefs.getString(PREF_LAN_PKG_UIDS, "");
         final String savedPkg_tor_uid = G.pPrefs.getString(PREF_TOR_PKG_UIDS, "");
 
-        return new RuleDataSet(getListFromPref(savedPkg_wifi_uid),
-                getListFromPref(savedPkg_3g_uid),
+
+        List<Integer> wifiList = getListFromPref(savedPkg_wifi_uid);
+        List<Integer> dataList = getListFromPref(savedPkg_3g_uid);
+        
+        
+        // Warn if no applications are configured - this means no blocking will occur
+        if (wifiList.isEmpty() && dataList.isEmpty()) {
+            Log.w(TAG, "WARNING: No applications configured for firewall rules - firewall will not block any traffic!");
+            Log.w(TAG, "Please configure applications in AFWall+ main screen and apply rules.");
+        }
+        
+        return new RuleDataSet(wifiList,
+                dataList,
                 getListFromPref(savedPkg_roam_uid),
                 getListFromPref(savedPkg_vpn_uid),
                 getListFromPref(savedPkg_tether_uid),
@@ -1090,12 +1531,18 @@ public final class Api {
             return false;
         }
         try {
-            Log.i(TAG, "Using applySaved4IptablesRules");
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
             return true;
         } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
+            Log.e(TAG, "Exception while applying IPv4 rules: " + e.getMessage(), e);
+            // Only apply default chains if it's a critical failure
+            // Avoid overriding user chain preferences unnecessarily
+            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
+                Log.w(TAG, "Applying default chains due to rule application failure");
+                applyDefaultChains(ctx, callback);
+            } else {
+                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
+            }
             return false;
         }
     }
@@ -1106,12 +1553,18 @@ public final class Api {
             return false;
         }
         try {
-            Log.i(TAG, "Using applySavedIp6tablesRules");
             callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
             return true;
         } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
+            Log.e(TAG, "Exception while applying IPv6 rules: " + e.getMessage(), e);
+            // Only apply default chains if it's a critical failure
+            // Avoid overriding user chain preferences unnecessarily
+            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
+                Log.w(TAG, "Applying default chains due to rule application failure");
+                applyDefaultChains(ctx, callback);
+            } else {
+                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
+            }
             return false;
         }
     }
@@ -1137,8 +1590,15 @@ public final class Api {
                     callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
             }
         } catch (Exception e) {
-            Log.d(TAG, "Exception while applying rules: " + e.getMessage());
-            applyDefaultChains(ctx, callback);
+            Log.e(TAG, "Exception in fastApply: " + e.getMessage(), e);
+            // Only apply default chains if it's a critical failure
+            // Avoid overriding user chain preferences unnecessarily
+            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
+                Log.w(TAG, "Applying default chains due to fastApply failure");
+                applyDefaultChains(ctx, callback);
+            } else {
+                Log.w(TAG, "Skipping default chains application in fastApply to preserve user chain preferences");
+            }
         }
         setRulesUpToDate(true);
         return true;
@@ -1288,9 +1748,50 @@ public final class Api {
         }
 
         addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
-
+        
+        // Execute the purge commands and call the callback
+        Log.i(TAG, "Executing purge commands for IPv4");
+        cmds.addAll(cmdsv4);
+        iptablesCommands(cmds, out, false);
+        
+        if (G.enableIPv6()) {
+            Log.i(TAG, "Executing purge commands for IPv6");
+            List<String> cmdsv6 = new ArrayList<>();
+            for (String s : staticChains) {
+                cmdsv6.add("-F " + chainName + s);
+            }
+            for (String s : dynChains) {
+                cmdsv6.add("-F " + chainName + s);
+            }
+            cmdsv6.add("#NOCHK# -D OUTPUT -j " + chainName);
+            cmdsv6.add("-P OUTPUT ACCEPT");
+            if (G.enableInbound()) {
+                cmdsv6.add("-D INPUT -j " + chainName + "-input");
+            }
+            iptablesCommands(cmdsv6, out, true);
+        }
+        
+        Log.i(TAG, "Purge completed, calling callback");
+        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
     
+    private static void addTetherDhcpReplyRule(List<String> cmds, String chain, String action) {
+        // dnsmasq can run under device-specific app UIDs, so the special tethering entry
+        // must allow DHCP replies by port instead of relying only on a fixed UID list.
+        cmds.add("-A " + chain + " -p udp --sport=67 --dport=68" + action);
+    }
+
+    private static void addIpv6ControlTrafficRules(List<String> cmds, String chainName) {
+        // IPv6 connectivity depends on router and neighbor discovery before app UID rules match.
+        String[] icmpv6Types = {"133", "134", "135", "136"};
+        for (String type : icmpv6Types) {
+            cmds.add("-A " + chainName + " -p ipv6-icmp --icmpv6-type " + type + " -j RETURN");
+            if (G.enableInbound()) {
+                cmds.add("-A " + chainName + "-input -p ipv6-icmp --icmpv6-type " + type + " -j RETURN");
+            }
+        }
+    }
+
     /**
      * Add DNS-specific iptables rules for identified DNS servers instead of broad LAN access
      */
@@ -1437,60 +1938,51 @@ public final class Api {
      * @param callback Callback for completion status
      */
     public static void runIfconfig(Context ctx, RootCommand callback) {
-        // Android 16+ fallback: try system ifconfig first, then busybox
-        if (Build.VERSION.SDK_INT >= 35) { // Android 16+
-            callback.run(ctx, "ifconfig -a || " + getBusyBoxPath(ctx, true) + " ifconfig -a");
-        } else {
-            callback.run(ctx, getBusyBoxPath(ctx, true) + " ifconfig -a");
-        }
+        // Try system ifconfig first, then busybox for all versions
+        callback.run(ctx, "ifconfig -a || " + getBusyBoxPath(ctx, true) + " ifconfig -a");
     }
 
     public static void runNetworkInterface(Context ctx, RootCommand callback) {
-        // Android 16+ fallback: try multiple methods for network interface detection
-        if (Build.VERSION.SDK_INT >= 35) { // Android 16+
-            // First try Android API method as fallback
-            try {
-                StringBuilder result = new StringBuilder();
-                java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
-                while (interfaces.hasMoreElements()) {
-                    java.net.NetworkInterface networkInterface = interfaces.nextElement();
-                    result.append(networkInterface.getName()).append("\n");
-                }
-                if (result.length() > 0) {
-                    // Create a mock RootCommand with API results
-                    RootCommand apiResult = new RootCommand();
-                    apiResult.res = result;
-                    apiResult.exitCode = 0;
-                    apiResult.done = true;
-                    if (callback.cb != null) {
-                        callback.cb.cbFunc(apiResult);
-                    }
-                    return;
-                }
-            } catch (Exception e) {
-                Log.d(TAG, "Android API network interface detection failed: " + e.getMessage());
+        // Try Android API method first for all versions
+        try {
+            StringBuilder result = new StringBuilder();
+            java.util.Enumeration<java.net.NetworkInterface> interfaces = java.net.NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                java.net.NetworkInterface networkInterface = interfaces.nextElement();
+                result.append(networkInterface.getName()).append("\n");
             }
-            
-            // Fallback to shell commands
-            String cmd = "ls /sys/class/net 2>/dev/null || " + 
-                        getBusyBoxPath(ctx, true) + " ls /sys/class/net 2>/dev/null || " +
-                        "ip link show 2>/dev/null";
-            callback.run(ctx, cmd);
-        } else {
-            callback.run(ctx, getBusyBoxPath(ctx, true) + " ls /sys/class/net");
+            if (result.length() > 0) {
+                // Create a mock RootCommand with API results
+                RootCommand apiResult = new RootCommand();
+                apiResult.res = result;
+                apiResult.exitCode = 0;
+                apiResult.done = true;
+                if (callback.cb != null) {
+                    callback.cb.cbFunc(apiResult);
+                }
+                return;
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Android API network interface detection failed: " + e.getMessage());
         }
+        
+        // Fallback to shell commands with multiple options
+        String cmd = "ls /sys/class/net 2>/dev/null || " + 
+                    getBusyBoxPath(ctx, true) + " ls /sys/class/net 2>/dev/null || " +
+                    "ip link show 2>/dev/null";
+        callback.run(ctx, cmd);
     }
 
 
     public static void fixFolderPermissionsAsync(Context mContext) {
         AsyncTask.execute(() -> {
             try {
-                mContext.getFilesDir().setExecutable(true, false);
-                mContext.getFilesDir().setReadable(true, false);
+                mContext.getFilesDir().setExecutable(true, true);
+                mContext.getFilesDir().setReadable(true, true);
                 File sharedPrefsFolder = new File(mContext.getFilesDir().getAbsolutePath()
                         + "/../shared_prefs");
-                sharedPrefsFolder.setExecutable(true, false);
-                sharedPrefsFolder.setReadable(true, false);
+                sharedPrefsFolder.setExecutable(true, true);
+                sharedPrefsFolder.setReadable(true, true);
             } catch (Exception e) {
                 Log.e(Api.TAG, e.getMessage(), e);
             }
@@ -1574,7 +2066,14 @@ public final class Api {
                 pkgManagerFlags |= PackageManager.GET_UNINSTALLED_PACKAGES;
             }
             PackageManager pkgmanager = ctx.getPackageManager();
+            // Load the app list purely through PackageManager. The previous root-shell
+            // supplementation ("pm list packages -U" + per-package dumpsys INTERNET checks)
+            // made every scan run dozens of shell round-trips, which dominated load time.
             List<ApplicationInfo> installed = pkgmanager.getInstalledApplications(pkgManagerFlags);
+            if (appList != null) {
+                appList.doMaxProgress(installed.size());
+            }
+
             SparseArray<PackageInfoData> syncMap = new SparseArray<>();
             Editor edit = cachePrefs.edit();
             boolean changed = false;
@@ -1589,8 +2088,11 @@ public final class Api {
 
             SparseArray<PackageInfoData> multiUserAppsMap = new SparseArray<>();
             HashMap<Integer, String> packagesForUser = new HashMap<>();
+            HashMap<Integer, String> profileMarkers = new HashMap<>();
+            HashMap<String, Boolean> internetPermissionCache = new HashMap<>();
             if(G.supportDual()) {
-                packagesForUser  = getPackagesForUser(listOfUids);
+                packagesForUser = getPackagesForUser(listOfUids);
+                profileMarkers = getUserProfileMarkers(listOfUids);
             }
 
             for (int i = 0; i < installed.size(); i++) {
@@ -1613,7 +2115,12 @@ public final class Api {
                 name = prefs.getString(cachekey, "");
                 if (name.length() == 0 || isRecentlyInstalled(apinfo.packageName)) {
                     // get label and put on cache
-                    name = pkgmanager.getApplicationLabel(apinfo).toString();
+                    try {
+                        name = pkgmanager.getApplicationLabel(apinfo).toString();
+                    } catch (Exception e) {
+                        // For apps invisible to PackageManager, use package name as label
+                        name = apinfo.packageName;
+                    }
                     edit.putString(cachekey, name);
                     changed = true;
                     firstseen = true;
@@ -1621,7 +2128,21 @@ public final class Api {
                 if (app == null) {
                     app = new PackageInfoData();
                     app.uid = apinfo.uid;
-                    app.installTime = new File(apinfo.sourceDir).lastModified();
+
+                    // Handle null sourceDir to prevent NullPointerException
+                    if (apinfo.sourceDir != null) {
+                        app.installTime = new File(apinfo.sourceDir).lastModified();
+                    } else {
+                        // Try to get install time from PackageInfo as fallback
+                        try {
+                            PackageInfo pkgInfo = pkgmanager.getPackageInfo(apinfo.packageName, 0);
+                            app.installTime = pkgInfo.firstInstallTime;
+                        } catch (PackageManager.NameNotFoundException e) {
+                            // Shell-discovered apps invisible to PackageManager — use 0
+                            app.installTime = 0;
+                        }
+                    }
+
                     app.names = new ArrayList<String>();
                     app.names.add(name);
                     app.appinfo = apinfo;
@@ -1663,11 +2184,14 @@ public final class Api {
                     app.selected_tor = true;
                 }
                 if (G.supportDual()) {
-                    checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, multiUserAppsMap);
+                    checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, profileMarkers, multiUserAppsMap);
                 }
             }
 
             if (G.supportDual()) {
+                addProfileOnlyPackages(pkgmanager, packagesForUser, profileMarkers, syncMap,
+                        selected_wifi, selected_3g, selected_roam, selected_vpn,
+                        selected_tether, selected_lan, selected_tor, internetPermissionCache);
                 //run through multi user map
                 for (int i = 0; i < multiUserAppsMap.size(); i++) {
                     app = multiUserAppsMap.valueAt(i);
@@ -1746,7 +2270,12 @@ public final class Api {
         } catch (Exception e) {
             Log.i(TAG, "Exception in getting app list", e);
         }
-        return new ArrayList<>();
+        // Never leave the cache null after a run, otherwise UI callers that route a
+        // cold cache to the async loader could loop on a persistent scan failure.
+        if (applications == null) {
+            applications = Collections.synchronizedList(new ArrayList<PackageInfoData>());
+        }
+        return applications;
     }
 
    /* public boolean isSuPackage(PackageManager pm, String suPackage) {
@@ -1789,30 +2318,30 @@ public final class Api {
         return specialData;
     }
 
-    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1, HashMap<Integer,String> pkgs, SparseArray<PackageInfoData> syncMap) {
+    private static void checkPartOfMultiUser(ApplicationInfo apinfo, String name, List<Integer> uid1,
+                                             HashMap<Integer, String> pkgs,
+                                             HashMap<Integer, String> profileMarkers,
+                                             SparseArray<PackageInfoData> syncMap) {
         try {
             for (Integer integer : uid1) {
-                int appUid = Integer.parseInt(integer + "" + apinfo.uid + "");
-                try{
-                    //String[] pkgs = pkgmanager.getPackagesForUid(appUid);
+                int appUid = UidResolver.createMultiUserUid(integer, UidResolver.getAppId(apinfo.uid));
+                try {
                     if (packagesExistForUserUid(pkgs, appUid)) {
                         PackageInfoData app = new PackageInfoData();
                         app.uid = appUid;
-                        app.installTime = new File(apinfo.sourceDir).lastModified();
+                        app.installTime = getInstallTime(null, apinfo, apinfo.packageName);
                         app.names = new ArrayList<String>();
-                        app.names.add(name + "(M)");
+                        app.names.add(name + getProfileMarker(profileMarkers, integer));
                         app.appinfo = apinfo;
                         if (app.appinfo != null && (app.appinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                            //user app
                             app.appType = 1;
                         } else {
-                            //system app
                             app.appType = 0;
                         }
                         app.pkgName = apinfo.packageName;
                         syncMap.put(appUid, app);
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     Log.e(TAG, e.getMessage(), e);
                 }
             }
@@ -1821,30 +2350,180 @@ public final class Api {
         }
     }
 
-    private static boolean packagesExistForUserUid(HashMap<Integer,String> pkgs, int appUid) {
-        if(pkgs.containsKey(appUid)){
-            return true;
-        }
-        return false;
+    private static boolean packagesExistForUserUid(HashMap<Integer, String> pkgs, int appUid) {
+        return pkgs != null && pkgs.containsKey(appUid);
     }
 
     public static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {
-        HashMap<Integer,String> listApps = new HashMap<>();
-        for(Integer integer: userProfile) {
-            Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
-            List<String> out = result.getOut();
-            Matcher matcher;
-            for (String item : out) {
-                matcher = dual_pattern.matcher(item);
-                if (matcher.find() && matcher.groupCount() > 0) {
-                    String packageName = matcher.group(1);
-                    String packageId = matcher.group(2);
-                    Log.i(TAG, packageId + " " + packageName);
-                    listApps.put(Integer.parseInt(packageId), packageName);
+        HashMap<Integer, String> listApps = new HashMap<>();
+        for (Integer integer : userProfile) {
+            try {
+                Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
+                List<String> out = result.getOut();
+                Matcher matcher;
+                int userPackageCount = 0;
+                for (String item : out) {
+                    matcher = dual_pattern.matcher(item);
+                    if (matcher.find() && matcher.groupCount() > 0) {
+                        String packageName = matcher.group(1);
+                        String packageId = matcher.group(2);
+                        listApps.put(Integer.parseInt(packageId), packageName);
+                        userPackageCount++;
+                    }
                 }
+                Log.i(TAG, "Discovered " + userPackageCount + " package(s) for user " + integer);
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                Log.w(TAG, "Package listing rejected for user " + integer + ": " + e.getMessage());
+                break;
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to list packages for user " + integer + ": " + e.getMessage());
             }
         }
-        return listApps.size() > 0 ? listApps : null;
+        return listApps;
+    }
+
+    private static void addProfileOnlyPackages(PackageManager pkgmanager,
+                                               HashMap<Integer, String> packagesForUser,
+                                               HashMap<Integer, String> profileMarkers,
+                                               SparseArray<PackageInfoData> syncMap,
+                                               List<Integer> selectedWifi,
+                                               List<Integer> selected3g,
+                                               List<Integer> selectedRoam,
+                                               List<Integer> selectedVpn,
+                                               List<Integer> selectedTether,
+                                               List<Integer> selectedLan,
+                                               List<Integer> selectedTor,
+                                               HashMap<String, Boolean> internetPermissionCache) {
+        if (packagesForUser == null || packagesForUser.isEmpty()) {
+            return;
+        }
+        int addedPackages = 0;
+        for (Map.Entry<Integer, String> entry : packagesForUser.entrySet()) {
+            int uid = entry.getKey();
+            String packageName = entry.getValue();
+            // Already discovered via PackageManager in the main scan — skip.
+            if (syncMap.get(uid) != null || packageName == null || packageName.trim().isEmpty()) {
+                continue;
+            }
+            if (!showAllApps() && !hasInternetPermission(pkgmanager, packageName, internetPermissionCache)) {
+                continue;
+            }
+            ApplicationInfo apinfo = getApplicationInfoForPackage(pkgmanager, packageName, uid);
+            PackageInfoData app = new PackageInfoData();
+            app.uid = uid;
+            app.installTime = getInstallTime(pkgmanager, apinfo, packageName);
+            app.names = new ArrayList<String>();
+            app.names.add(getApplicationLabel(pkgmanager, apinfo, packageName)
+                    + getProfileMarker(profileMarkers, UidResolver.getUserId(uid)));
+            app.appinfo = apinfo;
+            app.appType = (apinfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0 ? 1 : 0;
+            app.pkgName = packageName;
+            // Apply selection state using the same sorted-list binary-search pattern as the main scan.
+            if (Collections.binarySearch(selectedWifi, uid) >= 0) app.selected_wifi = true;
+            if (Collections.binarySearch(selected3g, uid) >= 0) app.selected_3g = true;
+            if (G.enableRoam() && Collections.binarySearch(selectedRoam, uid) >= 0) app.selected_roam = true;
+            if (G.enableVPN() && Collections.binarySearch(selectedVpn, uid) >= 0) app.selected_vpn = true;
+            if (G.enableTether() && Collections.binarySearch(selectedTether, uid) >= 0) app.selected_tether = true;
+            if (G.enableLAN() && Collections.binarySearch(selectedLan, uid) >= 0) app.selected_lan = true;
+            if (G.enableTor() && Collections.binarySearch(selectedTor, uid) >= 0) app.selected_tor = true;
+            syncMap.put(uid, app);
+            addedPackages++;
+        }
+        if (addedPackages > 0) {
+            Log.i(TAG, "Added " + addedPackages + " profile-only package(s) to app list");
+        }
+    }
+
+    private static ApplicationInfo getApplicationInfoForPackage(PackageManager pkgmanager,
+                                                                String packageName, int uid) {
+        try {
+            ApplicationInfo apinfo = pkgmanager.getApplicationInfo(packageName,
+                    PackageManager.GET_META_DATA | PackageManager.GET_UNINSTALLED_PACKAGES);
+            apinfo.uid = uid;
+            return apinfo;
+        } catch (Exception ignored) {
+            ApplicationInfo apinfo = new ApplicationInfo();
+            apinfo.packageName = packageName;
+            apinfo.uid = uid;
+            // Profile-only packages can be invisible to PackageManager — keep a minimal
+            // entry so firewall rules can still target the pm-reported UID.
+            apinfo.flags = ApplicationInfo.FLAG_INSTALLED;
+            return apinfo;
+        }
+    }
+
+    private static boolean hasInternetPermission(PackageManager pkgmanager, String packageName,
+                                                 HashMap<String, Boolean> internetPermissionCache) {
+        try {
+            if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(
+                    Manifest.permission.INTERNET, packageName)) {
+                if (internetPermissionCache != null) internetPermissionCache.put(packageName, true);
+                return true;
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "PackageManager permission check failed for " + packageName + ": " + e.getMessage());
+        }
+        return hasInternetPermissionViaShell(packageName, internetPermissionCache);
+    }
+
+    private static String getApplicationLabel(PackageManager pkgmanager,
+                                              ApplicationInfo apinfo, String packageName) {
+        try {
+            return pkgmanager.getApplicationLabel(apinfo).toString();
+        } catch (Exception ignored) {
+            return packageName;
+        }
+    }
+
+    private static long getInstallTime(PackageManager pkgmanager, ApplicationInfo apinfo,
+                                       String packageName) {
+        if (apinfo != null && apinfo.sourceDir != null) {
+            return new File(apinfo.sourceDir).lastModified();
+        }
+        if (pkgmanager != null) {
+            try {
+                return pkgmanager.getPackageInfo(packageName, 0).firstInstallTime;
+            } catch (Exception ignored) {
+            }
+        }
+        return 0;
+    }
+
+    private static HashMap<Integer, String> getUserProfileMarkers(List<Integer> userProfile) {
+        HashMap<Integer, String> profileMarkers = new HashMap<>();
+        for (Integer userId : userProfile) {
+            profileMarkers.put(userId, "(M)");
+        }
+        try {
+            Shell.Result result = Shell.cmd("pm list users").exec();
+            Pattern userInfoPattern = Pattern.compile("UserInfo\\{(\\d+):([^:}]*)");
+            for (String line : result.getOut()) {
+                Matcher matcher = userInfoPattern.matcher(line);
+                if (matcher.find()) {
+                    int userId = Integer.parseInt(matcher.group(1));
+                    if (profileMarkers.containsKey(userId)) {
+                        profileMarkers.put(userId, markerForProfileName(matcher.group(2)));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to label user profiles: " + e.getMessage());
+        }
+        return profileMarkers;
+    }
+
+    private static String markerForProfileName(String profileName) {
+        String name = profileName == null ? "" : profileName.toLowerCase(Locale.US);
+        if (name.contains("work")) return "(W)";
+        if (name.contains("private")) return "(P)";
+        return "(M)";
+    }
+
+    private static String getProfileMarker(HashMap<Integer, String> profileMarkers, int userId) {
+        if (profileMarkers != null && profileMarkers.containsKey(userId)) {
+            return profileMarkers.get(userId);
+        }
+        return "(M)";
     }
 
     private static boolean isRecentlyInstalled(String packageName) {
@@ -1968,13 +2647,28 @@ public final class Api {
         }
 
         try {
-            returnCode = new RunCommand().execute(script, res, ctx).get();
+            RunCommand runCommand = new RunCommand();
+            returnCode = runCommand.execute(script, res, ctx).get();
         } catch (RejectedExecutionException r) {
-            Log.e(TAG, "runScript failed: " + r.getLocalizedMessage());
+            Log.w(TAG, "Shell execution rejected, likely due to app shutdown: " + r.getLocalizedMessage());
+            returnCode = -1;
         } catch (InterruptedException e) {
-            Log.e(TAG, "Caught InterruptedException");
+            Log.w(TAG, "Shell execution was interrupted: " + e.getLocalizedMessage());
+            Thread.currentThread().interrupt(); // Restore interrupted status
+            returnCode = -1;
+        } catch (java.util.concurrent.ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof java.io.InterruptedIOException) {
+                Log.w(TAG, "Shell execution interrupted (IO): " + cause.getMessage());
+            } else if (cause instanceof java.util.concurrent.RejectedExecutionException) {
+                Log.w(TAG, "Shell execution rejected in wrapped exception: " + cause.getMessage());
+            } else {
+                Log.e(TAG, "Shell execution failed with ExecutionException: " + e.getLocalizedMessage());
+            }
+            returnCode = -1;
         } catch (Exception e) {
-            Log.e(TAG, "runScript failed: " + e.getLocalizedMessage());
+            Log.e(TAG, "Unexpected error during shell execution: " + e.getLocalizedMessage());
+            returnCode = -1;
         }
 
         return returnCode;
@@ -1982,73 +2676,116 @@ public final class Api {
 
     private static boolean installBinary(Context ctx, int resId, String filename) {
         try {
-            File f = new File(ctx.getDir("bin", 0), filename);
+            File binDir = ctx.getDir("bin", 0);
+            File f = new File(binDir, filename);
+            
+            Log.d(TAG, "Installing binary: " + filename + " to " + f.getAbsolutePath());
+            
             if (f.exists()) {
-                f.delete();
+                Log.d(TAG, "Removing existing binary: " + filename);
+                if (!f.delete()) {
+                    Log.w(TAG, "Failed to delete existing binary: " + filename);
+                }
             }
+            
             copyRawFile(ctx, resId, f, "0755");
+            
+            // Verify the binary was installed correctly
+            if (!f.exists()) {
+                Log.e(TAG, "Binary installation failed - file does not exist: " + filename);
+                return false;
+            }
+            
+            if (!f.canExecute()) {
+                Log.w(TAG, "Binary installed but not executable: " + filename);
+                // Try to fix permissions manually
+                try {
+                    f.setExecutable(true, false);
+                    Log.d(TAG, "Fixed permissions for: " + filename);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to fix permissions for: " + filename + " - " + e.getMessage());
+                }
+            }
+            
+            Log.d(TAG, "Successfully installed binary: " + filename + 
+                  " (size: " + f.length() + " bytes, executable: " + f.canExecute() + ")");
             return true;
+            
         } catch (Exception e) {
-            Log.e(TAG, "installBinary failed: " + e.getLocalizedMessage());
+            Log.e(TAG, "installBinary failed for " + filename + ": " + e.getClass().getSimpleName() + 
+                  " - " + e.getLocalizedMessage(), e);
             return false;
         }
     }
 
-    private static boolean installBinariesX86() {
+    /**
+     * Install binary if the resource exists, using reflection to check for resource availability
+     * @param ctx Context
+     * @param resourceName Name of the resource (e.g., "busybox_arm64")  
+     * @param filename Target filename
+     * @return true if installed successfully or resource doesn't exist, false on installation error
+     */
+    private static boolean installBinaryIfExists(Context ctx, String resourceName, String filename) {
+        try {
+            // Use reflection to check if the resource exists
+            Class<?> rawClass = R.raw.class;
+            java.lang.reflect.Field field = rawClass.getDeclaredField(resourceName);
+            int resId = field.getInt(null);
+            
+            // Resource exists, try to install it
+            return installBinary(ctx, resId, filename);
+        } catch (NoSuchFieldException e) {
+            // Resource doesn't exist - this is expected when binaries are not yet added
+            Log.d(TAG, "Resource " + resourceName + " not found - this is expected if binary is not yet available");
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking/installing binary " + resourceName + ": " + e.getMessage());
+            return false;
+        }
+    }
+
+    private static boolean installBinariesX86(Context ctx) {
         if (!installBinary(ctx, R.raw.busybox_x86, "busybox")) return false;
         if (!installBinary(ctx, R.raw.iptables_x86, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_x86, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_x86, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_x86, "run_pie")) return false;
+        
+        
         return true;
     }
 
-    private static boolean installBinariesMips() {
-        if (!installBinary(ctx, R.raw.busybox_mips, "busybox")) return false;
-        if (!installBinary(ctx, R.raw.iptables_mips, "iptables")) return false;
-        if (!installBinary(ctx, R.raw.ip6tables_mips, "ip6tables")) return false;
-        if (!installBinary(ctx, R.raw.nflog_mips, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_mips, "run_pie")) return false;
+
+    private static boolean installBinariesArm64(Context ctx) {
+        if (!installBinary(ctx, R.raw.busybox_arm64, "busybox")) return false;
+        if (!installBinary(ctx, R.raw.iptables_arm64, "iptables")) return false;
+        if (!installBinary(ctx, R.raw.ip6tables_arm64, "ip6tables")) return false;
+        if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) return false;
+        
+
         return true;
     }
 
-    private static boolean installBinariesArm64() {
-        // ARM64 devices use system binaries for iptables/busybox, only install nflog
-        try {
-            if (!installBinary(ctx, R.raw.nflog_arm64, "nflog")) {
-                Log.e(TAG, "Failed to install ARM64 nflog binary");
-                return false;
-            }
-            Log.i(TAG, "Successfully installed ARM64 binaries");
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Error installing ARM64 binaries: " + e.getMessage());
-            return false;
-        }
-    }
-
-    private static boolean installBinariesArm() {
+    private static boolean installBinariesArm(Context ctx) {
         if (!installBinary(ctx, R.raw.busybox_arm, "busybox")) return false;
         if (!installBinary(ctx, R.raw.iptables_arm, "iptables")) return false;
         if (!installBinary(ctx, R.raw.ip6tables_arm, "ip6tables")) return false;
         if (!installBinary(ctx, R.raw.nflog_arm, "nflog")) return false;
-        //if (!installBinary(ctx, R.raw.run_pie_arm, "run_pie")) return false;
+        
+        
         return true;
     }
 
-    private static boolean installBinariesForAbi(String abi) {
+    private static boolean installBinariesForAbi(Context ctx, String abi) {
         if (abi.startsWith("x86")) {
-            return installBinariesX86();
-        } else if (abi.startsWith("mips")) {
-            return installBinariesMips();
+            return installBinariesX86(ctx);
         } else if (abi.startsWith("arm64")) {
-            return installBinariesArm64();
+            return installBinariesArm64(ctx);
         } else {
-            return installBinariesArm();
+            return installBinariesArm(ctx);
         }
     }
 
-    private static int getPackageVersion() {
+    private static int getPackageVersion(Context ctx) {
         try {
             return ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode;
         } catch (NameNotFoundException e) {
@@ -2065,6 +2802,9 @@ public final class Api {
         }
     }
 
+    // Static lock object for synchronizing binary installation
+    private static final Object BINARY_INSTALL_LOCK = new Object();
+    
     /**
      * Asserts that the binary files are installed in the cache directory.
      *
@@ -2073,19 +2813,30 @@ public final class Api {
      * @return false if the binary files could not be installed
      */
     public static boolean assertBinaries(Context ctx, boolean showErrors) {
+        synchronized (BINARY_INSTALL_LOCK) {
+        Log.d(TAG, "assertBinaries() called - Entry point");
 
-        int currentVer = getPackageVersion();
+        int currentVer = getPackageVersion(ctx);
+        boolean wasAlreadyInstalled = (G.appVersion() == currentVer);
+        Log.d(TAG, "assertBinaries() - currentVer=" + currentVer + ", storedVer=" + G.appVersion() + ", wasAlreadyInstalled=" + wasAlreadyInstalled);
 
-        if (G.appVersion() == currentVer) {
-            // The version hasn't changed: Use the previously installed binaries.
-            return true;
+        if (wasAlreadyInstalled) {
+            // The version hasn't changed: Check if binaries are still functional
+            Log.d(TAG, "assertBinaries() - Verifying existing binaries...");
+            if (verifyBinaries(ctx)) {
+                Log.d(TAG, "assertBinaries() - Verification passed, returning true (no reinstall needed)");
+                return true;
+            } else {
+                Log.w(TAG, "Binaries verification failed, forcing reinstallation");
+            }
         }
 
         String abi = getAbi();
 
-        Log.d(TAG, "Installing binaries for " + abi + "...");
+        Log.d(TAG, "Installing binaries for " + abi + " (currentVer=" + currentVer + 
+                  ", storedVer=" + G.appVersion() + ", wasAlreadyInstalled=" + wasAlreadyInstalled + ")...");
 
-        if (!installBinariesForAbi(abi))
+        if (!installBinariesForAbi(ctx, abi))
         {
             Log.e(TAG, "Installation of the binaries for " + abi + " failed!");
             toast(ctx, ctx.getString(R.string.error_binary), Toast.LENGTH_LONG);
@@ -2101,10 +2852,118 @@ public final class Api {
         }
 
         Log.d(TAG, "Installed binaries for " + abi + ".");
-        toast(ctx, ctx.getString(R.string.toast_bin_installed), Toast.LENGTH_SHORT);
+        
+        // Only show toast for actual new installations (not verification failures)
+        if (!wasAlreadyInstalled) {
+            Log.d(TAG, "New installation completed - showing toast");
+            toast(ctx, ctx.getString(R.string.toast_bin_installed), Toast.LENGTH_SHORT);
+        } else {
+            Log.d(TAG, "Binaries reinstalled (wasAlreadyInstalled=true) - no toast shown");
+        }
 
         G.appVersion(currentVer); // This indicates that the installation of the binaries for this version was successful.
 
+        return true;
+        } // End synchronized block
+    }
+
+    /**
+     * Force reinstallation of binaries regardless of version
+     *
+     * @param ctx Context
+     * @param showErrors indicates if errors should be alerted
+     * @return true if installation successful
+     */
+    public static boolean forceReinstallBinaries(Context ctx, boolean showErrors) {
+        Log.i(TAG, "Forcing binary reinstallation...");
+        
+        // Clear the version to force reinstallation
+        G.appVersion(-1);
+        
+        return assertBinaries(ctx, showErrors);
+    }
+
+    /**
+     * Verify that installed binaries are functional
+     *
+     * @param ctx Context
+     * @return true if binaries are functional, false if they need reinstallation
+     */
+    private static boolean verifyBinaries(Context ctx) {
+        Log.d(TAG, "verifyBinaries() called - Starting verification");
+        String dir = ctx.getDir("bin", 0).getAbsolutePath();
+        Log.d(TAG, "verifyBinaries() - Binary directory: " + dir);
+        
+        // Check if busybox exists and is executable
+        File busybox = new File(dir, "busybox");
+        boolean exists = busybox.exists();
+        boolean canExecute = busybox.canExecute();
+        boolean canRead = busybox.canRead();
+        long size = busybox.length();
+        Log.d(TAG, "verifyBinaries() - Checking busybox: exists=" + exists + ", canExecute=" + canExecute + ", canRead=" + canRead + ", size=" + size + " bytes");
+        if (!exists || !canExecute) {
+            Log.w(TAG, "Busybox binary missing or not executable");
+            return false;
+        }
+        
+        // Test busybox functionality by running a simple command
+        // Note: On modern Android, binaries in app private directories may not be executable
+        // from the app context, but they will work when executed with root privileges
+        try {
+            Log.d(TAG, "verifyBinaries() - Testing busybox functionality with 'echo test'");
+            ProcessBuilder pb = new ProcessBuilder(busybox.getAbsolutePath(), "echo", "test");
+            pb.environment().clear();
+            Process process = pb.start();
+            int exitCode = process.waitFor();
+            Log.d(TAG, "verifyBinaries() - Busybox test exitCode: " + exitCode);
+            
+            if (exitCode != 0) {
+                Log.w(TAG, "Busybox test command failed with exit code: " + exitCode);
+                return false;
+            }
+            
+            // Read and verify output
+            java.util.Scanner scanner = new java.util.Scanner(process.getInputStream());
+            if (scanner.hasNextLine()) {
+                String output = scanner.nextLine().trim();
+                Log.d(TAG, "verifyBinaries() - Busybox test output: '" + output + "'");
+                scanner.close();
+                if (!"test".equals(output)) {
+                    Log.w(TAG, "Busybox test output unexpected: " + output);
+                    return false;
+                }
+            } else {
+                scanner.close();
+                Log.w(TAG, "Busybox test produced no output");
+                return false;
+            }
+            
+        } catch (Exception e) {
+            String errorMsg = e.getMessage();
+            if (errorMsg != null && (errorMsg.contains("Permission denied") || errorMsg.contains("error=13"))) {
+                Log.w(TAG, "Busybox execution test failed due to Android security restrictions (expected behavior)");
+                Log.w(TAG, "Binary will be available for root execution. Skipping direct execution test.");
+                // Don't fail verification for permission denied - the binary will work with root
+                // Just log the issue and continue with other checks
+            } else {
+                Log.w(TAG, "Busybox verification failed: " + errorMsg);
+                return false;
+            }
+        }
+        
+        // Check other critical binaries exist
+        Log.d(TAG, "verifyBinaries() - Checking other required binaries");
+        String[] requiredBinaries = {"iptables", "ip6tables"};
+        for (String binary : requiredBinaries) {
+            File binaryFile = new File(dir, binary);
+            Log.d(TAG, "verifyBinaries() - Checking " + binary + ": exists=" + binaryFile.exists() + ", canExecute=" + binaryFile.canExecute());
+            if (!binaryFile.exists() || !binaryFile.canExecute()) {
+                Log.w(TAG, "Required binary missing or not executable: " + binary);
+                return false;
+            }
+        }
+        
+        Log.d(TAG, "Binary verification successful - All checks passed");
         return true;
     }
 
@@ -2140,10 +2999,13 @@ public final class Api {
             return;
         }
 
-        //addNotification();
         Intent myService = new Intent(ctx, FirewallService.class);
         ctx.stopService(myService);
-        ctx.startService(myService);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            ctx.startForegroundService(myService);
+        } else {
+            ctx.startService(myService);
+        }
 
         /* notify */
         Intent message = new Intent(ctx, StatusWidget.class);
@@ -2171,6 +3033,12 @@ public final class Api {
             notificationChannel.setShowBadge(false);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
+            
+            // Android 16+ specific notification channel configurations
+            if (Build.VERSION.SDK_INT >= 36) {
+                notificationChannel.setAllowBubbles(false);
+            }
+            
             manager.createNotificationChannel(notificationChannel);
         }
 
@@ -2221,6 +3089,12 @@ public final class Api {
             notificationChannel.setShowBadge(false);
             notificationChannel.enableLights(false);
             notificationChannel.enableVibration(false);
+            
+            // Android 16+ specific notification channel configurations
+            if (Build.VERSION.SDK_INT >= 36) {
+                notificationChannel.setAllowBubbles(false);
+            }
+            
             manager.createNotificationChannel(notificationChannel);
         }
 
@@ -2376,7 +3250,34 @@ public final class Api {
     public static Drawable getApplicationIcon(Context context, int appUid) {
         if (uidToApplicationInfoMap == null) {
             PackageManager packageManager = context.getPackageManager();
-            List<ApplicationInfo> installedApplications = packageManager.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES);
+            List<ApplicationInfo> installedApplications = new ArrayList<>(packageManager.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES));
+
+            // On Android 11+, supplement with shell-based discovery
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                Set<String> visiblePackages = new HashSet<>();
+                for (ApplicationInfo ai : installedApplications) {
+                    visiblePackages.add(ai.packageName);
+                }
+                try {
+                    Shell.Result result = Shell.cmd("pm list packages").exec();
+                    List<String> out = result.getOut();
+                    for (String line : out) {
+                        if (line.startsWith("package:")) {
+                            String pkg = line.substring(8).trim();
+                            if (!visiblePackages.contains(pkg)) {
+                                try {
+                                    ApplicationInfo ai = packageManager.getApplicationInfo(pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
+                                    installedApplications.add(ai);
+                                } catch (NameNotFoundException ignored) {
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Shell-based icon lookup supplement failed: " + e.getMessage());
+                }
+            }
+
             uidToApplicationInfoMap = new HashMap<>();
             for (ApplicationInfo applicationInfo : installedApplications) {
                 if (!uidToApplicationInfoMap.containsKey(applicationInfo.uid)) {
@@ -2495,6 +3396,140 @@ public final class Api {
         }
     }
 
+    public static void exportRulesToFileWithPicker(final Context ctx) {
+        showExportFileDialog(ctx, false);
+    }
+
+    public static void exportAllPreferencesToFileWithPicker(final Context ctx) {
+        showExportFileDialog(ctx, true);
+    }
+
+    private static void showExportFileDialog(final Context ctx, final boolean exportAll) {
+        try {
+            File defaultPath;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                if (extDir != null) {
+                    extDir.mkdirs();
+                    defaultPath = extDir;
+                } else {
+                    defaultPath = new File(ctx.getExternalFilesDir(null), "/");
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                defaultPath = new File(ctx.getExternalFilesDir(null), "/");
+            } else {
+                defaultPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
+                defaultPath.mkdirs();
+            }
+
+            dev.ukanth.ufirewall.util.FileDialog fileDialog = new dev.ukanth.ufirewall.util.FileDialog((Activity) ctx, defaultPath, true);
+            fileDialog.setSelectDirectoryOption(true);
+            fileDialog.addDirectoryListener(directory -> {
+                String fileName = "afwall-backup" + (exportAll ? "-all" : "") + "-" + 
+                    new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
+                File fullPath = new File(directory, fileName);
+                
+                boolean success;
+                if (exportAll) {
+                    success = exportAllToFile(ctx, fullPath);
+                } else {
+                    success = exportRulesToFile(ctx, fullPath);
+                }
+                
+                if (success) {
+                    Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fullPath.getAbsolutePath());
+                } else {
+                    Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
+                }
+            });
+            fileDialog.showDialog();
+        } catch (Exception e) {
+            // Fallback to original method if file dialog fails
+            if (exportAll) {
+                exportAllPreferencesToFileConfirm(ctx);
+            } else {
+                exportRulesToFileConfirm(ctx);
+            }
+        }
+    }
+
+    private static boolean exportRulesToFile(Context ctx, File file) {
+        boolean res = false;
+        try (FileOutputStream fOut = new FileOutputStream(file);
+             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+
+            JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+            JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+            JSONObject exportObject = new JSONObject();
+            exportObject.put("rules", jArray);
+            String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+            exportObject.put("mode", mode);
+            
+            myOutWriter.write(exportObject.toString());
+            myOutWriter.flush(); // Ensure data is written
+            res = true;
+            Log.i(TAG, "Successfully exported rules to: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            Log.e(TAG, "Error exporting rules to file: " + file.getAbsolutePath(), e);
+        }
+        return res;
+    }
+
+    private static boolean exportAllToFile(Context ctx, File file) {
+        boolean res = false;
+        try (FileOutputStream fOut = new FileOutputStream(file);
+             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
+
+            JSONObject exportObject = new JSONObject();
+            if (G.enableMultiProfile()) {
+                if (!G.isProfileMigrated()) {
+                    JSONObject profileObject = new JSONObject();
+                    for (String profile : G.profiles) {
+                        profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                    }
+                    exportObject.put("profiles", profileObject);
+
+                    JSONObject addProfileObject = new JSONObject();
+                    for (String profile : G.getAdditionalProfiles()) {
+                        addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
+                    }
+                    exportObject.put("additional_profiles", addProfileObject);
+                } else {
+                    JSONObject profileObject = new JSONObject();
+                    String profileName = "AFWallPrefs";
+                    profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
+
+                    List<ProfileData> profileDataList = ProfileHelper.getProfiles();
+                    for (ProfileData profile : profileDataList) {
+                        profileName = profile.getName();
+                        if (profile.getIdentifier().startsWith("AFWallProfile")) {
+                            profileName = profile.getIdentifier();
+                        }
+                        profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
+                    }
+                    exportObject.put("_profiles", profileObject);
+                }
+            } else {
+                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+                exportObject.put("default", obj);
+            }
+
+            exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
+            // Export profile-specific preferences (mode, custom rules, etc.)
+            if (G.pPrefs != null) {
+                exportObject.put("profilePrefs", getAllAppPreferences(ctx, G.pPrefs));
+            }
+            
+            myOutWriter.write(exportObject.toString());
+            myOutWriter.flush(); // Ensure data is written
+            res = true;
+            Log.i(TAG, "Successfully exported all preferences to: " + file.getAbsolutePath());
+        } catch (Exception e) {
+            Log.e(TAG, "Error exporting all preferences to file: " + file.getAbsolutePath(), e);
+        }
+        return res;
+    }
+
     private static void updateExportPackage(Map<String, JSONObject> exportMap, String packageName, boolean isChecked, int identifier) throws JSONException {
         if (!isChecked) {
             return;
@@ -2548,12 +3583,17 @@ public final class Api {
         boolean res = false;
         try {
             File file;
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Android 11+ (API 30+): Use scoped storage
+                file = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10 (API 29): Use app-specific directory
+                file = new File(ctx.getExternalFilesDir(null), fileName);
+            } else {
+                // Android 9 and below: Use legacy external storage
                 File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "afwall");
                 dir.mkdirs();
                 file = new File(dir, fileName);
-            } else {
-                file = new File(ctx.getExternalFilesDir(null), fileName);
             }
 
             try (FileOutputStream fOut = new FileOutputStream(file);
@@ -2594,6 +3634,10 @@ public final class Api {
                 }
 
                 exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
+                // Export profile-specific preferences (mode, custom rules, etc.)
+                if (G.pPrefs != null) {
+                    exportObject.put("profilePrefs", getAllAppPreferences(ctx, G.pPrefs));
+                }
 
                 String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
                 exportObject.put("mode", mode);
@@ -2638,12 +3682,17 @@ public final class Api {
         boolean res = false;
 
             File file;
-            if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
-                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/" );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // Android 11+ (API 30+): Use scoped storage
+                file = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10 (API 29): Use app-specific directory
+                file = new File(ctx.getExternalFilesDir(null), fileName);
+            } else {
+                // Android 9 and below: Use legacy external storage
+                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
                 dir.mkdirs();
                 file = new File(dir, fileName);
-            } else{
-                file = new File(ctx.getExternalFilesDir(null) + "/" + fileName) ;
             }
 
             try {
@@ -2683,7 +3732,9 @@ public final class Api {
         boolean returnVal = false;
         BufferedReader br = null;
         try {
-            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + file.getAbsolutePath()).exec();
+            // Use shell-safe quoting to prevent path injection
+            String safePath = "'" + file.getAbsolutePath().replace("'", "'\\''" ) + "'";
+            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + safePath).exec();
             List<String> out = result.getOut();
             String data = TextUtils.join("", out);
 
@@ -2702,10 +3753,12 @@ public final class Api {
                 updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
             }
             returnVal = true;
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.w(TAG, "Import rules file read rejected: " + e.getMessage());
         } catch (JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.e(TAG, "JSON parsing error during import: " + e.getLocalizedMessage());
         } catch (Exception e) {
-            Log.e(TAG, e.getLocalizedMessage());
+            Log.e(TAG, "Failed to import rules from file: " + e.getLocalizedMessage());
         } finally {
             if (br != null) {
                 try {
@@ -2727,6 +3780,11 @@ public final class Api {
                 text.append(line);
             }
             String data = text.toString();
+            if (data.trim().isEmpty()) {
+                msg.append("Import file contains no data");
+                return false;
+            }
+            
             JSONObject jsonObject = new JSONObject(data);
             if (jsonObject.has("mode")) {
                 G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).apply();
@@ -2842,7 +3900,18 @@ public final class Api {
                 text.append(line);
             }
             String data = text.toString();
+            if (data.trim().isEmpty()) {
+                msg.append("Import file contains no data");
+                return false;
+            }
+            
             JSONObject object = new JSONObject(data);
+            // Basic validation of expected JSON structure
+            if (!object.has("prefs") && !object.has("profiles") && !object.has("_profiles") && !object.has("default")) {
+                msg.append("Import file does not contain valid AFWall+ data");
+                Log.w(TAG, "Invalid import file structure - missing expected keys");
+                return false;
+            }
 
             // Allow/deny rule
             if (object.has("mode")) {
@@ -2861,19 +3930,52 @@ public final class Api {
                         continue;
                     }
                     if (value.equals("true") || value.equals("false")) {
-                        G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value));
+                        G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
                     } else {
                         try {
                             if (key.equals("multiUserId")) {
-                                G.gPrefs.edit().putLong(key, Long.parseLong(value));
+                                G.gPrefs.edit().putLong(key, Long.parseLong(value)).apply();
                             } else if (isIntType(key)) {
-                                G.gPrefs.edit().putString(key, value);
+                                G.gPrefs.edit().putString(key, value).apply();
                             } else {
                                 int intValue = Integer.parseInt(value);
-                                G.gPrefs.edit().putInt(key, intValue);
+                                G.gPrefs.edit().putInt(key, intValue).apply();
                             }
                         } catch (NumberFormatException e) {
-                            G.gPrefs.edit().putString(key, value);
+                            G.gPrefs.edit().putString(key, value).apply();
+                        }
+                    }
+                }
+            }
+
+            // Import profile-specific preferences if available
+            if (object.has("profilePrefs")) {
+                JSONArray profilePrefArray = object.getJSONArray("profilePrefs");
+                for (int i = 0; i < profilePrefArray.length(); i++) {
+                    JSONObject prefObj = profilePrefArray.getJSONObject(i);
+                    Iterator<String> keys = prefObj.keys();
+
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        String value = prefObj.getString(key);
+                        if (shouldIgnoreKey(key)) {
+                            continue;
+                        }
+                        if (value.equals("true") || value.equals("false")) {
+                            G.pPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
+                        } else {
+                            try {
+                                if (key.equals("multiUserId")) {
+                                    G.pPrefs.edit().putLong(key, Long.parseLong(value)).apply();
+                                } else if (isIntType(key)) {
+                                    G.pPrefs.edit().putString(key, value).apply();
+                                } else {
+                                    int intValue = Integer.parseInt(value);
+                                    G.pPrefs.edit().putInt(key, intValue).apply();
+                                }
+                            } catch (NumberFormatException e) {
+                                G.pPrefs.edit().putString(key, value).apply();
+                            }
                         }
                     }
                 }
@@ -2907,11 +4009,27 @@ public final class Api {
         boolean res = false;
         File file = new File(fileName);
         if (file.exists()) {
+            // Basic file validation
+            if (file.length() == 0) {
+                builder.append("Import file is empty");
+                Log.w(TAG, "Import file is empty: " + fileName);
+                return false;
+            }
+            if (file.length() > 50 * 1024 * 1024) { // 50MB limit
+                builder.append("Import file is too large (>50MB)");
+                Log.w(TAG, "Import file is too large: " + fileName + " (" + file.length() + " bytes)");
+                return false;
+            }
+            
+            Log.i(TAG, "Importing from file: " + fileName + " (loadAll: " + loadAll + ")");
             if (loadAll) {
                 res = importAll(ctx, file, builder);
             } else {
                 res = importRules(ctx, file, builder);
             }
+        } else {
+            builder.append("Import file does not exist: " + fileName);
+            Log.w(TAG, "Import file does not exist: " + fileName);
         }
         return res;
     }
@@ -2938,8 +4056,50 @@ public final class Api {
 
     public static boolean isNetfilterSupported() {
         boolean netfiler_exists = new File("/proc/net/netfilter").exists();
-        Shell.Result result = Shell.cmd("cat /proc/net/ip_tables_targets").exec();
-        return netfiler_exists && result.isSuccess();
+        try {
+            Shell.Result result = Shell.cmd("cat /proc/net/ip_tables_targets").exec();
+            return netfiler_exists && result.isSuccess();
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.w(TAG, "Netfilter check rejected: " + e.getMessage());
+            return false;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to check netfilter support: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if a package has android.permission.INTERNET via shell.
+     * Used for packages invisible to PackageManager due to package visibility restrictions.
+     */
+    private static boolean hasInternetPermissionViaShell(String packageName) {
+        return hasInternetPermissionViaShell(packageName, null);
+    }
+
+    private static boolean hasInternetPermissionViaShell(String packageName,
+                                                         HashMap<String, Boolean> internetPermissionCache) {
+        if (internetPermissionCache != null && internetPermissionCache.containsKey(packageName)) {
+            return internetPermissionCache.get(packageName);
+        }
+        boolean hasPermission = false;
+        try {
+            // Fetch full dumpsys output and search in-process (avoids a second shell fork for grep).
+            Shell.Result result = Shell.cmd("dumpsys package " + packageName).exec();
+            if (result.isSuccess()) {
+                for (String line : result.getOut()) {
+                    if (line.contains("android.permission.INTERNET")) {
+                        hasPermission = true;
+                        break;
+                    }
+                }
+            } else {
+                Log.w(TAG, "dumpsys package failed while checking INTERNET permission for " + packageName);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to check INTERNET permission for " + packageName + ": " + e.getMessage());
+        }
+        if (internetPermissionCache != null) internetPermissionCache.put(packageName, hasPermission);
+        return hasPermission;
     }
 
     private static void initSpecial() {
@@ -2965,7 +4125,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = defaultLocale;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.createConfigurationContext(conf);
             } else {
                 context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
@@ -2979,7 +4139,7 @@ public final class Api {
             Resources res = context.getResources();
             Configuration conf = res.getConfiguration();
             conf.locale = locale;
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 context.createConfigurationContext(conf);
             } else {
                 context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
@@ -3034,12 +4194,15 @@ public final class Api {
     }
 
     /**
-     * Encrypt the password
+     * Encrypt the password - DEPRECATED: Use SecureCrypto.encryptSecure() for new code
+     * This method is kept for backward compatibility only
      *
      * @param key
      * @param data
      * @return
+     * @deprecated Use SecureCrypto.encryptSecure() instead for better security
      */
+    @Deprecated
     public static String hideCrypt(String key, String data) {
         if (key == null || data == null)
             return null;
@@ -3060,12 +4223,15 @@ public final class Api {
     }
 
     /**
-     * Decrypt the password
+     * Decrypt the password - DEPRECATED: Use SecureCrypto.decryptSecure() for new code  
+     * This method is kept for backward compatibility only
      *
      * @param key
      * @param data
      * @return
+     * @deprecated Use SecureCrypto.decryptSecure() instead for better security
      */
+    @Deprecated
     public static String unhideCrypt(String key, String data) {
         if (key == null || data == null)
             return null;
@@ -3369,6 +4535,94 @@ public final class Api {
         }
     }
 
+    /**
+     * Safe shell command execution that handles library-level crashes
+     */
+    private static List<String> executeSafeShellCommand(String command) {
+        // First try the primary libsu approach
+        try {
+            // Check if we can get a valid shell
+            if (Shell.getShell() == null || !Shell.getShell().isAlive()) {
+                Log.w(TAG, "Shell is not available or not alive, trying fallback");
+                return executeFallbackShellCommand(command);
+            }
+
+            // Execute with timeout and proper error handling
+            Shell.Result result = Shell.cmd(command).exec();
+            return result != null ? result.getOut() : null;
+            
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            Log.w(TAG, "Shell execution rejected - trying fallback: " + e.getMessage());
+            return executeFallbackShellCommand(command);
+        } catch (RuntimeException e) {
+            // Check for wrapped ExecutionException with InterruptedIOException
+            Throwable cause = e.getCause();
+            if (cause instanceof java.util.concurrent.ExecutionException) {
+                java.util.concurrent.ExecutionException execEx = (java.util.concurrent.ExecutionException) cause;
+                if (execEx.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "Shell execution interrupted at library level - trying fallback: " + execEx.getCause().getMessage());
+                    return executeFallbackShellCommand(command);
+                }
+            }
+            // Re-throw if it's not a known interruption issue
+            throw e;
+        } catch (Exception e) {
+            Log.w(TAG, "Unexpected error in safe shell execution, trying fallback: " + e.getMessage());
+            return executeFallbackShellCommand(command);
+        }
+    }
+    
+    /**
+     * Fallback shell execution using the legacy RootShell library
+     * This provides an alternative when libsu fails due to interruptions
+     */
+    private static List<String> executeFallbackShellCommand(String command) {
+        try {
+            Log.d(TAG, "Using fallback shell execution for command: " + command);
+            
+            // Use the legacy RootShell library as fallback
+            final java.util.List<String> output = new java.util.ArrayList<>();
+            final boolean[] completed = {false};
+            
+            com.stericson.rootshell.execution.Command cmd = new com.stericson.rootshell.execution.Command(0, command) {
+                @Override
+                public void commandCompleted(int id, int exitcode) {
+                    super.commandCompleted(id, exitcode);
+                    completed[0] = true;
+                }
+                
+                @Override
+                public void commandOutput(int id, String line) {
+                    super.commandOutput(id, line);
+                    if (line != null) {
+                        output.add(line);
+                    }
+                }
+            };
+            
+            // Execute with timeout
+            com.stericson.roottools.RootTools.getShell(true, 0).add(cmd);
+            
+            // Wait for completion with timeout
+            long startTime = System.currentTimeMillis();
+            while (!completed[0] && (System.currentTimeMillis() - startTime) < 30000) {
+                Thread.sleep(100);
+            }
+            
+            if (completed[0]) {
+                Log.d(TAG, "Fallback shell execution completed successfully");
+                return output;
+            } else {
+                Log.w(TAG, "Fallback shell execution timed out");
+                return null;
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Fallback shell execution also failed: " + e.getMessage());
+            return null;
+        }
+    }
+
     private static class RunCommand extends AsyncTask<Object, List<String>, Integer> {
 
         private int exitCode = -1;
@@ -3386,10 +4640,23 @@ public final class Api {
             StringBuilder res = (StringBuilder) params[1];
             Log.i(TAG, "Executing root commands of" + commands.size());
             try {
+                // Check if task is cancelled before proceeding
+                if (isCancelled()) {
+                    Log.d(TAG, "RunCommand task was cancelled, aborting execution");
+                    return -1;
+                }
+                
                 if (Shell.getShell().isRoot() && !Shell.isAppGrantedRoot())
                     return -1;
                 if (commands != null && commands.size() > 0) {
-                    List<String> output = Shell.cmd(String.valueOf(commands)).exec().getOut();
+                    // Check again before executing shell command
+                    if (isCancelled()) {
+                        Log.d(TAG, "RunCommand task was cancelled before shell execution");
+                        return -1;
+                    }
+                    
+                    // Use a safe shell execution wrapper
+                    List<String> output = executeSafeShellCommand(String.valueOf(commands));
                     if (output != null) {
                         exitCode = 0;
                         if (output.size() > 0) {
@@ -3402,11 +4669,47 @@ public final class Api {
                         exitCode = 1;
                     }
                 }
-            } catch (Exception ex) {
+            } catch (java.util.concurrent.RejectedExecutionException e) {
+                Log.w(TAG, "Shell execution rejected, likely due to app shutdown: " + e.getMessage());
+                exitCode = -1;
+            } catch (RuntimeException ex) {
+                // Check if this is a wrapped ExecutionException with InterruptedIOException
+                Throwable cause = ex.getCause();
+                if (cause instanceof java.util.concurrent.ExecutionException) {
+                    java.util.concurrent.ExecutionException execEx = (java.util.concurrent.ExecutionException) cause;
+                    if (execEx.getCause() instanceof java.io.InterruptedIOException) {
+                        Log.w(TAG, "Shell command execution was interrupted: " + execEx.getCause().getMessage());
+                        exitCode = -1;
+                        return exitCode;
+                    }
+                } else if (ex.getCause() instanceof java.io.InterruptedIOException) {
+                    Log.w(TAG, "Shell command execution was interrupted: " + ex.getCause().getMessage());
+                    exitCode = -1;
+                    return exitCode;
+                }
+                Log.e(TAG, "Shell command execution failed: " + ex.getMessage());
                 if (res != null)
                     res.append("\n").append(ex);
+                exitCode = -1;
+            } catch (Exception ex) {
+                Log.e(TAG, "Shell command execution failed with unexpected exception: " + ex.getMessage());
+                if (res != null)
+                    res.append("\n").append(ex);
+                exitCode = -1;
             }
             return exitCode;
+        }
+
+        @Override
+        protected void onCancelled() {
+            Log.d(TAG, "RunCommand task was cancelled");
+            super.onCancelled();
+        }
+
+        @Override
+        protected void onCancelled(Integer result) {
+            Log.d(TAG, "RunCommand task was cancelled with result: " + result);
+            super.onCancelled(result);
         }
 
 
@@ -3558,6 +4861,25 @@ public final class Api {
                 tostr = s.toString();
             }
             return tostr;
+        }
+
+        public String toStringForList(boolean includeUid, boolean includePackageName) {
+            StringBuilder s = new StringBuilder();
+            if (includeUid) {
+                s.append("[ ");
+                s.append(uid);
+                s.append(" ] ");
+            }
+            for (int i = 0; i < names.size(); i++) {
+                if (i != 0) s.append(", ");
+                s.append(names.get(i));
+            }
+            if (includePackageName && pkgName != null && !pkgName.startsWith("dev.afwall.special.")) {
+                s.append("\n");
+                s.append(pkgName);
+            }
+            s.append("\n");
+            return s.toString();
         }
 
     }

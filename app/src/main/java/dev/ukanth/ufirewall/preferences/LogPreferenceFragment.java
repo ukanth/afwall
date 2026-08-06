@@ -1,15 +1,25 @@
 package dev.ukanth.ufirewall.preferences;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
+import dev.ukanth.ufirewall.service.LogService;
+import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
 
 public class LogPreferenceFragment extends PreferenceFragment {
@@ -43,6 +53,24 @@ public class LogPreferenceFragment extends PreferenceFragment {
                 if (listPreference != null) {
                     listPreference.setEntries(items);
                     listPreference.setEntryValues(items);
+                    
+                    // Add custom listener to intercept preference changes
+                    listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                        @Override
+                        public boolean onPreferenceChange(Preference preference, Object newValue) {
+                            String newLogTarget = (String) newValue;
+                            String oldLogTarget = G.logTarget();
+                            
+                            // If it's the same target, allow change immediately
+                            if (newLogTarget.equals(oldLogTarget)) {
+                                return true;
+                            }
+                            
+                            // Show confirmation dialog and prevent automatic change
+                            showLogTargetChangeDialog(oldLogTarget, newLogTarget, listPreference);
+                            return false; // Prevent automatic preference change
+                        }
+                    });
                 }
                 //if there is only one entry
                 if(items.length == 1) {
@@ -157,4 +185,71 @@ public class LogPreferenceFragment extends PreferenceFragment {
         }
         return items.toArray(new Integer[0]);
     }*/
+
+    private void showLogTargetChangeDialog(String oldLogTarget, String newLogTarget, ListPreference listPreference) {
+        new MaterialDialog.Builder(getActivity())
+                .title(R.string.log_target_change_title)
+                .content(getString(R.string.log_target_change_message, oldLogTarget, newLogTarget))
+                .positiveText(R.string.Yes)
+                .negativeText(R.string.Cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        // Apply the log target change
+                        applyLogTargetChange(newLogTarget, listPreference);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        // Do nothing - preference change was already prevented by returning false
+                        Log.d("LogPreferenceFragment", "Log target change cancelled by user");
+                    }
+                })
+                .show();
+    }
+
+    private void applyLogTargetChange(String newLogTarget, ListPreference listPreference) {
+        Context ctx = getActivity();
+        
+        // Set the new log target in preferences
+        G.logTarget(newLogTarget);
+        
+        // Update the ListPreference to show the new value
+        listPreference.setValue(newLogTarget);
+        
+        // Update log rules
+        Api.updateLogRules(ctx, new RootCommand()
+                .setReopenShell(true)
+                .setSuccessToast(R.string.log_target_success)
+                .setFailureToast(R.string.log_target_fail));
+        
+        // Change log target without restarting service
+        changeLogTargetInService(ctx, newLogTarget);
+    }
+    
+    /**
+     * Change log target in the running service without restarting it
+     */
+    private void changeLogTargetInService(Context ctx, String newLogTarget) {
+        Log.i("LogPreferenceFragment", "Changing log target to: " + newLogTarget);
+        
+        if (G.enableLogService()) {
+            // Send log target change request to the running service
+            Intent changeIntent = new Intent(ctx, LogService.class);
+            changeIntent.setAction(LogService.ACTION_CHANGE_LOG_TARGET);
+            changeIntent.putExtra(LogService.EXTRA_NEW_LOG_TARGET, newLogTarget);
+            ctx.startService(changeIntent);
+            
+            // Show success message after a delay to allow the change to process
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(() -> {
+                Toast.makeText(ctx, getString(R.string.log_target_changed_success, newLogTarget), Toast.LENGTH_LONG).show();
+            }, 2000);
+        } else {
+            // Service is not running, just update the preference
+            Log.i("LogPreferenceFragment", "Log service disabled, only updating preference");
+            Toast.makeText(ctx, getString(R.string.log_target_changed_success, newLogTarget), Toast.LENGTH_SHORT).show();
+        }
+    }
 }

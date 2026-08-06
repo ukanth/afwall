@@ -48,7 +48,13 @@ public class BootRuleManager {
     public static void initializeBootRuleApplication(Context context) {
         synchronized (ruleApplicationLock) {
             Log.i(TAG, "Initializing boot rule application");
-            
+
+            if (!shouldApplyBootRules(context)) {
+                Log.i(TAG, "Firewall disabled or inactive at boot; skipping boot rule application");
+                markBootComplete();
+                return;
+            }
+
             // Mark boot as in progress
             isBootInProgress.set(true);
             initialBootRulesApplied.set(false);
@@ -94,8 +100,10 @@ public class BootRuleManager {
      */
     private static void applyInitialBootRules(Context context) {
         Log.i(TAG, "Applying initial boot rules");
-        
-        InterfaceTracker.applyBootRules(InterfaceTracker.BOOT_COMPLETED + "_INITIAL");
+
+        InterfaceTracker.getCurrentCfg(context, true);
+
+        InterfaceTracker.applyBootRules(context, InterfaceTracker.BOOT_COMPLETED + "_INITIAL");
         initialBootRulesApplied.set(true);
         
         Log.i(TAG, "Initial boot rules applied");
@@ -112,11 +120,16 @@ public class BootRuleManager {
             Runnable delayedRules = () -> {
                 synchronized (ruleApplicationLock) {
                     if (isBootInProgress.get()) {
+                        if (!shouldApplyBootRules(context)) {
+                            Log.i(TAG, "Firewall disabled before delayed boot apply; skipping delayed rules");
+                            markBootComplete();
+                            return;
+                        }
                         Log.i(TAG, "Applying delayed boot rules");
                         try {
                             // Force interface configuration refresh for delayed rules
                             InterfaceTracker.getCurrentCfg(context, true);
-                            InterfaceTracker.applyBootRules(InterfaceTracker.BOOT_COMPLETED + "_DELAYED");
+                            InterfaceTracker.applyBootRules(context, InterfaceTracker.BOOT_COMPLETED + "_DELAYED");
                             Log.i(TAG, "Delayed boot rules applied successfully");
                         } catch (Exception e) {
                             Log.e(TAG, "Error applying delayed boot rules: " + e.getMessage());
@@ -146,6 +159,12 @@ public class BootRuleManager {
         delayedBootRulesScheduled.set(false);
     }
     
+    private static boolean shouldApplyBootRules(Context context) {
+        // BootRuleManager calls applyBootRules directly, so keep the same enabled checks
+        // that protect normal connectivity-change rule application.
+        return Api.isEnabled(context) && G.activeRules();
+    }
+
     /**
      * Mark boot process as complete
      */
@@ -178,7 +197,7 @@ public class BootRuleManager {
             Log.d(TAG, "Network change during boot delay period (" + reason + ") - allowing limited processing");
             // Allow processing but don't trigger a full rule reapplication
             // The delayed boot rules will handle the final state
-            return false;
+            return true;
         }
         
         // Boot rules applied but no delay configured, allow network change processing

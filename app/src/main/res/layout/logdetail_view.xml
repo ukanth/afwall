@@ -28,11 +28,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detailrecyclerview"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Summary header -->
+                <include
+                    android:id="@+id/summary_header"
+                    layout="@layout/log_detail_summary" />
+
+                <!-- Log entries -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/detailrecyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:scrollbars="vertical" />
+                
+                <!-- Loading more indicator -->
+                <TextView
+                    android:id="@+id/loading_more_indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Loading more entries..."
+                    android:textAlignment="center"
+                    android:padding="16dp"
+                    android:textColor="?attr/tint"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 

@@ -1,17 +1,19 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/exp_prefs_title">
         <CheckBoxPreference
             android:key="addStartupDelay"
             android:summary="@string/addStartupDelaySummary"
             android:title="@string/addStartupDelayTitle" />
-        <EditTextPreference
+        <dev.ukanth.ufirewall.preferences.SeekBarPreference
             android:dependency="addStartupDelay"
-            android:inputType="number"
+            android:defaultValue="5"
+            android:max="30"
             android:title="@string/delayTitle"
             android:summary="@string/delaySummary"
-            android:dialogTitle="@string/delayDialog"
-            android:dialogMessage="Default - 5s"
-            android:key="customDelay"/>
+            android:key="customDelay"
+            app:min="1"
+            app:suffix=" s" />
 
         <ListPreference
             android:entries="@array/initDir"

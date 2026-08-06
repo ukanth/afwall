@@ -43,6 +43,8 @@ import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.UidResolver;
+import dev.ukanth.ufirewall.util.UidCorrelator;
 
 public class LogInfo {
     public String uidString;
@@ -125,13 +127,25 @@ public class LogInfo {
             for (int i = 0; i < map.size(); i++) {
                 StringBuilder address = new StringBuilder();
                 id = map.keyAt(i);
+                appName = ""; // Reset for each iteration
+                appId = -1;
+                
                 if (id != -1) {
+                    // First, try to find in cached app list
+                    boolean foundInApps = false;
                     for (PackageInfoData app : apps) {
                         if (app.uid == id) {
                             appId = id;
                             appName = app.names.get(0);
+                            foundInApps = true;
                             break;
                         }
+                    }
+                    
+                    // If not found in apps, use comprehensive UID resolver
+                    if (!foundInApps) {
+                        appId = id;
+                        appName = UidResolver.resolveUid(ctx, id);
                     }
                 } else {
                     appName = ctx.getString(R.string.unknown_item);
@@ -249,9 +263,26 @@ public class LogInfo {
                     return null;
                    //logInfo.uid = 0;
                 } else if(uid == -100) {
-                    appName = ctx.getString(R.string.unknown_item);
-                    logInfo.uid = uid;
-                } else {
+                    // Attempt enhanced UID correlation before giving up
+                    int correlatedUid = UidCorrelator.correlateUid(
+                        logInfo.src, logInfo.dst, logInfo.dpt, logInfo.spt, 
+                        logInfo.proto, System.currentTimeMillis());
+                    
+                    if (correlatedUid != -100) {
+                        // Successfully correlated! Update UID and continue with normal processing
+                        uid = correlatedUid;
+                        logInfo.uid = correlatedUid;
+                        Log.d(Api.TAG, "Enhanced correlation resolved UID " + correlatedUid + 
+                              " for connection to " + logInfo.dst + ":" + logInfo.dpt);
+                    } else {
+                        // Still unknown after correlation attempt
+                        appName = ctx.getString(R.string.unknown_item);
+                        logInfo.uid = uid;
+                    }
+                }
+                
+                // Process the UID (whether original, correlated, or unknown)
+                if (uid != -100) {
                     if (uid < 2000) {
                         appName = Api.getSpecialAppName(uid);
                         if(uid == 1000) {
@@ -261,12 +292,17 @@ public class LogInfo {
                         //system level packages
                         try {
                             if (!appNameMap.containsKey(uid)) {
-                                appName = ctx.getPackageManager().getNameForUid(uid);
+                                appName = null;
                                 for (PackageInfoData app : apps) {
                                     if (app.uid == uid) {
                                         appName = app.names.get(0);
                                         break;
                                     }
+                                }
+                                // Android package visibility can hide packages from PackageManager.
+                                // Fall back to shell-backed UID resolution before showing "Deleted App".
+                                if (appName == null || appName.length() == 0) {
+                                    appName = UidResolver.resolveUid(ctx, uid);
                                 }
                             } else {
                                 appName = appNameMap.get(uid);
@@ -291,16 +327,8 @@ public class LogInfo {
                 address.append(":");
                 address.append(logInfo.dpt);
                 logInfo.type = type;
-                if (G.showHost()) {
-                    try {
-                        String add  = InetAddress.getByName(logInfo.dst).getHostName();
-                        if (add != null) {
-                            logInfo.host = add;
-                            address.append("(").append(add).append(") ");
-                        }
-                    } catch (Exception e) {
-                    }
-                }
+                // Hostname resolution is handled asynchronously in LogService.store()
+                // to avoid blocking the log parsing callback thread
                 address.append("\n");
                 logInfo.timestamp = System.currentTimeMillis();
                 logInfo.uidString = address.toString();

@@ -160,6 +160,9 @@
     <string name="log_was_disabled">Log disabled</string>
     <string name="log_target_success">Log target change succesful</string>
     <string name="log_target_fail">Log target change failed</string>
+    <string name="log_target_change_title">Change Log Target</string>
+    <string name="log_target_change_message">You are switching from %1$s to %2$s.\n\nThis will restart the log service which may cause a brief interruption in logging. Do you want to continue?</string>
+    <string name="log_target_changed_success">Log target changed to %1$s successfully</string>
     <string name="log_toggle_failed">Error toggling log status</string>
     <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
@@ -302,6 +305,15 @@
     <string name="primary_pref_title">Primary Color</string>
     <string name="status_pref_title">Statusbar Color</string>
     <string name="accent_pref_title">Accent Color</string>
+    <string name="background_pref_title">Background Color</string>
+    <string name="text_primary_pref_title">Primary Text Color</string>
+    <string name="text_secondary_pref_title">Secondary Text Color</string>
+    <string name="user_app_color_pref_title">User applications</string>
+    <string name="default_icon_color_pref_title">Default Android icon</string>
+    <string name="custom_theme_colors_title">Custom theme colors</string>
+    <string name="custom_theme_colors_summary">Use saved colors instead of a preset theme</string>
+    <string name="custom_theme_colors_summary_off">Use the selected preset theme colors</string>
+    <string name="theme_apply_error">Unable to apply custom theme colors.</string>
 
     <string name="syscolor_pref_summary_on">Color for all system apps</string>
     <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
@@ -309,6 +321,9 @@
     <string name="showUid">Show UID for apps</string>
     <string name="showuid_summary_on">Show app UID\'s in the main view</string>
     <string name="showuid_summary_off">Hide app UID\'s in the main view. Enabling can be useful to track logs.</string>
+    <string name="show_package_name">Show package names for apps</string>
+    <string name="show_package_name_summary_on">Show app package names in the main view.</string>
+    <string name="show_package_name_summary_off">Hide app package names in the main view. Package names are still searchable.</string>
     <string name="languages">Languages</string>
     <string name="change_languages">Change Language</string>
 
@@ -389,6 +404,9 @@
 
     <!-- Donate -->
     <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
+    <string name="donate_only_short">Donate Only</string>
+    <string name="export_all_warning">Note: While you can export rules and preferences for free, importing them back requires the donate version. Continue with export?</string>
+    <string name="export_all_warning_donor">Note: This will export your rules, profile settings, and preferences. You can import this backup later since you have the donate version. Continue with export?</string>
     <string name="buy_donate">Purchase donate version or Unlocker</string>
     <string name="unlock_donate"> tap to unlock donate</string>
     <string name="donate_support">You can now use donate features.</string>
@@ -514,6 +532,9 @@
     <string name="copy_text">Copy text</string>
     <string name="destination_copied">Destination copied</string>
     <string name="source_copied">Source copied</string>
+    <string name="copy_domain">Copy Domain</string>
+    <string name="domain_copied">Domain copied</string>
+    <string name="no_domain_resolved">No domain resolved for this entry</string>
     <string name="select_the_action">Select The Action</string>
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
@@ -552,6 +573,7 @@
     <string name="lock_screen_not_enabled">Lock screen security not enabled in Settings</string>
     <string name="fingerprint_enabled_successfully">Fingerprint Enabled</string>
     <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
+    <string name="fingerprint_security_changed">Fingerprint setup changed. Re-enable fingerprint protection in settings.</string>
 
 
     <string name="label_zoomin">Zoom In</string>
@@ -605,6 +627,10 @@
     <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
     <string name="show_host">Show hostname</string>
     <string name="host">Host:</string>
+    <string name="connection_blocked">Connection Blocked</string>
+    <string name="packet_size">Size: %s</string>
+    <string name="repeated_blocks">%dx blocked</string>
+    <string name="via_interface">via %s</string>
     <string name="battery_optimization_title">Whitelist afwall+ doze</string>
     <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
     <string name="firewall_service">Firewall Service</string>
@@ -614,6 +640,8 @@
     <string name="hide">Hide</string>
     <string name="firewall_error_notify">Firewall Issue</string>
     <string name="firewall_log_notify">Log Notification</string>
+    <string name="log_service_running">Firewall log monitoring active</string>
+    <string name="log_monitoring">Log monitoring</string>
 
     <string name="ui_themes_header">Themes</string>
     <string name="theme">UI Theme</string>
@@ -635,9 +663,52 @@
     <string name="log_service_start">Starting Log service</string>
     <string name="log_service_stop">Stopping Log service</string>
     <string name="log_service_select">Please select log target first</string>
-    <string name="log_service_watcher">Opening log watcher...</string>
+    <string name="log_service_watcher">Opening log watcher…</string>
     <string name="log_service_success">Started Log service Successfully!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>
+    <string name="network_debounce_title">Network change delay</string>
+    <string name="network_debounce_summary">Delay rule application when network changes frequently (seconds)</string>
+    <string name="ready">Ready</string>
+    <string name="loading_iptables_rules">Loading iptables rules…</string>
+    <string name="network_interfaces">Network Interfaces</string>
+    <string name="system_information">System Information</string>
+    <string name="preferences_amp_status"><![CDATA[Preferences & Status]]></string>
+    <string name="loading">Loading…</string>
+    <string name="loading_system_info">Loading system info…</string>
+    <string name="loading_network_info">Loading network info…</string>
+    <string name="finalizing">Finalizing…</string>
+    <string name="ipv4_rules_title">IPv4 Rules</string>
+    <string name="ipv6_rules_title">IPv6 Rules</string>
+    <string name="logcat_title">Application Log</string>
+    <string name="custom_startup_script">Custom Startup Script</string>
+    <string name="custom_shutdown_script">Custom Shutdown Script</string>
+    <string name="enter_custom_script_hint">Enter iptables commands to execute on firewall startup</string>
+    <string name="enter_shutdown_script_hint">Enter iptables commands to execute on firewall shutdown</string>
+    <string name="consider_donating">Thank you for your support! Supporter mode enabled.</string>
+    <string name="supporter_mode_title">Supporter mode</string>
+    <string name="supporter_mode_summary">Unlock donate features (or install the donate key app)</string>
+    <string name="direct_rules">Direct rules</string>
+    <string name="direct_rules_title">Direct rules</string>
+    <string name="direct_rules_empty">No direct rules for this app.</string>
+    <string name="direct_rules_destination">Destination IP/CIDR</string>
+    <string name="direct_rules_destination_hint">Example: 192.168.1.10 or 10.0.0.0/8</string>
+    <string name="direct_rules_port">Destination port</string>
+    <string name="direct_rules_port_hint">Example: 443 or 8000:8100</string>
+    <string name="direct_rules_protocol">Protocol</string>
+    <string name="direct_rules_add">Add allow rule</string>
+    <string name="direct_rules_toggle">Enable direct rules</string>
+    <string name="direct_rules_visibility_title">Direct rules control</string>
+    <string name="direct_rules_visibility_summary">Show the direct rules checkbox in the app list.</string>
+    <string name="direct_rules_apply_hint">Apply firewall rules for changes to take effect.</string>
+    <string name="direct_rules_invalid_destination">Enter a valid IPv4 address or CIDR range.</string>
+    <string name="direct_rules_invalid_port">Enter a valid port or port range.</string>
+    <string name="direct_rules_invalid_rule">Direct rule failed validation.</string>
+    <string name="direct_rules_need_match">Enter a destination, a port, or both.</string>
+    <string name="direct_rules_port_needs_protocol">Choose TCP or UDP when using a port.</string>
+    <string name="direct_rules_added">Direct rule added.</string>
+    <string name="direct_rules_removed">Direct rule removed.</string>
+    <string name="direct_rules_remove">Remove</string>
+    <string name="direct_rules_log_missing_data">Selected log item does not include enough app and destination data.</string>
 </resources>

@@ -35,17 +35,18 @@ public class InterfaceDetails {
 	public boolean isUsbTethered = false;
 	public boolean tetherUsbStatusKnown = false;
 
-	public String lanMaskV4 = "";
-	public String lanMaskV6 = "";
+	// Support multiple LAN subnets (Issue #1362)
+	public java.util.List<String> lanMaskV4 = new java.util.ArrayList<>();
+	public java.util.List<String> lanMaskV6 = new java.util.ArrayList<>();
 	
 	// DNS servers for targeted rules instead of opening port 53 to all LAN hosts
 	public java.util.List<String> dnsServersV4 = new java.util.ArrayList<>();
 	public java.util.List<String> dnsServersV6 = new java.util.ArrayList<>();
 
 	// supplementary info
-	String wifiName = "";
-	boolean netEnabled = false;
-	boolean noIP = false;
+	public String wifiName = "";
+	public boolean netEnabled = false;
+	public boolean noIP = false;
 	public int netType = -1;
 
 	public boolean equals(InterfaceDetails that) {

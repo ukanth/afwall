@@ -28,13 +28,10 @@ public class RulesApplyService extends IntentService {
                 Log.d(Api.TAG, "Applying rules on connectivity change");
                 InterfaceTracker.applyRulesOnChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
             }
-            final Intent logIntent = new Intent(context, LogService.class);
             if (G.enableLogService()) {
-                context.stopService(logIntent);
-                context.startService(logIntent);
+                LogService.ensureRunning(context);
             } else {
-                context.stopService(logIntent);
-                //Api.cleanupUid();
+                context.stopService(new Intent(context, LogService.class));
             }
         }
     }

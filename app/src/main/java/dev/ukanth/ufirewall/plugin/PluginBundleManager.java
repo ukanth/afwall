@@ -63,9 +63,18 @@ public final class PluginBundleManager
             return false;
         }
         /*
-         * Make sure the extra isn't null or empty
+         * Make sure the extra is a numeric action/profile id. Locale/Tasker callers can send
+         * arbitrary exported extras, so reject malformed values before parseInt() call sites.
          */
-        return !TextUtils.isEmpty(bundle.getString(BUNDLE_EXTRA_STRING_MESSAGE));
+        String message = bundle.getString(BUNDLE_EXTRA_STRING_MESSAGE);
+        if (TextUtils.isEmpty(message)) {
+            return false;
+        }
+        String index = message;
+        if (message.contains("::")) {
+            index = message.split("::", 2)[0];
+        }
+        return !TextUtils.isEmpty(index) && TextUtils.isDigitsOnly(index);
     }
 
     /**
