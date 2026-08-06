@@ -2,12 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'dev.ukanth.ufirewall'
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
+        //applicationId "dev.ukanth.ufirewall.donate"
         applicationId "dev.ukanth.ufirewall"
         minSdkVersion 23
-        targetSdk 35
+        targetSdk 36
         versionCode 20260801
         versionName "4.1.0"
         buildConfigField 'boolean', 'DONATE', 'false'
