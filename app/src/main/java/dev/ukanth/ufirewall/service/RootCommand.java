@@ -32,12 +32,7 @@ public class RootCommand {
 
     private List<String> commmands;
 
-    private RootShellService rootShellService;
-    private RootShellService2 rootShellService2;
-
     public RootCommand() {
-        rootShellService = new RootShellService();
-        rootShellService2 = new RootShellService2();
     }
 
 
@@ -140,10 +135,16 @@ public class RootCommand {
      * @param script List of commands to run as root
      */
     public final void run(Context ctx, List<String> script) {
-        if (rootShellService == null) {
-            rootShellService = new RootShellService();
-        }
-        rootShellService.runScriptAsRoot(ctx, script, this);
+        this.isv6 = false;
+        RootShellService.ENGINE.submit(ctx, script, this);
+    }
+
+    /**
+     * Run several scripts back to back (each RootCommand must already have its commands set via
+     * {@link #setCommmands(List)}); no other root command can run in between them.
+     */
+    public static void runAll(Context ctx, List<RootCommand> batch) {
+        RootShellService.ENGINE.submitAll(ctx, batch);
     }
 
     /**
@@ -153,11 +154,8 @@ public class RootCommand {
      * @param script List of commands to run as root
      */
     public final void run(Context ctx, List<String> script, boolean isv6) {
-        if (rootShellService2 == null) {
-            rootShellService2 = new RootShellService2();
-        }
-
-        rootShellService2.runScriptAsRoot(ctx, script, this);
+        this.isv6 = isv6;
+        RootShellService.ENGINE.submit(ctx, script, this);
     }
 
     /**
@@ -167,12 +165,10 @@ public class RootCommand {
      * @param cmd Command to run as root
      */
     public final void run(Context ctx, String cmd) {
-        if (rootShellService == null) {
-            rootShellService = new RootShellService();
-        }
         List<String> script = new ArrayList<String>();
         script.add(cmd);
-        rootShellService.runScriptAsRoot(ctx, script, this);
+        this.isv6 = false;
+        RootShellService.ENGINE.submit(ctx, script, this);
     }
 
     public static abstract class Callback {

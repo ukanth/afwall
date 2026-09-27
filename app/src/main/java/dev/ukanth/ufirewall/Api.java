@@ -140,7 +140,10 @@ import dev.ukanth.ufirewall.customrules.CustomRule;
 import dev.ukanth.ufirewall.customrules.CustomRule_Table;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
 import dev.ukanth.ufirewall.util.JsonHelper;
+import dev.ukanth.ufirewall.util.NetworkChangeDebouncer;
+import dev.ukanth.ufirewall.util.UidListParser;
 import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.widget.StatusWidget;
 
@@ -857,6 +860,16 @@ public final class Api {
     }
 
     private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6) {
+        addCustomRules(prefName, cmds, ipv6, true);
+    }
+
+    /**
+     * @param includeDatabaseRules add the per-app (direct) rules too. They are appended to the main
+     *                             chain, which only a full apply rebuilds, so a partial apply must
+     *                             not add them again (each network change used to add a copy).
+     */
+    private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6,
+                                       boolean includeDatabaseRules) {
         String customRulesStr = G.pPrefs.getString(prefName, "");
         if (!customRulesStr.isEmpty()) {
             String[] customRules = customRulesStr.split("[\\r\\n]+");
@@ -871,7 +884,7 @@ public final class Api {
             }
         }
 
-        if (PREF_CUSTOMSCRIPT.equals(prefName) && !ipv6) {
+        if (includeDatabaseRules && PREF_CUSTOMSCRIPT.equals(prefName) && !ipv6) {
             addDatabaseCustomRules(cmds);
         }
     }
@@ -992,7 +1005,9 @@ public final class Api {
             }
 
         } catch (Exception e) {
-            Log.i(TAG, "Exception while applying shortRules " + e.getMessage());
+            // The dynamic chains were already flushed above; running the rest of the script would
+            // leave them empty. Let the caller fail the apply instead.
+            throw new IllegalStateException("Unable to build interface routing rules", e);
         }
     }
 
@@ -1026,7 +1041,7 @@ public final class Api {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
         Log.i(TAG, "Applying custom rules");
-        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
+        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6, false);
         String chainName = getThreadSafeChainName();
         // Pass the current LAN UID list so fastApply also rebuilds the -wifi-lan chain,
         // keeping LAN access self-healing across network-change routing refreshes.
@@ -1045,11 +1060,17 @@ public final class Api {
      */
     private static boolean applyIptablesRulesImpl(final Context ctx, RuleDataSet ruleDataSet, final boolean showErrors,
                                                   List<String> out, boolean ipv6) {
-        return applyIptablesRulesImpl(ctx, ruleDataSet, showErrors, out, ipv6, null);
+        return applyIptablesRulesImpl(ctx, ruleDataSet, showErrors, out, ipv6, null, null);
     }
-    
+
+    /**
+     * @param out    receives the shell commands to run one by one
+     * @param rawOut if not null, receives the same commands before they are turned into shell
+     *               commands (input for {@link IptablesRestorePlanner})
+     */
     private static boolean applyIptablesRulesImpl(final Context ctx, RuleDataSet ruleDataSet, final boolean showErrors,
-                                                  List<String> out, boolean ipv6, String threadSafeChainName) {
+                                                  List<String> out, boolean ipv6, String threadSafeChainName,
+                                                  List<String> rawOut) {
         if (ctx == null) {
             return false;
         }
@@ -1272,9 +1293,15 @@ public final class Api {
 
             cmds.add("-P OUTPUT ACCEPT");
         } catch (Exception e) {
-            Log.e(e.getClass().getName(), e.getMessage(), e);
+            // Never run a partially built rule set: it would flush the chains, set OUTPUT to DROP
+            // and stop before the per-app rules, while being reported as a success.
+            Log.e(TAG, "Unable to build " + (ipv6 ? "IPv6" : "IPv4") + " rules", e);
+            return false;
         }
 
+        if (rawOut != null) {
+            rawOut.addAll(cmds);
+        }
         iptablesCommands(cmds, out, ipv6);
         return true;
     }
@@ -1370,21 +1397,58 @@ public final class Api {
         if (throwable != null && throwable.getMessage() != null) {
             callback.lastCommandResult = new StringBuilder(throwable.getMessage());
         }
-        callback.exitCode = 1;
-        callback.done = true;
-        if (ctx != null && callback.failureToast != RootShellService.NO_TOAST) {
-            sendToastBroadcast(ctx.getApplicationContext(), ctx.getString(callback.failureToast));
+        deliverRootCommandResult(ctx, callback, 1, true);
+    }
+
+    /**
+     * Complete a RootCommand that was not itself run on the root shell: record the result,
+     * invoke its callback and show its toast, the same way the shell does for submitted commands.
+     */
+    private static void deliverRootCommandResult(Context ctx, RootCommand target, int exitCode, boolean showToast) {
+        target.exitCode = exitCode;
+        target.done = true;
+        try {
+            if (target.cb != null) {
+                target.cb.cbFunc(target);
+            }
+        } catch (Throwable t) {
+            Log.e(TAG, "RootCommand callback failed: " + android.util.Log.getStackTraceString(t));
         }
-        if (callback.cb != null) {
-            callback.cb.cbFunc(callback);
+        if (showToast && ctx != null) {
+            int toast = exitCode == 0 ? target.successToast : target.failureToast;
+            if (toast != RootShellService.NO_TOAST) {
+                sendToastBroadcast(ctx.getApplicationContext(), ctx.getString(toast));
+            }
         }
     }
 
+    // Apply requests that arrive while an apply is running are coalesced into a single full apply
+    // that starts as soon as the current one finishes (it reads the latest saved rules). Each
+    // request's callback receives that apply's result. Guarded by GLOBAL_STATUS_LOCK.
+    private static final List<RootCommand> pendingApplyCallbacks = new ArrayList<>();
+    // purgeGeneration at the time each pending request was queued (same order as above)
+    private static final List<Long> pendingApplyGenerations = new ArrayList<>();
+    private static boolean pendingApplyShowErrors;
+    // Incremented by purgeIptables(). A queued apply requested before a later purge (e.g. the
+    // firewall was disabled meanwhile) is dropped instead of re-adding rules after the purge.
+    private static long purgeGeneration;
+    private static final java.util.concurrent.atomic.AtomicInteger disablesInProgress =
+            new java.util.concurrent.atomic.AtomicInteger();
+    // Incremented on every connectivity/tether broadcast, including ones ignored because the
+    // firewall is still being enabled, so an apply built on a stale network config is detected.
+    private static final java.util.concurrent.atomic.AtomicLong networkChangeSeq =
+            new java.util.concurrent.atomic.AtomicLong();
+
+    public static void noteNetworkChange() {
+        networkChangeSeq.incrementAndGet();
+    }
+
     // Wrap the caller-supplied callback so that globalStatus and the up-to-date flag are only
-    // reset once the entire (IPv4 + IPv6) command sequence has actually finished. Without this,
-    // the synchronous apply path used to clear globalStatus immediately after submission while
-    // the async root batches were still running.
-    private static RootCommand wrapApplyCompletionCallback(RootCommand callback) {
+    // reset once the entire (IPv4 + IPv6) command sequence has actually finished.
+    private static RootCommand wrapApplyCompletionCallback(Context ctx, RootCommand callback) {
+        final Context appCtx = ctx != null ? ctx.getApplicationContext() : G.getContext();
+        // the rules are built right after this from the current network config
+        final long networkSeqAtBuild = networkChangeSeq.get();
         final RootCommand completionCallback = callback == null ? new RootCommand() : callback;
         final RootCommand.Callback originalCallback = completionCallback.cb;
         completionCallback.setCallback(new RootCommand.Callback() {
@@ -1395,94 +1459,244 @@ public final class Api {
                         originalCallback.cbFunc(state);
                     }
                 } finally {
-                    synchronized (GLOBAL_STATUS_LOCK) {
-                        globalStatus = false;
-                        setRulesUpToDate(state.exitCode == 0);
-                    }
+                    onApplyFinished(appCtx, state.exitCode == 0, networkSeqAtBuild);
                 }
             }
         });
         return completionCallback;
     }
 
-    private static RootCommand newIntermediateApplyCommand(RootCommand finalCallback) {
-        return new RootCommand()
-                .setFailureToast(finalCallback.failureToast)
-                .setReopenShell(finalCallback.reopenShell);
+    private static void onApplyFinished(Context ctx, boolean success, long networkSeqAtBuild) {
+        final List<RootCommand> pending = new ArrayList<>();
+        final List<RootCommand> overtaken = new ArrayList<>();
+        final Context pendingCtx;
+        final boolean pendingShowErrors;
+        synchronized (GLOBAL_STATUS_LOCK) {
+            globalStatus = false;
+            setRulesUpToDate(success);
+            for (int i = 0; i < pendingApplyCallbacks.size(); i++) {
+                if (pendingApplyGenerations.get(i) < purgeGeneration) {
+                    overtaken.add(pendingApplyCallbacks.get(i));
+                } else {
+                    pending.add(pendingApplyCallbacks.get(i));
+                }
+            }
+            pendingApplyCallbacks.clear();
+            pendingApplyGenerations.clear();
+            pendingCtx = ctx != null ? ctx : G.getContext();
+            pendingShowErrors = pendingApplyShowErrors;
+            pendingApplyShowErrors = false;
+        }
+
+        if (!success && ctx != null) {
+            // A failed script can stop right after "-P OUTPUT DROP" and leave the device without
+            // any network. Put the chain policies back to what the user configured.
+            Log.w(TAG, "Rule apply failed; restoring configured default chain policies");
+            applyDefaultChains(ctx, new RootCommand());
+        }
+
+        if (success && pending.isEmpty() && ctx != null && networkChangeSeq.get() != networkSeqAtBuild) {
+            // The network changed while these rules were being applied (e.g. while enabling, when
+            // the change is ignored); re-check the interface routing once things have settled.
+            Log.i(TAG, "Network changed during rule apply; re-checking interface rules");
+            NetworkChangeDebouncer.scheduleNetworkChange(ctx, InterfaceTracker.CONNECTIVITY_CHANGE);
+        }
+
+        if (!overtaken.isEmpty()) {
+            Log.i(TAG, "Dropping " + overtaken.size() + " queued apply request(s) superseded by a purge");
+            for (RootCommand request : overtaken) {
+                deliverRootCommandResult(pendingCtx, request, 0, false);
+            }
+        }
+        if (pending.isEmpty()) {
+            return;
+        }
+        Log.i(TAG, "Running " + pending.size() + " apply request(s) queued during the previous apply");
+        applySavedIptablesRules(pendingCtx, pendingShowErrors, new RootCommand()
+                .setCallback(new RootCommand.Callback() {
+                    @Override
+                    public void cbFunc(RootCommand state) {
+                        for (RootCommand request : pending) {
+                            request.lastCommand = state.lastCommand;
+                            request.lastCommandResult = state.lastCommandResult;
+                            deliverRootCommandResult(pendingCtx, request, state.exitCode, true);
+                        }
+                    }
+                }));
+    }
+
+    private static RootCommand newApplyPart(RootCommand parent, List<String> cmds, boolean ipv6) {
+        RootCommand part = new RootCommand()
+                .setRetryExitCode(IPTABLES_TRY_AGAIN)
+                .setReopenShell(parent.reopenShell);
+        part.res = parent.res;
+        part.isv6 = ipv6;
+        part.setCommmands(cmds);
+        return part;
+    }
+
+    private static final String RESTORE_SUFFIX = "-restore";
+    // iptables-restore failed for this family (0 = IPv4, 1 = IPv6) in this process; use the
+    // per-command script from now on.
+    private static final boolean[] restoreUnavailable = new boolean[2];
+
+    /**
+     * Commands that load a full rule set with one iptables-restore (see
+     * {@link IptablesRestorePlanner}) followed by the few built-in chain commands, or null when the
+     * per-command script has to be used.
+     */
+    private static List<String> buildRestoreCommands(Context ctx, List<String> rawCmds, boolean ipv6) {
+        if (restoreUnavailable[ipv6 ? 1 : 0]) {
+            return null;
+        }
+        IptablesRestorePlanner.Plan plan = IptablesRestorePlanner.plan(rawCmds);
+        if (plan == null) {
+            Log.i(TAG, "Rules can't be loaded with iptables-restore (e.g. custom script); applying one by one");
+            return null;
+        }
+        String restoreBin = getRestoreBinary(ctx, ipv6);
+        if (restoreBin == null) {
+            restoreUnavailable[ipv6 ? 1 : 0] = true;
+            Log.i(TAG, "No iptables-restore available for " + (ipv6 ? "IPv6" : "IPv4") + "; applying rules one by one");
+            return null;
+        }
+        File file = new File(ctx.getFilesDir(), ipv6 ? "rules6.restore" : "rules4.restore");
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            fos.write(plan.restoreInput.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to write " + file, e);
+            return null;
+        }
+        Log.i(TAG, "Loading " + (ipv6 ? "IPv6" : "IPv4") + " rules with " + restoreBin);
+        List<String> out = new ArrayList<>();
+        out.add(restoreBin + " -w 5 --noflush " + file.getAbsolutePath());
+        iptablesCommands(plan.postCommands, out, ipv6);
+        return out;
+    }
+
+    /**
+     * @return iptables-restore / ip6tables-restore matching the configured iptables binary, or null
+     */
+    private static String getRestoreBinary(Context ctx, boolean ipv6) {
+        String ipPath = getBinaryPath(ctx, ipv6);
+        if (ipPath == null || !ipPath.startsWith("/")) {
+            return null;
+        }
+        File restore = new File(ipPath + RESTORE_SUFFIX);
+        String builtinDir = ctx.getDir("bin", 0).getAbsolutePath() + "/";
+        if (ipPath.startsWith(builtinDir) && !restore.exists()) {
+            // The bundled binary is a multi-call xtables binary that runs as iptables-restore when
+            // invoked under that name.
+            try {
+                android.system.Os.symlink(new File(ipPath).getName(), restore.getAbsolutePath());
+            } catch (Exception e) {
+                Log.w(TAG, "Unable to create " + restore + ": " + e.getMessage());
+                return null;
+            }
+        }
+        return restore.exists() ? restore.getAbsolutePath() : null;
+    }
+
+    /**
+     * Run the IPv4/IPv6 parts of an apply back to back and report one combined result to
+     * {@code parent}. If a part fails, the remaining parts are skipped. A part that was loaded
+     * with iptables-restore and whose restore failed is re-run with its per-command fallback.
+     */
+    private static void runApplyParts(final Context ctx, final RootCommand parent, final List<RootCommand> parts,
+                                      final List<List<String>> fallbacks) {
+        final int[] remaining = {parts.size()};
+        final RootCommand[] failed = {null};
+        for (int i = 0; i < parts.size(); i++) {
+            final int index = i;
+            parts.get(i).setCallback(new RootCommand.Callback() {
+                @Override
+                public void cbFunc(RootCommand state) {
+                    // parts run one after another on the root shell thread, so no locking needed
+                    List<String> fallback = fallbacks.get(index);
+                    if (state.exitCode != 0 && fallback != null && state.lastCommand != null
+                            && state.lastCommand.contains(RESTORE_SUFFIX + " ")) {
+                        // The restore itself failed; each table commits atomically, so nothing half
+                        // done was left behind. Don't try it again this session for this family.
+                        restoreUnavailable[state.isv6 ? 1 : 0] = true;
+                        Log.w(TAG, "iptables-restore failed (exit " + state.exitCode + "): "
+                                + state.lastCommandResult + "; applying " + (state.isv6 ? "IPv6" : "IPv4")
+                                + " rules one by one");
+                        fallbacks.set(index, null);
+                        RootCommand retry = newApplyPart(parent, fallback, state.isv6);
+                        retry.setCallback(this);
+                        parts.set(index, retry);
+                        RootCommand.runAll(ctx, java.util.Collections.singletonList(retry));
+                        return;
+                    }
+                    if (state.exitCode != 0 && failed[0] == null) {
+                        failed[0] = state;
+                        for (int j = index + 1; j < parts.size(); j++) {
+                            parts.get(j).getCommmands().clear();
+                        }
+                    }
+                    if (--remaining[0] == 0) {
+                        RootCommand result = failed[0] != null ? failed[0] : state;
+                        parent.lastCommand = result.lastCommand;
+                        parent.lastCommandResult = result.lastCommandResult;
+                        deliverRootCommandResult(ctx, parent, result.exitCode, true);
+                    }
+                }
+            });
+        }
+        RootCommand.runAll(ctx, parts);
     }
 
     public static void applySavedIptablesRules(Context ctx, boolean showErrors, RootCommand callback) {
         synchronized (GLOBAL_STATUS_LOCK) {
-            if(!globalStatus) {
-                globalStatus = true;
-                final RootCommand completionCallback = wrapApplyCompletionCallback(callback);
-
-                try {
-                    Log.i(TAG, "Starting full firewall rules apply");
-                    RuleDataSet dataSet = getDataSet();
-                    List<String> ipv4cmds = new ArrayList<>();
-                    List<String> ipv6cmds = new ArrayList<>();
-
-                    // Create thread-safe chain name for this execution
-                    final String chainName = getThreadSafeChainName();
-
-                    // Apply IPv4 rules first. When IPv6 is enabled, wait for IPv4
-                    // completion before starting IPv6 so the apply dialog and final
-                    // callback represent the entire ruleset, not only IPv4.
-                    try {
-                        Log.i(TAG, "Applying IPv4 rules");
-                        applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName);
-                        if (G.enableIPv6()) {
-                            final List<String> finalIpv6cmds = ipv6cmds;
-                            RootCommand ipv4Callback = newIntermediateApplyCommand(completionCallback)
-                                    .setCallback(new RootCommand.Callback() {
-                                        @Override
-                                        public void cbFunc(RootCommand state) {
-                                            if (state.exitCode != 0) {
-                                                completionCallback.cb.cbFunc(state);
-                                                return;
-                                            }
-                                            try {
-                                                Log.i(TAG, "Applying IPv6 rules");
-                                                applyIptablesRulesImpl(ctx, dataSet, showErrors, finalIpv6cmds, true, chainName);
-                                                if (applySavedIp6tablesRules(ctx, finalIpv6cmds, completionCallback)) {
-                                                    Log.i(TAG, "Submitted IPv6 rule commands");
-                                                } else {
-                                                    completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", null);
-                                                }
-                                            } catch (Exception e) {
-                                                Log.e(TAG, "Error applying IPv6 rules", e);
-                                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp6tablesRules", e);
-                                            }
-                                        }
-                                    });
-                            if (applySavedIp4tablesRules(ctx, ipv4cmds, ipv4Callback)) {
-                                Log.i(TAG, "Submitted IPv4 rule commands");
-                            } else {
-                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
-                            }
-                        } else {
-                            if (applySavedIp4tablesRules(ctx, ipv4cmds, completionCallback)) {
-                                Log.i(TAG, "Submitted IPv4 rule commands");
-                            } else {
-                                completeRootCommandFailure(ctx, completionCallback, "applySavedIp4tablesRules", null);
-                            }
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Error applying IPv4 rules", e);
-                        throw new RuntimeException(e);
-                    }
-
-                    Log.i(TAG, "Submitted firewall rule command sequence");
-
-                } catch (Exception e) {
-                    Log.e(TAG, "Error applying rules", e);
-                    completeRootCommandFailure(ctx, completionCallback, "applySavedIptablesRules", e);
-                }
-            } else {
-                Log.i(TAG, "ignore applySavedIptablesRules as existing thread running");
-                completeRootCommandFailure(ctx, callback, "applySavedIptablesRules", null);
+            if (globalStatus) {
+                // Don't report "busy" as a failure: callers treat failures as a broken firewall.
+                Log.i(TAG, "Apply already in progress; queued to run after it finishes");
+                pendingApplyCallbacks.add(callback != null ? callback : new RootCommand());
+                pendingApplyGenerations.add(purgeGeneration);
+                pendingApplyShowErrors |= showErrors;
+                return;
             }
+            globalStatus = true;
+        }
+
+        final RootCommand completionCallback = wrapApplyCompletionCallback(ctx, callback);
+        try {
+            Log.i(TAG, "Starting full firewall rules apply");
+            RuleDataSet dataSet = getDataSet();
+            // Create thread-safe chain name for this execution
+            final String chainName = getThreadSafeChainName();
+
+            // Build both families up front and queue them together: IPv6 still runs after IPv4,
+            // but nothing else (e.g. a purge) can run in between.
+            // Each family is loaded with one iptables-restore when possible (atomic, and far faster
+            // than one full table rewrite per command); the per-command script is the fallback.
+            List<RootCommand> parts = new ArrayList<>();
+            List<List<String>> fallbacks = new ArrayList<>();
+            List<String> ipv4cmds = new ArrayList<>();
+            List<String> ipv4raw = new ArrayList<>();
+            if (!applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv4cmds, false, chainName, ipv4raw)) {
+                completeRootCommandFailure(ctx, completionCallback, "build IPv4 rules", null);
+                return;
+            }
+            List<String> ipv4restore = buildRestoreCommands(ctx, ipv4raw, false);
+            parts.add(newApplyPart(completionCallback, ipv4restore != null ? ipv4restore : ipv4cmds, false));
+            fallbacks.add(ipv4restore != null ? ipv4cmds : null);
+            if (G.enableIPv6()) {
+                List<String> ipv6cmds = new ArrayList<>();
+                List<String> ipv6raw = new ArrayList<>();
+                if (!applyIptablesRulesImpl(ctx, dataSet, showErrors, ipv6cmds, true, chainName, ipv6raw)) {
+                    completeRootCommandFailure(ctx, completionCallback, "build IPv6 rules", null);
+                    return;
+                }
+                List<String> ipv6restore = buildRestoreCommands(ctx, ipv6raw, true);
+                parts.add(newApplyPart(completionCallback, ipv6restore != null ? ipv6restore : ipv6cmds, true));
+                fallbacks.add(ipv6restore != null ? ipv6cmds : null);
+            }
+            runApplyParts(ctx, completionCallback, parts, fallbacks);
+            Log.i(TAG, "Submitted firewall rule command sequence");
+        } catch (Exception e) {
+            Log.e(TAG, "Error applying rules", e);
+            completeRootCommandFailure(ctx, completionCallback, "applySavedIptablesRules", e);
         }
     }
 
@@ -1520,87 +1734,42 @@ public final class Api {
     }
 
     /**
-     * Purge and re-add all saved rules (not in-memory ones).
-     * This is much faster than just calling "applyIptablesRules", since it don't need to read installed applications.
-     *
-     * @param ctx      application context (mandatory)
-     * @param callback If non-null, use a callback instead of blocking the current thread
+     * Re-apply only the interface routing rules after a network change. Falls back to a full apply
+     * when the rules are not known to be up to date, or when another apply is in progress (the
+     * queued full apply then picks up the new network state).
      */
-    public static boolean applySavedIp4tablesRules(Context ctx, List<String> cmds, RootCommand callback) {
-        if (ctx == null) {
-            return false;
-        }
-        try {
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Exception while applying IPv4 rules: " + e.getMessage(), e);
-            // Only apply default chains if it's a critical failure
-            // Avoid overriding user chain preferences unnecessarily
-            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
-                Log.w(TAG, "Applying default chains due to rule application failure");
-                applyDefaultChains(ctx, callback);
-            } else {
-                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
-            }
-            return false;
-        }
-    }
-
-
-    public static boolean applySavedIp6tablesRules(Context ctx, List<String> cmds, RootCommand callback) {
-        if (ctx == null) {
-            return false;
-        }
-        try {
-            callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, cmds,true);
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Exception while applying IPv6 rules: " + e.getMessage(), e);
-            // Only apply default chains if it's a critical failure
-            // Avoid overriding user chain preferences unnecessarily
-            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
-                Log.w(TAG, "Applying default chains due to rule application failure");
-                applyDefaultChains(ctx, callback);
-            } else {
-                Log.w(TAG, "Skipping default chains application to preserve user chain preferences");
-            }
-            return false;
-        }
-    }
-
-
     public static boolean fastApply(Context ctx, RootCommand callback) {
-        try {
-                if (!getRulesUpToDate()) {
-                    Log.i(TAG, "Using full Apply");
-                    applySavedIptablesRules(ctx, true, callback);
-                } else {
-                    Log.i(TAG, "Using fastApply");
-                    List<String> out = new ArrayList<String>();
-                    List<String> cmds;
-                    cmds = new ArrayList<String>();
-                    applyShortRules(ctx, cmds, false);
-                    iptablesCommands(cmds, out, false);
-                    if (G.enableIPv6()) {
-                        cmds = new ArrayList<String>();
-                        applyShortRules(ctx, cmds, true);
-                        iptablesCommands(cmds, out, true);
-                    }
-                    callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+        boolean fullApply;
+        synchronized (GLOBAL_STATUS_LOCK) {
+            fullApply = globalStatus || !getRulesUpToDate();
+            if (!fullApply) {
+                globalStatus = true;
             }
+        }
+        if (fullApply) {
+            Log.i(TAG, "Using full Apply");
+            applySavedIptablesRules(ctx, true, callback);
+            return true;
+        }
+
+        final RootCommand completionCallback = wrapApplyCompletionCallback(ctx, callback);
+        try {
+            Log.i(TAG, "Using fastApply");
+            List<String> out = new ArrayList<String>();
+            List<String> cmds = new ArrayList<String>();
+            applyShortRules(ctx, cmds, false);
+            iptablesCommands(cmds, out, false);
+            if (G.enableIPv6()) {
+                cmds = new ArrayList<String>();
+                applyShortRules(ctx, cmds, true);
+                iptablesCommands(cmds, out, true);
+            }
+            // up-to-date flag is set from the real result by the completion callback
+            completionCallback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
         } catch (Exception e) {
             Log.e(TAG, "Exception in fastApply: " + e.getMessage(), e);
-            // Only apply default chains if it's a critical failure
-            // Avoid overriding user chain preferences unnecessarily
-            if (e.getMessage() != null && !e.getMessage().contains("Chain") && !e.getMessage().contains("policy")) {
-                Log.w(TAG, "Applying default chains due to fastApply failure");
-                applyDefaultChains(ctx, callback);
-            } else {
-                Log.w(TAG, "Skipping default chains application in fastApply to preserve user chain preferences");
-            }
+            completeRootCommandFailure(ctx, completionCallback, "fastApply", e);
         }
-        setRulesUpToDate(true);
         return true;
     }
 
@@ -1716,21 +1885,59 @@ public final class Api {
      * @return true if the rules were purged
      */
     public static void purgeIptables(Context ctx, boolean showErrors, RootCommand callback) {
+        synchronized (GLOBAL_STATUS_LOCK) {
+            purgeGeneration++;
+        }
+        // Until the purge's callback has updated the enabled flag, automatic applies (boot,
+        // network change) must not re-add the rules based on the old "enabled" state.
+        final RootCommand purgeCallback = callback != null ? callback : new RootCommand();
+        final RootCommand.Callback originalCallback = purgeCallback.cb;
+        disablesInProgress.incrementAndGet();
+        purgeCallback.setCallback(new RootCommand.Callback() {
+            @Override
+            public void cbFunc(RootCommand state) {
+                try {
+                    if (originalCallback != null) {
+                        originalCallback.cbFunc(state);
+                    }
+                } finally {
+                    disablesInProgress.decrementAndGet();
+                }
+            }
+        });
+        try {
+            submitPurge(ctx, purgeCallback);
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to build purge commands", e);
+            completeRootCommandFailure(ctx, purgeCallback, "purgeIptables", e);
+        }
+    }
+
+    /**
+     * @return true while a purge (firewall disable) has been requested but not finished yet
+     */
+    public static boolean isDisableInProgress() {
+        return disablesInProgress.get() > 0;
+    }
+
+    private static void submitPurge(Context ctx, RootCommand callback) {
         String chainName = getThreadSafeChainName();
 
         List<String> cmds = new ArrayList<>();
         List<String> cmdsv4 = new ArrayList<>();
         List<String> out = new ArrayList<>();
 
+        // The chains don't exist if the rules were never applied (or after a reboot before the
+        // first apply); a missing chain must not make the purge fail.
         for (String s : staticChains) {
-            cmds.add("-F " + chainName + s);
+            cmds.add("#NOCHK# -F " + chainName + s);
         }
         for (String s : dynChains) {
-            cmds.add("-F " + chainName + s);
+            cmds.add("#NOCHK# -F " + chainName + s);
         }
         if (G.enableTor()) {
             for (String s : natChains) {
-                cmdsv4.add("-t nat -F " + chainName + s);
+                cmdsv4.add("#NOCHK# -t nat -F " + chainName + s);
             }
             cmdsv4.add("#NOCHK# -t nat -D OUTPUT -j " + chainName);
         } else {
@@ -1744,7 +1951,7 @@ public final class Api {
         //cmds.add("-D OUTPUT -j " + chainName);
 
         if (G.enableInbound()) {
-            cmds.add("-D INPUT -j " + chainName + "-input");
+            cmds.add("#NOCHK# -D INPUT -j " + chainName + "-input");
         }
 
         addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
@@ -1758,20 +1965,20 @@ public final class Api {
             Log.i(TAG, "Executing purge commands for IPv6");
             List<String> cmdsv6 = new ArrayList<>();
             for (String s : staticChains) {
-                cmdsv6.add("-F " + chainName + s);
+                cmdsv6.add("#NOCHK# -F " + chainName + s);
             }
             for (String s : dynChains) {
-                cmdsv6.add("-F " + chainName + s);
+                cmdsv6.add("#NOCHK# -F " + chainName + s);
             }
             cmdsv6.add("#NOCHK# -D OUTPUT -j " + chainName);
             cmdsv6.add("-P OUTPUT ACCEPT");
             if (G.enableInbound()) {
-                cmdsv6.add("-D INPUT -j " + chainName + "-input");
+                cmdsv6.add("#NOCHK# -D INPUT -j " + chainName + "-input");
             }
             iptablesCommands(cmdsv6, out, true);
         }
         
-        Log.i(TAG, "Purge completed, calling callback");
+        Log.i(TAG, "Submitted purge commands");
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
     
@@ -2536,17 +2743,8 @@ public final class Api {
     }
 
     private static List<Integer> getListFromPref(String savedPkg_uid) {
-        StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
-        List<Integer> listUids = new ArrayList<>();
-        while (tok.hasMoreTokens()) {
-            String uid = tok.nextToken();
-            if (!uid.equals("")) {
-                listUids.add(Integer.parseInt(uid));
-            }
-        }
-        // Sort the array to allow using "Arrays.binarySearch" later
-        Collections.sort(listUids);
-        return listUids;
+        // Sorted to allow using "Arrays.binarySearch" later
+        return UidListParser.parse(savedPkg_uid);
     }
 
     /*public static boolean isAppAllowed(Context context, ApplicationInfo applicationInfo, SharedPreferences sharedPreferences, SharedPreferences pPrefs) {
@@ -2999,12 +3197,12 @@ public final class Api {
             return;
         }
 
-        Intent myService = new Intent(ctx, FirewallService.class);
-        ctx.stopService(myService);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            ctx.startForegroundService(myService);
+        if (FirewallService.isInstanceRunning()) {
+            // the notification is rebuilt from the new enabled state
+            FirewallService.refreshNotification();
         } else {
-            ctx.startService(myService);
+            // may be refused from the background; MainActivity starts it again when opened
+            FirewallService.ensureRunning(ctx);
         }
 
         /* notify */
@@ -3335,11 +3533,19 @@ public final class Api {
             }
         }
 
+        // direct (per-app) rules are keyed by UID; drop them so a new app reusing the UID
+        // does not inherit them
+        if (AppRuleHelper.deleteRulesForUidInAllProfiles(pkgRemoved) > 0) {
+            isRuleChanged = true;
+        }
+
         if (isRuleChanged) {
             editor.apply();
-            if (isEnabled(ctx)) {
-                applySavedIptablesRules(ctx, false, new RootCommand());
-            }
+        }
+        if (isRuleChanged && isEnabled(ctx)) {
+            applySavedIptablesRules(ctx, false, callback);
+        } else if (callback != null) {
+            deliverRootCommandResult(ctx, callback, 0, false);
         }
     }
 
@@ -3548,13 +3754,9 @@ public final class Api {
     }
 
     private static void updatePackage(Context ctx, String savedPkg_uid, Map<String, JSONObject> exportMap, int identifier) throws JSONException {
-        StringTokenizer tok = new StringTokenizer(savedPkg_uid, "|");
-        while (tok.hasMoreTokens()) {
-            String uid = tok.nextToken();
-            if (!uid.isEmpty()) {
-                String packageName = ctx.getPackageManager().getNameForUid(Integer.parseInt(uid));
-                updateExportPackage(exportMap, packageName, /*is_checked=*/ true, identifier);
-            }
+        for (int uid : UidListParser.parse(savedPkg_uid)) {
+            String packageName = ctx.getPackageManager().getNameForUid(uid);
+            updateExportPackage(exportMap, packageName, /*is_checked=*/ true, identifier);
         }
     }
 
@@ -4305,22 +4507,57 @@ public final class Api {
      * @param ctx
      */
     public static void applyDefaultChains(Context ctx, RootCommand callback) {
+        List<String> v4 = new ArrayList<>();
+        v4.add(G.ipv4Input() ? "-P INPUT ACCEPT" : "-P INPUT DROP");
+        v4.add(G.ipv4Fwd() ? "-P FORWARD ACCEPT" : "-P FORWARD DROP");
+        v4.add(G.ipv4Output() ? "-P OUTPUT ACCEPT" : "-P OUTPUT DROP");
+
+        // One script and one submission: submitting the same RootCommand twice (as this used to do
+        // for IPv4 and IPv6) replaces the first command list before it runs, so the IPv4 policies
+        // were never set, and the callback fired twice.
+        List<String> out = new ArrayList<>();
+        iptablesCommands(v4, out, false);
+        if (G.controlIPv6()) {
+            iptablesCommands(defaultChainsv6Commands(), out, true);
+        } else if (G.enableIPv6() || G.fixLeak()) {
+            //related to #511, disable ipv6 but use startup leak.
+            iptablesCommands(v4, out, true);
+        }
+        callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
+    }
+
+    /**
+     * The fix leak boot script sets INPUT/OUTPUT/FORWARD to DROP (IPv4 and IPv6) until AFWall+
+     * applies its rules. When the firewall is disabled or inactive at boot no rules are applied,
+     * so the policies have to be opened again explicitly, or the device stays offline.
+     */
+    public static void liftBootLeakProtection(Context ctx) {
+        if (G.initPath() == null) {
+            return; // no fix leak script configured
+        }
         List<String> cmds = new ArrayList<>();
-        cmds.add(G.ipv4Input() ? "-P INPUT ACCEPT" : "-P INPUT DROP");
-        cmds.add(G.ipv4Fwd() ? "-P FORWARD ACCEPT" : "-P FORWARD DROP");
-        cmds.add(G.ipv4Output() ? "-P OUTPUT ACCEPT" : "-P OUTPUT DROP");
-        applyQuick(ctx, cmds, callback);
-        applyDefaultChainsv6(ctx, callback);
+        cmds.add("-P INPUT ACCEPT");
+        cmds.add("-P OUTPUT ACCEPT");
+        cmds.add("-P FORWARD ACCEPT");
+        List<String> out = new ArrayList<>();
+        iptablesCommands(cmds, out, false);
+        iptablesCommands(cmds, out, true);
+        Log.i(TAG, "Firewall not active at boot; opening chain policies set by the fix leak script");
+        new RootCommand().setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
 
     public static void applyDefaultChainsv6(Context ctx, RootCommand callback) {
         if (G.controlIPv6()) {
-            List<String> cmds = new ArrayList<>();
-            cmds.add(G.ipv6Input() ? "-P INPUT ACCEPT" : "-P INPUT DROP");
-            cmds.add(G.ipv6Fwd() ? "-P FORWARD ACCEPT" : "-P FORWARD DROP");
-            cmds.add(G.ipv6Output() ? "-P OUTPUT ACCEPT" : "-P OUTPUT DROP");
-            applyIPv6Quick(ctx, cmds, callback);
+            applyIPv6Quick(ctx, defaultChainsv6Commands(), callback);
         }
+    }
+
+    private static List<String> defaultChainsv6Commands() {
+        List<String> cmds = new ArrayList<>();
+        cmds.add(G.ipv6Input() ? "-P INPUT ACCEPT" : "-P INPUT DROP");
+        cmds.add(G.ipv6Fwd() ? "-P FORWARD ACCEPT" : "-P FORWARD DROP");
+        cmds.add(G.ipv6Output() ? "-P OUTPUT ACCEPT" : "-P OUTPUT DROP");
+        return cmds;
     }
 
     /**
@@ -4379,13 +4616,27 @@ public final class Api {
     }
 
     public static void checkAndCopyFixLeak(final Context context, final String fileName) {
-        if (G.initPath() != null && G.fixLeak() && !isFixPathFileExist(fileName)) {
+        if (G.initPath() != null && G.fixLeak()) {
             final String srcPath = new File(ctx.getDir("bin", 0), fileName)
                     .getAbsolutePath();
 
             new Thread(() -> {
                 String path = G.initPath();
-                if (path != null) {
+                String dest = getFixLeakPath(fileName);
+                if (path != null && dest != null) {
+                    // Refresh our copy from the APK: bundled scripts are otherwise only re-extracted
+                    // when the version code changes.
+                    if (!installBinary(ctx, R.raw.afwallstart, fileName)) {
+                        Log.w(TAG, "Unable to refresh the fix leak script");
+                        return;
+                    }
+                    // Replace the installed script when it is missing or outdated (older versions did
+                    // nothing on devices with file-based encryption). The init dir is usually
+                    // root-only, so compare as root.
+                    if (com.topjohnwu.superuser.Shell.cmd("cmp -s '" + srcPath + "' '" + dest + "'").exec().isSuccess()) {
+                        return;
+                    }
+                    Log.i(TAG, "Installing fix leak script to " + dest);
                     File f = new File(path);
                     if (mountDir(context, getFixLeakPath(fileName), "RW")) {
                         //make sure it's executable
@@ -4395,6 +4646,8 @@ public final class Api {
                                 .run(ctx, "chmod 755 " + f.getAbsolutePath());
                         RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName),
                                 true, false);
+                        // init only runs executable scripts; synchronous, before remounting read-only
+                        com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + dest + "'").exec();
                         mountDir(context, getFixLeakPath(fileName), "RO");
                     }
                 }

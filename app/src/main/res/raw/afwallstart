@@ -1,12 +1,27 @@
 #!/system/bin/sh
+# AFWall+ boot leak protection: block all traffic until AFWall+ has applied its rules
+# (AFWall+ resets the policies once its rules are in place, or when the firewall is disabled).
+#
+# This runs very early (post-fs-data), before the device is unlocked. On devices with
+# file-based encryption the app data directory (/data/data/...) is not readable yet, so
+# only rely on paths that are: the APK directory (/data/app) to check that AFWall+ is
+# still installed, and the system iptables binaries.
 
 export PATH=/system/bin
 
-if [ -e /data/data/dev.ukanth.ufirewall/app_bin/iptables ]; then
-  path="dev.ukanth.ufirewall"
-elif [ -e /data/data/dev.ukanth.ufirewall.donate/app_bin/iptables ]; then
-  path="dev.ukanth.ufirewall.donate"
-else
+find_afwall() {
+  for pkg in dev.ukanth.ufirewall dev.ukanth.ufirewall.donate; do
+    for d in /data/app/$pkg-* /data/app/*/$pkg-*; do
+      if [ -d "$d" ]; then
+        echo "$pkg"
+        return
+      fi
+    done
+  done
+}
+
+pkg=$(find_afwall)
+if [ -z "$pkg" ]; then
   log -p i -t afwall "AFWall does not seem to be installed"
   exit
 fi
@@ -24,7 +39,6 @@ doit() {
   done
 }
 
-doit /system/bin/iptables /data/data/$path/app_bin/iptables
-doit /system/bin/ip6tables /data/data/$path/app_bin/ip6tables
+doit /system/bin/iptables /data/data/$pkg/app_bin/iptables
+doit /system/bin/ip6tables /data/data/$pkg/app_bin/ip6tables
 log -p i -t afwall "IPv4/6 policy set to DROP"
-

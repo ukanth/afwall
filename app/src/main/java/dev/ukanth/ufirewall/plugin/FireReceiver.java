@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
 
@@ -288,7 +289,7 @@ public final class FireReceiver extends BroadcastReceiver {
 
     private void sendMessage(Message msg) {
         try {
-            new Handler() {
+            new Handler(Looper.getMainLooper()) {
                 public void handleMessage(Message msg) {
                     if (msg.arg1 != 0)
                         Toast.makeText(G.getContext(), msg.arg1, Toast.LENGTH_SHORT).show();

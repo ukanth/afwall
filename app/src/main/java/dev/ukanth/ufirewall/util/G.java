@@ -1587,6 +1587,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
         Log.i(Api.TAG, reason + ", scheduling network rule refresh");
         // VPN connect/disconnect is not delivered through the legacy connectivity broadcast on all devices.
+        Api.noteNetworkChange();
         NetworkChangeDebouncer.scheduleNetworkChange(context, InterfaceTracker.CONNECTIVITY_CHANGE);
     }
 

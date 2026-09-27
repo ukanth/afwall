@@ -242,10 +242,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             startRootShell();
             new SecurityUtil(MainActivity.this).passCheck();
             registerNetworkObserver();
-            // Ensure FirewallService is started if firewall is enabled
-            if (Api.isEnabled(this)) {
-                Api.setEnabled(this, true, false);
-            }
+            // FirewallService is started in onResume()
         }
         registerUIbroadcast4();
         registerUIbroadcast6();
@@ -288,8 +285,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void registerLogService() {
         if (G.enableLogService()) {
             Log.i(G.TAG, "Starting Log Service");
-            final Intent logIntent = new Intent(getBaseContext(), LogService.class);
-            startService(logIntent);
+            // guarded foreground start: a plain startService() throws when the activity is
+            // created while the screen is off / locked (the app counts as background then)
+            LogService.ensureRunning(getApplicationContext());
         }
     }
 
@@ -389,10 +387,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void registerNetworkObserver() {
         //start log service
-        if (G.enableLogService()) {
-            Intent logIntent = new Intent(getBaseContext(), LogService.class);
-            startService(logIntent);
-        }
+        LogService.ensureRunning(getApplicationContext());
     }
 
     @Override
@@ -649,6 +644,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }*/
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver4, uiFilter4);
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(uiProgressReceiver6, uiFilter6);
+
+        // FirewallService owns the network-change receiver. Its background starts (boot on
+        // Android 15 after a force-stop, widget, Tasker) can be refused, so start it while in front.
+        FirewallService.ensureRunning(getApplicationContext());
 
         G.activityResumed();
 
@@ -2624,27 +2623,33 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .setFailureToast(R.string.error_apply)
                         .setCallback(new RootCommand.Callback() {
                             public void cbFunc(RootCommand state) {
-                                try {
-                                    if (runProgress != null) {
-                                        runProgress.dismiss();
-                                    }
-                                } catch (Exception ex) {
+                                final Context appCtx = getApplicationContext();
+                                if (state.exitCode != 0) {
+                                    // Keep the enabled state and the unsaved changes so the user can retry:
+                                    // flipping to "disabled" here left rules loaded while the UI said off.
+                                    Api.errorNotification(appCtx);
                                 }
-                                if (state.exitCode == 0) {
-                                    setDirty(false);
-                                }
-                                //queue.clear();
                                 runOnUiThread(() -> {
-                                    setDirty(false);
-                                    if (state.exitCode != 0) {
-                                        Api.errorNotification(activityReference.get());
-                                        menuSetApplyOrSave(activityReference.get().mainMenu, false);
-                                        Api.setEnabled(activityReference.get(), false, true);
-                                    } else {
-                                        menuSetApplyOrSave(activityReference.get().mainMenu, enabled);
-                                        Api.setEnabled(activityReference.get(), enabled, true);
+                                    try {
+                                        if (runProgress != null) {
+                                            runProgress.dismiss();
+                                        }
+                                    } catch (Exception ex) {
+                                        Log.w(Api.TAG, "Unable to dismiss apply dialog: " + ex.getMessage());
+                                    }
+                                    MainActivity activity = activityReference.get();
+                                    if (activity == null || activity.isFinishing() || activity.isDestroyed()) {
+                                        if (state.exitCode == 0) {
+                                            Api.setEnabled(appCtx, enabled, true);
+                                        }
+                                        return;
+                                    }
+                                    if (state.exitCode == 0) {
+                                        setDirty(false);
+                                        menuSetApplyOrSave(activity.mainMenu, enabled);
+                                        Api.setEnabled(activity, enabled, true);
                                         if (enabled && G.enableLogService()) {
-                                            LogService.ensureRunning(activityReference.get());
+                                            LogService.ensureRunning(activity);
                                         }
                                     }
                                     refreshHeader();

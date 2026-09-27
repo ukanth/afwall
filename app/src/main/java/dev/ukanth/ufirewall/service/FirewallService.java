@@ -211,6 +211,21 @@ public class FirewallService extends Service {
     public static boolean isInstanceRunning() {
         return instance != null;
     }
+
+    /**
+     * Start the service if it isn't running. Android 12+ refuses foreground-service starts while
+     * the app is in the background (except e.g. a real boot); that is logged, not thrown.
+     */
+    public static void ensureRunning(Context ctx) {
+        if (ctx == null || isInstanceRunning()) {
+            return;
+        }
+        try {
+            androidx.core.content.ContextCompat.startForegroundService(ctx, new Intent(ctx, FirewallService.class));
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to start FirewallService: " + e.getMessage());
+        }
+    }
     
     /**
      * Refresh the notification

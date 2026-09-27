@@ -223,8 +223,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             holder.box_tor = addSupport(holder.box_tor, holder.app, 3);
         }
 
-        // Apply high contrast checkbox tinting for e-paper displays
-        applyHighContrastCheckboxTint(holder);
+        applyCheckboxTint(holder);
 
         setupExpandableView(holder, convertView, position);
         addEventListenter(holder);
@@ -650,37 +649,27 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         return check;
     }
 
+    private ColorStateList checkboxTint;
+
     /**
-     * Apply high contrast checkbox tinting for e-paper displays
+     * Tint the row checkboxes with the theme's control colors (unchecked: secondary text color,
+     * checked: accent; pure black on the e-paper theme). The rows are inflated from the
+     * application context, so they don't pick up the activity theme's control colors and were
+     * left with near-invisible library defaults on dark backgrounds.
      */
-    private void applyHighContrastCheckboxTint(AppStateHolder holder) {
-        if (!"LHC".equals(G.getSelectedTheme())) {
-            return;
+    private void applyCheckboxTint(AppStateHolder holder) {
+        if (checkboxTint == null) {
+            // the effective theme: a donor-only theme without the key falls back to the dark one
+            checkboxTint = "LHC".equals(G.getEffectiveSelectedTheme(context))
+                    ? ColorStateList.valueOf(Color.BLACK) // maximum contrast on e-paper
+                    : ThemeHelper.controlTint(context);
         }
-
-        // Pure black color for maximum contrast on e-paper
-        ColorStateList colorStateList = ColorStateList.valueOf(Color.BLACK);
-
-        if (holder.box_wifi != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_wifi, colorStateList);
-        }
-        if (holder.box_3g != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_3g, colorStateList);
-        }
-        if (holder.box_roam != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_roam, colorStateList);
-        }
-        if (holder.box_vpn != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_vpn, colorStateList);
-        }
-        if (holder.box_tether != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_tether, colorStateList);
-        }
-        if (holder.box_lan != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_lan, colorStateList);
-        }
-        if (holder.box_tor != null) {
-            CompoundButtonCompat.setButtonTintList(holder.box_tor, colorStateList);
+        CheckBox[] boxes = {holder.box_wifi, holder.box_3g, holder.box_roam, holder.box_vpn,
+                holder.box_tether, holder.box_lan, holder.box_tor};
+        for (CheckBox box : boxes) {
+            if (box != null) {
+                CompoundButtonCompat.setButtonTintList(box, checkboxTint);
+            }
         }
     }
 

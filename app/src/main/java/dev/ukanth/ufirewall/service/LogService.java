@@ -60,8 +60,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
@@ -108,6 +110,37 @@ public class LogService extends Service {
     private volatile boolean isShuttingDown = false;
 
     private Shell logWatcherShell;
+
+    /**
+     * libsu delivers job results and output lines to the given executor from its own threads. If
+     * that executor rejects a task (it was shut down while the job was still running, e.g. when
+     * the log shell's su session died or the watcher was restarted), libsu throws on its thread
+     * and the whole app crashes. Bound to the executor in use when the job was started, so
+     * callbacks of a replaced/stopped watcher are dropped rather than run on its successor.
+     */
+    private static Executor nonRejecting(final Executor target) {
+        return command -> runOrDrop(target, command);
+    }
+
+    private static void runOrDrop(Executor target, Runnable command) {
+        if (target == null) {
+            Log.d(TAG, "Log watcher executor is gone; dropping callback");
+            return;
+        }
+        try {
+            target.execute(command);
+        } catch (RejectedExecutionException e) {
+            Log.d(TAG, "Log watcher executor was shut down; dropping callback");
+        }
+    }
+
+    // Log watcher restart backoff
+    private static final long RESTART_BASE_DELAY_MS = 5_000;
+    private static final long RESTART_MAX_DELAY_MS = 5 * 60_000;
+    private static final long WATCHER_STABLE_MS = 60_000;
+    private final java.util.concurrent.atomic.AtomicBoolean restartPending = new java.util.concurrent.atomic.AtomicBoolean(false);
+    private volatile long watcherStartedAt;
+    private volatile int quickRestarts;
 
     // Batching: accumulated entries flushed periodically or when the batch is full.
     // Only touched on logProcessExecutor — no lock needed.
@@ -159,7 +192,13 @@ public class LogService extends Service {
     public static void ensureRunning(Context ctx) {
         if (!G.enableLogService()) return;
         if (!isInstanceRunning()) {
-            ctx.startService(new Intent(ctx, LogService.class));
+            // LogService calls startForeground() in onCreate on 8+, so start it as a foreground
+            // service; a plain startService() is refused while the app is in the background (boot).
+            try {
+                androidx.core.content.ContextCompat.startForegroundService(ctx, new Intent(ctx, LogService.class));
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to start log service", e);
+            }
         }
     }
 
@@ -291,7 +330,7 @@ public class LogService extends Service {
                     logProcessExecutor = Executors.newSingleThreadScheduledExecutor();
                 }
                 // Pass an Executor so libsu delivers onAddElement off the main thread.
-                callbackList = new CallbackList<String>(logProcessExecutor) {
+                callbackList = new CallbackList<String>(nonRejecting(logProcessExecutor)) {
                     @Override
                     public void onAddElement(String line) {
                         // Handle device suspend/resume scenarios
@@ -327,23 +366,39 @@ public class LogService extends Service {
         if (isShuttingDown) {
             return;
         }
-        
+        // Several triggers (suspend/resume lines, watcher exit) can fire together; keep one restart
+        if (!restartPending.compareAndSet(false, true)) {
+            return;
+        }
+
+        // A watcher that keeps exiting right away (unsupported command, no root) would otherwise be
+        // restarted every 5s forever; back off exponentially until it stays up for a while.
+        long ranFor = SystemClock.elapsedRealtime() - watcherStartedAt;
+        if (ranFor >= WATCHER_STABLE_MS) {
+            quickRestarts = 0;
+        } else {
+            quickRestarts = Math.min(quickRestarts + 1, 6);
+        }
+        final long delay = Math.min(RESTART_BASE_DELAY_MS << quickRestarts, RESTART_MAX_DELAY_MS);
+
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
+            restartPending.set(false);
             if (G.enableLogService() && !isShuttingDown) {
-                Log.i(G.TAG, "Restarting log watcher after 5s");
+                Log.i(G.TAG, "Restarting log watcher after " + delay + "ms");
                 cleanupTempFiles();
                 initiateLogWatcher(logPath);
             }
-        }, 5000);
+        }, delay);
     }
-    
+
     /**
      * Clean up temporary files used by log watchers
      */
     private void cleanupTempFiles() {
         try {
-            Shell.cmd("rm -f /tmp/afwall_lastline").exec();
+            // async: this runs on the main thread
+            Shell.cmd("rm -f /tmp/afwall_lastline").submit();
         } catch (Exception e) {
             // Ignore cleanup errors
         }
@@ -561,7 +616,12 @@ public class LogService extends Service {
                 // Start FirewallService so it can take over notification management
                 Log.i(TAG, "Starting FirewallService to manage shared notification");
                 Intent intent = new Intent(ctx, FirewallService.class);
-                ctx.startForegroundService(intent);
+                try {
+                    ctx.startForegroundService(intent);
+                } catch (Exception e) {
+                    // refused when started from the background on Android 12+
+                    Log.w(TAG, "Unable to start FirewallService: " + e.getMessage());
+                }
             }
         } else {
             // Pre-Android 8: Create notification channel for individual log events
@@ -618,6 +678,10 @@ public class LogService extends Service {
             if (executorService == null) {
                 executorService = Executors.newCachedThreadPool();
             }
+            if (logWatcherShell != null && !logWatcherShell.isAlive()) {
+                // a dead shell can't run new jobs; recreate it
+                closeLogWatcher();
+            }
             if (logWatcherShell == null) {
                 try {
                     logWatcherShell = Shell.Builder.create()
@@ -631,6 +695,7 @@ public class LogService extends Service {
             }
             
             Log.i(TAG, "Starting log watcher with command: " + logCommand);
+            watcherStartedAt = SystemClock.elapsedRealtime();
             try {
                 if (executorService == null || executorService.isShutdown() || executorService.isTerminated()) {
                     Log.w(TAG, "ExecutorService is not available, recreating...");
@@ -643,7 +708,7 @@ public class LogService extends Service {
                 logWatcherShell.newJob()
                     .add(logCommand)
                     .to(callbackList)
-                    .submit(executorService, out -> {
+                    .submit(nonRejecting(executorService), out -> {
                         try {
                             Log.i(TAG, "Log watcher finished with code: " + out.getCode());
                             
@@ -706,8 +771,16 @@ public class LogService extends Service {
             return;
         }
         
-        Log.i(TAG, "Attempting fallback to basic /proc/kmsg reading");
-        String fallbackCommand = "cat /proc/kmsg | grep --line-buffered '{AFL}'";
+        // Prefer polling dmesg: reading /proc/kmsg consumes the kernel messages, so logd and other
+        // readers would miss them. /proc/kmsg is only used when dmesg is not there at all.
+        String fallbackCommand;
+        if (isCommandAvailable("dmesg")) {
+            Log.i(TAG, "Attempting fallback to polling dmesg");
+            fallbackCommand = "while true; do dmesg | grep '{AFL}' | tail -n +$(( $(wc -l < /tmp/afwall_lastline 2>/dev/null || echo 0) + 1 )); dmesg | wc -l > /tmp/afwall_lastline; sleep 1; done";
+        } else {
+            Log.i(TAG, "Attempting fallback to basic /proc/kmsg reading");
+            fallbackCommand = "cat /proc/kmsg | grep --line-buffered '{AFL}'";
+        }
         
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(() -> {
@@ -722,7 +795,8 @@ public class LogService extends Service {
      * Initiate log watcher with a specific command (used for fallback)
      */
     private void initiateLogWatcherWithCommand(String logCommand) {
-        if(G.enableLogService() && logWatcherShell != null && !isShuttingDown) {
+        if(G.enableLogService() && logWatcherShell != null && logWatcherShell.isAlive() && !isShuttingDown) {
+            watcherStartedAt = SystemClock.elapsedRealtime();
             try {
                 if (executorService == null || executorService.isShutdown() || executorService.isTerminated()) {
                     Log.w(TAG, "ExecutorService is not available for fallback, recreating...");
@@ -735,7 +809,7 @@ public class LogService extends Service {
                 logWatcherShell.newJob()
                     .add(logCommand)
                     .to(callbackList)
-                    .submit(executorService, out -> {
+                    .submit(nonRejecting(executorService), out -> {
                         Log.i(TAG, "Fallback log watcher finished with code: " + out.getCode());
                         if (out.getCode() == 0) {
                             restartWatcher(logCommand);
@@ -1051,9 +1125,13 @@ public class LogService extends Service {
         // Restart service if log service is still enabled
         if (G.enableLogService()) {
             Intent intent = new Intent(getApplicationContext(), LogService.class);
-            PendingIntent pendingIntent = PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_MUTABLE);
+            // Must be a foreground-service start on 8+ (a background start from an alarm is refused),
+            // and the trigger time must use the same clock as the alarm type.
+            PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    ? PendingIntent.getForegroundService(this, 1, intent, PendingIntent.FLAG_IMMUTABLE)
+                    : PendingIntent.getService(this, 1, intent, PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + 5000, pendingIntent);
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5000, pendingIntent);
         }
         
         // Clean up resources gracefully

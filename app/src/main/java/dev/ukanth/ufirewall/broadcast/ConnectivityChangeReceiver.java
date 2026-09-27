@@ -47,6 +47,7 @@ public class ConnectivityChangeReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
+        Api.noteNetworkChange();
 
         int status = Api.getConnectivityStatus(context);
         if (status > 0) {

@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Messenger;
@@ -38,13 +37,11 @@ public class OnBootReceiver extends BroadcastReceiver {
                         PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
             }
 
-            Log.i("AFWall", "Startin boot service");
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.i("AFWall", "Starting firewall service onboot");
-                context.startForegroundService(new Intent(context, FirewallService.class));
-            } else {
-                context.startService(new Intent(context, FirewallService.class));
-            }
+            Log.i("AFWall", "Starting firewall service onboot");
+            // Android 15 also sends BOOT_COMPLETED when an app leaves the stopped state (e.g. after a
+            // force-stop). That delivery has no foreground-service exemption; an uncaught exception
+            // here used to crash the app before the rules below were applied.
+            FirewallService.ensureRunning(context);
 
             // Use BootRuleManager for robust rule application
             BootRuleManager.initializeBootRuleApplication(context);
@@ -54,16 +51,13 @@ public class OnBootReceiver extends BroadcastReceiver {
 
             if (G.enableLogService()) {
                 Log.i("AFWall", "Starting log service onboot");
-                try {
-                    context.startService(new Intent(context, LogService.class));
-                } catch (Exception e) {
-                }
+                LogService.ensureRunning(context);
             }
 
             try {
                 G.registerPrivateLink();
-            }catch (Exception e){
-
+            } catch (Exception e) {
+                Log.e("AFWall", "Unable to register private DNS listener on boot", e);
             }
         }
     }

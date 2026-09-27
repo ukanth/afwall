@@ -84,35 +84,44 @@ public class PackageBroadcast extends BroadcastReceiver {
             return;
         }
 
-        if (Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())) {
-            // Ignore application updates
-            final boolean replacing = intent.getBooleanExtra(
-                    Intent.EXTRA_REPLACING, false);
+        if (Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())
+                || Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(intent.getAction())) {
+            // Ignore application updates (FULLY_REMOVED is never sent for those)
+            final boolean replacing = Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())
+                    && intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);
             if (!replacing) {
                 // Update the Firewall if necessary
                 final int uid = intent.getIntExtra(Intent.EXTRA_UID, -123);
-                String packageName = context.getPackageManager().getNameForUid(uid);
-                //if it contains sharedID -- dont remove based on uid
-                if(packageName != null && packageName.contains("sharedID")) {
-                    //ignore since the another app with same ID exists
+                if (uid < 0) {
+                    Log.w(TAG, "Package removed without a UID, ignoring");
+                    return;
+                }
+                // Another package may still own this UID (shared user id); keep its rules then
+                String[] remaining = context.getPackageManager().getPackagesForUid(uid);
+                if (remaining != null && remaining.length > 0) {
+                    Log.d(TAG, "UID " + uid + " is still used by " + remaining.length + " package(s); keeping rules");
                 } else {
                     Api.applicationRemoved(context, uid, new RootCommand()
-                    .setFailureToast(R.string.error_apply)
-                    .setCallback(new RootCommand.Callback() {
-                        @Override
-                        public void cbFunc(RootCommand state) {
-                            if (state.exitCode == 0) {
-                                Api.removeCacheLabel(intent.getData().getSchemeSpecificPart(), context);
-                                Api.removeAllUnusedCacheLabel(context);
-                                // Force app list reload next time
-                                Api.applications = null;
-                                // Invalidate UID resolver cache for this UID
-                                UidResolver.invalidateUid(uid);
-                                Log.d(TAG, "Package removed, invalidated UID cache for: " + uid);
-                            }
-                        }
-                    }));
+                            .setFailureToast(R.string.error_apply));
                 }
+
+                // Cache cleanup doesn't depend on the rule apply; do it off the main thread
+                final String removedPackage = inputUri.getSchemeSpecificPart();
+                final PendingResult pendingResult = goAsync();
+                new Thread(() -> {
+                    try {
+                        Api.removeCacheLabel(removedPackage, context);
+                        Api.removeAllUnusedCacheLabel(context);
+                        // Force app list reload next time
+                        Api.applications = null;
+                        UidResolver.invalidateUid(uid);
+                        Log.d(TAG, "Package removed, invalidated UID cache for: " + uid);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error cleaning caches for removed package", e);
+                    } finally {
+                        pendingResult.finish();
+                    }
+                }, "AFWall-PackageRemoved").start();
             }
         } else if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
             final boolean updateApp = intent.getBooleanExtra(Intent.EXTRA_REPLACING, false);

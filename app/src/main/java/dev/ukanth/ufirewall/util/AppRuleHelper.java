@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.customrules.CustomRule;
 import dev.ukanth.ufirewall.customrules.CustomRule_Table;
+import dev.ukanth.ufirewall.log.Log;
 
 public final class AppRuleHelper {
 
@@ -180,6 +181,42 @@ public final class AppRuleHelper {
             return Collections.emptySet();
         }
         return uids;
+    }
+
+    /**
+     * Delete the direct rules of {@code uid} in every profile. Used when an app is uninstalled,
+     * so a later app that is given the same UID does not inherit them.
+     *
+     * @return number of rules deleted
+     */
+    public static int deleteRulesForUidInAllProfiles(int uid) {
+        int deleted = 0;
+        try {
+            for (CustomRule rule : SQLite.select().from(CustomRule.class).queryList()) {
+                if (isRuleForUidInAnyProfile(rule.getName(), uid)) {
+                    rule.delete();
+                    deleted++;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Unable to delete direct rules for uid " + uid, e);
+        }
+        return deleted;
+    }
+
+    /**
+     * @return true if {@code name} is a direct rule of {@code uid}, in any profile:
+     * "direct-rule:&lt;profile&gt;:&lt;uid&gt;:..." or legacy "direct-rule:&lt;uid&gt;:..."
+     */
+    static boolean isRuleForUidInAnyProfile(String name, int uid) {
+        if (name == null || !name.startsWith(RULE_PREFIX)) {
+            return false;
+        }
+        String uidStr = String.valueOf(uid);
+        String[] parts = name.substring(RULE_PREFIX.length()).split(":");
+        return isLegacyRuleName(name)
+                ? parts.length > 0 && uidStr.equals(parts[0])
+                : parts.length > 1 && uidStr.equals(parts[1]);
     }
 
     public static void setRulesActiveForUid(int uid, boolean active) {

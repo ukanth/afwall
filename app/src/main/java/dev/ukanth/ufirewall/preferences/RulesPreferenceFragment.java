@@ -118,8 +118,16 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                                     }
                                 }
                             }
-                            getPreferenceScreen().removeAll();
-                            addPreferencesFromResource(R.xml.rules_preferences);
+                            // callback runs on the root shell thread; rebuild the screen on the UI thread
+                            android.app.Activity activity = getActivity();
+                            if (activity != null) {
+                                activity.runOnUiThread(() -> {
+                                    if (isAdded()) {
+                                        getPreferenceScreen().removeAll();
+                                        addPreferencesFromResource(R.xml.rules_preferences);
+                                    }
+                                });
+                            }
                         }
                     }
                 }));

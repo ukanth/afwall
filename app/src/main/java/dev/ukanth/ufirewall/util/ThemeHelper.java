@@ -112,7 +112,7 @@ public final class ThemeHelper {
         }
     }
 
-    private static ColorStateList controlTint(Context context) {
+    static ColorStateList controlTint(Context context) {
         return new ColorStateList(
                 new int[][]{
                         new int[]{android.R.attr.state_checked},

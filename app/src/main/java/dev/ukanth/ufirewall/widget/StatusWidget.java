@@ -63,8 +63,7 @@ public class StatusWidget extends AppWidgetProvider {
 			/*final String oldPwd = G.profile_pwd();
 			final String newPwd = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0).getString("LockPassword", "");
 			*/
-            final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-            final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
+            final boolean enabled = !Api.isEnabled(context);
             final AppWidgetManager manager = AppWidgetManager.getInstance(context);
             final int[] widgetIds = manager.getAppWidgetIds(new ComponentName(context, StatusWidget.class));
 
@@ -122,8 +121,7 @@ public class StatusWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] ints) {
         super.onUpdate(context, appWidgetManager, ints);
-        final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-        boolean enabled = prefs.getBoolean(Api.PREF_ENABLED, true);
+        boolean enabled = Api.isEnabled(context);
         showWidget(context, appWidgetManager, ints, enabled);
     }
 
@@ -176,8 +174,7 @@ public class StatusWidget extends AppWidgetProvider {
         // Auto-revert to normal state after 2 seconds
         android.os.Handler handler = new android.os.Handler(android.os.Looper.getMainLooper());
         handler.postDelayed(() -> {
-            final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-            boolean currentEnabled = prefs.getBoolean(Api.PREF_ENABLED, true);
+            boolean currentEnabled = Api.isEnabled(context);
             showWidget(context, manager, widgetIds, currentEnabled);
         }, 2000);
     }

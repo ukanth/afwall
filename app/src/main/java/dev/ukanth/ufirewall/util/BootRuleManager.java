@@ -51,6 +51,8 @@ public class BootRuleManager {
 
             if (!shouldApplyBootRules(context)) {
                 Log.i(TAG, "Firewall disabled or inactive at boot; skipping boot rule application");
+                // no rules will replace the fix leak script's DROP policies
+                Api.liftBootLeakProtection(context);
                 markBootComplete();
                 return;
             }
@@ -106,7 +108,7 @@ public class BootRuleManager {
         InterfaceTracker.applyBootRules(context, InterfaceTracker.BOOT_COMPLETED + "_INITIAL");
         initialBootRulesApplied.set(true);
         
-        Log.i(TAG, "Initial boot rules applied");
+        Log.i(TAG, "Initial boot rules submitted (result is logged by InterfaceTracker)");
     }
     
     /**
@@ -130,7 +132,7 @@ public class BootRuleManager {
                             // Force interface configuration refresh for delayed rules
                             InterfaceTracker.getCurrentCfg(context, true);
                             InterfaceTracker.applyBootRules(context, InterfaceTracker.BOOT_COMPLETED + "_DELAYED");
-                            Log.i(TAG, "Delayed boot rules applied successfully");
+                            Log.i(TAG, "Delayed boot rules submitted (result is logged by InterfaceTracker)");
                         } catch (Exception e) {
                             Log.e(TAG, "Error applying delayed boot rules: " + e.getMessage());
                         } finally {
@@ -162,7 +164,7 @@ public class BootRuleManager {
     private static boolean shouldApplyBootRules(Context context) {
         // BootRuleManager calls applyBootRules directly, so keep the same enabled checks
         // that protect normal connectivity-change rule application.
-        return Api.isEnabled(context) && G.activeRules();
+        return Api.isEnabled(context) && G.activeRules() && !Api.isDisableInProgress();
     }
 
     /**

@@ -62,8 +62,7 @@ public class ToggleTileService extends TileService {
         super.onClick();
         Context context = this;
         //Start main activity
-        final SharedPreferences prefs = context.getSharedPreferences(Api.PREF_FIREWALL_STATUS, 0);
-        final boolean enabled = !prefs.getBoolean(Api.PREF_ENABLED, true);
+        final boolean enabled = !Api.isEnabled(context);
 
 
         if (!G.protectionLevel().equals("p0") || G.enableDeviceCheck()) {

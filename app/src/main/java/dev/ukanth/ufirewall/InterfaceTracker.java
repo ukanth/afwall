@@ -369,6 +369,9 @@ public final class InterfaceTracker {
         } else if (!Api.isEnabled(ctx)) {
             Log.d(TAG, reason + ": firewall is disabled, ignoring");
             return;
+        } else if (Api.isDisableInProgress()) {
+            Log.d(TAG, reason + ": firewall is being disabled, ignoring");
+            return;
         }
         Log.d(TAG, reason + " applying rules");
         // update Api.PREFS_NAME so we pick up the right profile

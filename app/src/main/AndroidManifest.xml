@@ -218,6 +218,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <!-- exempt from Android 8+ implicit-broadcast limits: delivered even when
+                     FirewallService (which registers PACKAGE_REMOVED at runtime) isn't running -->
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
