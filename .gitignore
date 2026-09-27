@@ -4,6 +4,8 @@
 
 .DS_Store
 
+make-donate.sh
+
 # Files for the dex VM
 *.dex
 
