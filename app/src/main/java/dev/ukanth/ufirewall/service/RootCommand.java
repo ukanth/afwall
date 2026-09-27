@@ -29,6 +29,10 @@ public class RootCommand {
     public boolean done = false;
     public int hash = -1;
     public boolean isv6 = false;
+    /** set for the current command when it is a "#WARN# " line (failure is recorded, not fatal) */
+    public boolean warnOnError;
+    /** failures of "#WARN# " commands (e.g. custom script lines), "command: output" */
+    public final List<String> warnings = new ArrayList<>();
 
     private List<String> commmands;
 

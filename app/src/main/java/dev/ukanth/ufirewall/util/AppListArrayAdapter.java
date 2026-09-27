@@ -307,8 +307,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
     }
 
     private boolean usesDefaultAndroidIcon(Api.PackageInfoData app) {
+        // appinfo is null for packages hidden from PackageManager (found via root)
         return app.pkgName.startsWith("dev.afwall.special.")
-                || (app.appinfo != null && app.appinfo.icon == 0);
+                || app.appinfo == null || app.appinfo.icon == 0;
     }
 
     private void applyThemeColors(AppStateHolder holder) {

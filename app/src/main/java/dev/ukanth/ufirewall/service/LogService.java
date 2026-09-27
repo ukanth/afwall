@@ -142,6 +142,36 @@ public class LogService extends Service {
     private volatile long watcherStartedAt;
     private volatile int quickRestarts;
 
+    // A watcher that exits with an error this soon after starting never worked (e.g. nflog
+    // can't be executed on this Android version); tell the user instead of logging nothing.
+    private static final long START_FAILURE_WINDOW_MS = 5_000;
+    private static volatile String lastStartFailure;
+    private volatile String lastWatcherOutput;
+    private boolean startFailureNotified;
+
+    /** reason the log watcher could not start, or null if it is working / unknown */
+    public static String getLastStartFailure() {
+        return lastStartFailure;
+    }
+
+    private void reportStartFailure(String command, int exitCode) {
+        String output = lastWatcherOutput;
+        String reason = output != null ? output : command + " exited with code " + exitCode;
+        lastStartFailure = reason;
+        Log.e(TAG, "Log watcher could not start: " + reason);
+        if (startFailureNotified) {
+            return;
+        }
+        startFailureNotified = true;
+        Context appCtx = getApplicationContext();
+        Intent prefs = new Intent(appCtx, dev.ukanth.ufirewall.preferences.PreferencesActivity.class)
+                .putExtra(android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                        dev.ukanth.ufirewall.preferences.LogPreferenceFragment.class.getName());
+        Api.showNotification(appCtx, Api.LOG_WATCHER_FAILED_NOTIFICATION_ID,
+                appCtx.getString(R.string.log_watcher_failed_title),
+                appCtx.getString(R.string.log_watcher_failed_text, reason), prefs);
+    }
+
     // Batching: accumulated entries flushed periodically or when the batch is full.
     // Only touched on logProcessExecutor — no lock needed.
     private final List<LogData> pendingLogs = new ArrayList<>();
@@ -345,7 +375,12 @@ public class LogService extends Service {
 
                         // Process iptables/netfilter log entries
                         if(line.contains("{AFL}")) {
+                            lastStartFailure = null; // logging works
                             storeLogInfo(line, getApplicationContext());
+                        } else if (!line.trim().isEmpty()) {
+                            // stderr is merged in: keep the last message in case the watcher dies
+                            String trimmed = line.trim();
+                            lastWatcherOutput = trimmed.length() > 300 ? trimmed.substring(0, 300) : trimmed;
                         }
                     }
                 };
@@ -696,6 +731,8 @@ public class LogService extends Service {
             
             Log.i(TAG, "Starting log watcher with command: " + logCommand);
             watcherStartedAt = SystemClock.elapsedRealtime();
+            final long startedAt = watcherStartedAt;
+            lastWatcherOutput = null;
             try {
                 if (executorService == null || executorService.isShutdown() || executorService.isTerminated()) {
                     Log.w(TAG, "ExecutorService is not available, recreating...");
@@ -711,6 +748,10 @@ public class LogService extends Service {
                     .submit(nonRejecting(executorService), out -> {
                         try {
                             Log.i(TAG, "Log watcher finished with code: " + out.getCode());
+                            if (!isShuttingDown && out.getCode() != 0 && out.getCode() != 130
+                                    && SystemClock.elapsedRealtime() - startedAt < START_FAILURE_WINDOW_MS) {
+                                reportStartFailure(logCommand, out.getCode());
+                            }
                             
                             // Don't restart if service is shutting down
                             if (isShuttingDown) {
@@ -856,24 +897,21 @@ public class LogService extends Service {
             return false; // Unknown network state, don't suppress
         }
         
-        // Check if the app is allowed on the currently active interface
-        // Rules are stored in G.pPrefs as pipe-separated UIDs: "|1000|1005|..."
-        String uidStr = "|" + info.uid + "|";
-        String allowedUids;
-        
-        if (netType == ConnectivityManager.TYPE_WIFI) {
-            allowedUids = G.pPrefs.getString(Api.PREF_WIFI_PKG_UIDS, "");
-        } else {
-            allowedUids = G.pPrefs.getString(Api.PREF_3G_PKG_UIDS, "");
-        }
-        
+        // Rules are stored in G.pPrefs as pipe-separated UIDs: "1000|1005|..."
+        String selected = netType == ConnectivityManager.TYPE_WIFI
+                ? G.pPrefs.getString(Api.PREF_WIFI_PKG_UIDS, "")
+                : G.pPrefs.getString(Api.PREF_3G_PKG_UIDS, "");
+        String list = "|" + selected + "|";
+        boolean listed = list.contains("|" + info.uid + "|") || list.contains("|" + Api.SPECIAL_UID_ANY + "|");
+
+        // The list holds the allowed apps in whitelist mode but the blocked apps in blacklist
+        // mode; treating it as "allowed" in both modes hid every block log in blacklist mode.
+        boolean whitelist = Api.MODE_WHITELIST.equals(G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST));
+        boolean allowedOnActiveInterface = whitelist == listed;
+
         // If the app IS allowed on the active interface, suppress this block log.
         // The block must be from an inactive/secondary interface (3G probe, VPN, tether, etc.)
-        if ((allowedUids + "|").contains(uidStr)) {
-            return true;
-        }
-        
-        return false;
+        return allowedOnActiveInterface;
     }
 
     private void storeLogInfo(String line, Context context) {

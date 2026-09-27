@@ -141,6 +141,7 @@ import dev.ukanth.ufirewall.customrules.CustomRule_Table;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
+import dev.ukanth.ufirewall.util.IptablesVersion;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.NetworkChangeDebouncer;
 import dev.ukanth.ufirewall.util.UidListParser;
@@ -202,6 +203,8 @@ public final class Api {
     public static final String SCRIPT_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT";
     public static final String SCRIPT2_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT2";
     public static final int ERROR_NOTIFICATION_ID = 9;
+    public static final int CUSTOM_SCRIPT_WARNING_NOTIFICATION_ID = 10;
+    public static final int LOG_WATCHER_FAILED_NOTIFICATION_ID = 11;
     private static final int WIFI_EXPORT = 0;
     private static final int DATA_EXPORT = 1;
     private static final int ROAM_EXPORT = 2;
@@ -718,6 +721,12 @@ public final class Api {
         }
     }
 
+    private static final String[] INDIVIDUAL_REJECT_CHAIN_SUFFIXES = {"-3g-home-reject", "-3g-roam-reject",
+            "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+    /** every chain {@link #addRejectRules} appends to */
+    private static final String[] REJECT_CHAIN_SUFFIXES = {"-reject", "-3g-home-reject", "-3g-roam-reject",
+            "-wifi-wan-reject", "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
+
     private static void addRejectRules(List<String> cmds, String chainName) {
         // set up reject chain to log or not log
         // this can be changed dynamically through the Firewall Logs activity
@@ -728,9 +737,7 @@ public final class Api {
         cmds.add(rejectRule);
         
         // Also populate individual reject chains that are used by whitelist mode
-        String[] rejectChainSuffixes = {"-3g-home-reject", "-3g-roam-reject", "-wifi-wan-reject", 
-                                       "-wifi-lan-reject", "-vpn-reject", "-tether-reject"};
-        for (String suffix : rejectChainSuffixes) {
+        for (String suffix : INDIVIDUAL_REJECT_CHAIN_SUFFIXES) {
             String individualRejectChain = chainName + suffix;
             Log.d(TAG, "Populating individual reject chain: " + individualRejectChain);
             addLogRuleForRejectChain(cmds, individualRejectChain);
@@ -1329,7 +1336,8 @@ public final class Api {
         String waitTime = "";
         if(G.ip_path().equals("system")) {
             // Always use wait flag with system iptables to prevent lock contention
-            waitTime = " -w 5";
+            // (in the form this iptables version supports)
+            waitTime = IptablesVersion.waitOption(iptablesVersion(ipPath));
         }
         boolean firstLit = true;
         for (String s : in) {
@@ -1344,7 +1352,9 @@ public final class Api {
                             + "export IPV6=" + (ipv6 ? "1" : "0") + "; "
                             + "true");
                 }
-                out.add(s.replaceFirst("^#LITERAL# ", ""));
+                // custom script line: a failure is reported, but no longer aborts the whole apply
+                // (e.g. an IPv4-only line in the IPv6 pass, #1493)
+                out.add("#WARN# " + s.replaceFirst("^#LITERAL# ", ""));
             } else if (s.matches("#NOCHK# .*")) {
                 out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath + " "));
             } else {
@@ -1460,6 +1470,9 @@ public final class Api {
                     }
                 } finally {
                     onApplyFinished(appCtx, state.exitCode == 0, networkSeqAtBuild);
+                    if (!state.warnings.isEmpty() && appCtx != null) {
+                        customScriptWarningNotification(appCtx, new ArrayList<>(state.warnings));
+                    }
                 }
             }
         });
@@ -1535,6 +1548,38 @@ public final class Api {
         return part;
     }
 
+    // "iptables --version" output per binary path
+    private static final Map<String, String> iptablesVersions = new java.util.concurrent.ConcurrentHashMap<>();
+
+    /**
+     * @return "iptables --version" output of the binary (cached), or null if it can't be run
+     */
+    static String iptablesVersion(String binPath) {
+        if (binPath == null) {
+            return null;
+        }
+        String cached = iptablesVersions.get(binPath);
+        if (cached != null) {
+            return cached.isEmpty() ? null : cached;
+        }
+        String version = "";
+        try {
+            Process process = new ProcessBuilder(binPath, "--version").redirectErrorStream(true).start();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line = reader.readLine();
+                if (line != null) {
+                    version = line.trim();
+                }
+            }
+            process.waitFor();
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to read the version of " + binPath + ": " + e.getMessage());
+        }
+        Log.i(TAG, binPath + " version: " + (version.isEmpty() ? "unknown" : version));
+        iptablesVersions.put(binPath, version);
+        return version.isEmpty() ? null : version;
+    }
+
     private static final String RESTORE_SUFFIX = "-restore";
     // iptables-restore failed for this family (0 = IPv4, 1 = IPv6) in this process; use the
     // per-command script from now on.
@@ -1569,7 +1614,9 @@ public final class Api {
         }
         Log.i(TAG, "Loading " + (ipv6 ? "IPv6" : "IPv4") + " rules with " + restoreBin);
         List<String> out = new ArrayList<>();
-        out.add(restoreBin + " -w 5 --noflush " + file.getAbsolutePath());
+        String ipPath = getBinaryPath(ctx, ipv6);
+        out.add(restoreBin + IptablesVersion.restoreWaitOption(iptablesVersion(ipPath))
+                + " --noflush " + file.getAbsolutePath());
         iptablesCommands(plan.postCommands, out, ipv6);
         return out;
     }
@@ -1628,6 +1675,7 @@ public final class Api {
                         RootCommand.runAll(ctx, java.util.Collections.singletonList(retry));
                         return;
                     }
+                    parent.warnings.addAll(state.warnings);
                     if (state.exitCode != 0 && failed[0] == null) {
                         failed[0] = state;
                         for (int j = index + 1; j < parts.size(); j++) {
@@ -2098,8 +2146,12 @@ public final class Api {
         }
         String chainName = getThreadSafeChainName();
         List<String> cmds = new ArrayList<String>();
-        cmds.add("#NOCHK# -N " + chainName + "-reject");
-        cmds.add("-F " + chainName + "-reject");
+        // addRejectRules() fills all reject chains, so all of them have to be flushed first;
+        // flushing only the main one piled up NFLOG/REJECT pairs on every log setting change.
+        for (String suffix : REJECT_CHAIN_SUFFIXES) {
+            cmds.add("#NOCHK# -N " + chainName + suffix);
+            cmds.add("-F " + chainName + suffix);
+        }
         addRejectRules(cmds, chainName);
         apply46(ctx, cmds, callback);
     }
@@ -2266,6 +2318,15 @@ public final class Api {
                     }
                 }
             }
+            // getUserProfiles() can leave out profiles (e.g. a Private Space), so also take the
+            // profiles root reports (#1485, #1482)
+            Map<Integer, String> profileTypes = G.supportDual() ? getProfileTypes() : new HashMap<>();
+            for (Map.Entry<Integer, String> profile : profileTypes.entrySet()) {
+                if (profile.getKey() > 0 && profile.getValue().startsWith("profile.")
+                        && !listOfUids.contains(profile.getKey())) {
+                    listOfUids.add(profile.getKey());
+                }
+            }
             //use pm list packages -f -U --user 10
             int pkgManagerFlags = PackageManager.GET_META_DATA;
             // it's useless to iterate over uninstalled packages if we don't support multi-profile apps
@@ -2299,7 +2360,7 @@ public final class Api {
             HashMap<String, Boolean> internetPermissionCache = new HashMap<>();
             if(G.supportDual()) {
                 packagesForUser = getPackagesForUser(listOfUids);
-                profileMarkers = getUserProfileMarkers(listOfUids);
+                profileMarkers = getUserProfileMarkers(listOfUids, profileTypes);
             }
 
             for (int i = 0; i < installed.size(); i++) {
@@ -2394,6 +2455,12 @@ public final class Api {
                     checkPartOfMultiUser(apinfo, name, listOfUids, packagesForUser, profileMarkers, multiUserAppsMap);
                 }
             }
+
+            // Headless system apps (CaptivePortalLogin, eSIM/euicc, sync adapters, ...) are invisible
+            // to PackageManager without QUERY_ALL_PACKAGES, so they were missing from the list while
+            // their traffic was blocked (#1476, #1490, #1499). Find them with one root call.
+            addPackagesHiddenFromPackageManager(installed, syncMap, selected_wifi, selected_3g,
+                    selected_roam, selected_vpn, selected_tether, selected_lan, selected_tor);
 
             if (G.supportDual()) {
                 addProfileOnlyPackages(pkgmanager, packagesForUser, profileMarkers, syncMap,
@@ -2557,6 +2624,111 @@ public final class Api {
         }
     }
 
+    /**
+     * Add the main user's packages that PackageManager doesn't show us (package visibility), as
+     * listed by root "pm list packages -U". They can't be queried through PackageManager, so they
+     * are shown by package name as system apps. Like the visible apps, the ones without INTERNET
+     * are left out unless "show all apps" is enabled.
+     */
+    private static void addPackagesHiddenFromPackageManager(List<ApplicationInfo> visible,
+                                                            SparseArray<PackageInfoData> syncMap,
+                                                            List<Integer> selectedWifi, List<Integer> selected3g,
+                                                            List<Integer> selectedRoam, List<Integer> selectedVpn,
+                                                            List<Integer> selectedTether, List<Integer> selectedLan,
+                                                            List<Integer> selectedTor) {
+        Set<String> visiblePackages = new HashSet<>();
+        for (ApplicationInfo info : visible) {
+            visiblePackages.add(info.packageName);
+        }
+        List<String> out;
+        try {
+            Shell.Result result = Shell.cmd("pm list packages -U").exec();
+            if (!result.isSuccess()) {
+                return;
+            }
+            out = result.getOut();
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to list packages hidden from PackageManager: " + e.getMessage());
+            return;
+        }
+        // null = unknown (then nothing is filtered out)
+        Set<String> withInternet = showAllApps() ? null : packagesHoldingInternet();
+        int added = 0;
+        for (String line : out) {
+            Matcher m = dual_pattern.matcher(line);
+            if (!m.find()) {
+                continue;
+            }
+            String pkg = m.group(1).trim();
+            if (withInternet != null && !withInternet.contains(pkg)) {
+                continue;
+            }
+            int uid;
+            try {
+                uid = Integer.parseInt(m.group(2).trim());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            // only app UIDs; shared system UIDs (1000, 1073, ...) are listed as special entries
+            if (visiblePackages.contains(pkg) || uid % 100000 < android.os.Process.FIRST_APPLICATION_UID) {
+                continue;
+            }
+            PackageInfoData app = syncMap.get(uid);
+            if (app != null) {
+                if (!app.names.contains(pkg)) {
+                    app.names.add(pkg); // another package sharing the UID
+                }
+                continue;
+            }
+            app = new PackageInfoData();
+            app.uid = uid;
+            app.pkgName = pkg;
+            app.names = new ArrayList<>();
+            app.names.add(pkg);
+            app.appType = 0; // system
+            app.selected_wifi = Collections.binarySearch(selectedWifi, uid) >= 0;
+            app.selected_3g = Collections.binarySearch(selected3g, uid) >= 0;
+            app.selected_roam = G.enableRoam() && Collections.binarySearch(selectedRoam, uid) >= 0;
+            app.selected_vpn = G.enableVPN() && Collections.binarySearch(selectedVpn, uid) >= 0;
+            app.selected_tether = G.enableTether() && Collections.binarySearch(selectedTether, uid) >= 0;
+            app.selected_lan = G.enableLAN() && Collections.binarySearch(selectedLan, uid) >= 0;
+            app.selected_tor = G.enableTor() && Collections.binarySearch(selectedTor, uid) >= 0;
+            syncMap.put(uid, app);
+            added++;
+        }
+        if (added > 0) {
+            Log.i(TAG, "Added " + added + " app(s) hidden from PackageManager");
+        }
+    }
+
+    /**
+     * @return packages granted INTERNET, from one root "dumpsys package packages" pass (checking
+     * each package separately made list loading far too slow), or null if it can't be determined
+     */
+    private static Set<String> packagesHoldingInternet() {
+        try {
+            Shell.Result result = Shell.cmd("dumpsys package packages | grep -E '^  Package \\[|android.permission.INTERNET: granted=true'").exec();
+            if (!result.isSuccess() && result.getOut().isEmpty()) {
+                return null;
+            }
+            Pattern packageLine = Pattern.compile("^  Package \\[([^\\]]+)\\]");
+            Set<String> packages = new HashSet<>();
+            String current = null;
+            for (String line : result.getOut()) {
+                Matcher m = packageLine.matcher(line);
+                if (m.find()) {
+                    current = m.group(1);
+                } else if (current != null && line.contains("android.permission.INTERNET: granted=true")) {
+                    packages.add(current);
+                }
+            }
+            return packages.isEmpty() ? null : packages;
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to read INTERNET permission grants: " + e.getMessage());
+            return null;
+        }
+    }
+
     private static boolean packagesExistForUserUid(HashMap<Integer, String> pkgs, int appUid) {
         return pkgs != null && pkgs.containsKey(appUid);
     }
@@ -2696,10 +2868,35 @@ public final class Api {
         return 0;
     }
 
-    private static HashMap<Integer, String> getUserProfileMarkers(List<Integer> userProfile) {
+    /**
+     * @return user id -&gt; user type (e.g. "profile.MANAGED", "profile.PRIVATE", "full.SYSTEM") as
+     * reported by root "cmd user list -v"; empty if unavailable (older Android)
+     */
+    private static Map<Integer, String> getProfileTypes() {
+        Map<Integer, String> types = new HashMap<>();
+        try {
+            Shell.Result result = Shell.cmd("cmd user list -v").exec();
+            Pattern userPattern = Pattern.compile("id=(\\d+),.*?type=([\\w.]+)");
+            for (String line : result.getOut()) {
+                Matcher m = userPattern.matcher(line);
+                if (m.find()) {
+                    types.put(Integer.parseInt(m.group(1)), m.group(2));
+                }
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to list user types: " + e.getMessage());
+        }
+        return types;
+    }
+
+    private static HashMap<Integer, String> getUserProfileMarkers(List<Integer> userProfile,
+                                                                  Map<Integer, String> profileTypes) {
         HashMap<Integer, String> profileMarkers = new HashMap<>();
         for (Integer userId : userProfile) {
-            profileMarkers.put(userId, "(M)");
+            // the user type is reliable; profile names are localized or chosen by apps (Shelter)
+            String type = profileTypes.get(userId);
+            String marker = markerForProfileType(type);
+            profileMarkers.put(userId, marker != null ? marker : "(M)");
         }
         try {
             Shell.Result result = Shell.cmd("pm list users").exec();
@@ -2708,7 +2905,7 @@ public final class Api {
                 Matcher matcher = userInfoPattern.matcher(line);
                 if (matcher.find()) {
                     int userId = Integer.parseInt(matcher.group(1));
-                    if (profileMarkers.containsKey(userId)) {
+                    if (profileMarkers.containsKey(userId) && markerForProfileType(profileTypes.get(userId)) == null) {
                         profileMarkers.put(userId, markerForProfileName(matcher.group(2)));
                     }
                 }
@@ -2717,6 +2914,13 @@ public final class Api {
             Log.w(TAG, "Failed to label user profiles: " + e.getMessage());
         }
         return profileMarkers;
+    }
+
+    /** @return marker for a known profile type, or null */
+    private static String markerForProfileType(String type) {
+        if ("profile.MANAGED".equals(type)) return "(W)";
+        if ("profile.PRIVATE".equals(type)) return "(P)";
+        return null;
     }
 
     private static String markerForProfileName(String profileName) {
@@ -3212,6 +3416,60 @@ public final class Api {
         ctx.sendBroadcast(message);
     }
 
+
+    /**
+     * Custom script lines no longer abort an apply when they fail; report them instead.
+     */
+    public static void customScriptWarningNotification(Context ctx, List<String> failures) {
+        for (String failure : failures) {
+            Log.w(TAG, "Custom script line failed: " + failure);
+        }
+        String text = ctx.getResources().getQuantityString(R.plurals.custom_script_warning_text,
+                failures.size(), failures.size(), failures.get(0));
+        showNotification(ctx, CUSTOM_SCRIPT_WARNING_NOTIFICATION_ID,
+                ctx.getString(R.string.custom_script_warning_title), text);
+    }
+
+    /**
+     * An error-channel notification that opens the app.
+     */
+    public static void showNotification(Context ctx, int id, String title, String text) {
+        Intent appIntent = new Intent(ctx, MainActivity.class);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        showNotification(ctx, id, title, text, appIntent);
+    }
+
+    /**
+     * An error-channel notification that opens {@code target}.
+     */
+    public static void showNotification(Context ctx, int id, String title, String text, Intent target) {
+        String channelId = "firewall.error";
+        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    ctx.getString(R.string.firewall_error_notify), NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setSound(null, null);
+            channel.setShowBadge(false);
+            channel.enableLights(false);
+            channel.enableVibration(false);
+            manager.createNotificationChannel(channel);
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, id, target,
+                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        Notification notification = new NotificationCompat.Builder(ctx, channelId)
+                .setSmallIcon(R.drawable.notification_warn)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setCategory(NotificationCompat.CATEGORY_ERROR)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build();
+        manager.notify(id, notification);
+    }
 
     public static void errorNotification(Context ctx) {
 

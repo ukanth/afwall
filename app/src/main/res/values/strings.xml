@@ -111,6 +111,11 @@
     <string name="Cancel">Cancel</string>
     <string name="notification_title">Open AFWall+</string>
     <string name="error_notification_title">AFWall+ error</string>
+    <string name="custom_script_warning_title">Custom script errors</string>
+    <plurals name="custom_script_warning_text">
+        <item quantity="one">%1$d custom script line failed; the other rules were applied. %2$s</item>
+        <item quantity="other">%1$d custom script lines failed; the other rules were applied. First: %2$s</item>
+    </plurals>
     <string name="error_notification_text">Error applying firewall rules. Click to open settings.</string>
     <string name="error_notification_ticker">AFWall+ could not apply rules</string>
 
@@ -506,6 +511,11 @@
     <string name="log_src">Source:</string>
     <string name="log_proto">Protocol:</string>
     <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
+    <string name="log_empty_service_off">The log service is off. Enable it in Preferences → Log.</string>
+    <string name="log_empty_nothing_yet">No blocked connections have been logged yet.</string>
+    <string name="log_empty_watcher_failed">Log monitoring could not start: %1$s\n\nTry the other log target (LOG / NFLOG) in Preferences → Log.</string>
+    <string name="log_watcher_failed_title">Log monitoring could not start</string>
+    <string name="log_watcher_failed_text">%1$s. Tap to choose another log target.</string>
     <string name="loading_data_title">Loading…</string>
     <string name="loading_data">Retrieving log data</string>
 

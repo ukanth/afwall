@@ -60,6 +60,8 @@ final class RootShellEngine {
     private static final long AUTO_REOPEN_INTERVAL_MS = 10_000;
     private static final int MAX_RETRIES = 10;
     private static final String FALLBACK_MARKER = " # __FALLBACK_ATTEMPTED__";
+    /** command prefix: record a failure as a warning on the RootCommand instead of failing it */
+    static final String WARN = "#WARN# ";
 
     private enum State {INIT, OPENING, READY, BUSY, FAIL}
 
@@ -134,6 +136,7 @@ final class RootShellEngine {
                 cmd.retryCount = 0;
                 cmd.exitCode = 0;
                 cmd.done = false;
+                cmd.warnings.clear();
                 queue.add(cmd);
             }
             startStallGuard();
@@ -237,9 +240,15 @@ final class RootShellEngine {
         String command = cmds.get(st.commandIndex);
         sendUpdate(st);
         st.ignoreExitCode = false;
+        st.warnOnError = false;
         if (command.startsWith("#NOCHK# ")) {
             command = command.replaceFirst("#NOCHK# ", "");
             st.ignoreExitCode = true;
+        } else if (command.startsWith(WARN)) {
+            // e.g. a custom script line: a failure is reported, but doesn't stop the script
+            command = command.substring(WARN.length());
+            st.ignoreExitCode = true;
+            st.warnOnError = true;
         }
         st.lastCommand = command;
         st.lastCommandResult = new StringBuilder();
@@ -309,6 +318,12 @@ final class RootShellEngine {
                 }
             }, 100L * st.retryCount, TimeUnit.MILLISECONDS);
             return;
+        }
+
+        if (exitCode != 0 && st.warnOnError) {
+            String result = st.lastCommandResult.toString().trim();
+            Log.w(tag, "command '" + st.lastCommand + "' exited with status " + exitCode + ": " + result);
+            st.warnings.add(st.lastCommand + (result.isEmpty() ? " (exit " + exitCode + ")" : ": " + result));
         }
 
         st.commandIndex++;

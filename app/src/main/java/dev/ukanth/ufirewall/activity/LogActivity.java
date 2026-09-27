@@ -61,6 +61,7 @@ import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
+import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.SecurityUtil;
 import dev.ukanth.ufirewall.util.ThemeHelper;
@@ -124,8 +125,23 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         } else {
             recyclerView.setVisibility(View.GONE);
             mSwipeLayout.setVisibility(View.GONE);
-            emptyView.setVisibility(View.VISIBLE);
+            showEmptyView();
         }
+    }
+
+    /**
+     * Empty log: say why, instead of always asking to enable a log service that may be enabled.
+     */
+    private void showEmptyView() {
+        String failure = LogService.getLastStartFailure();
+        if (!G.enableLogService()) {
+            emptyView.setText(R.string.log_empty_service_off);
+        } else if (failure != null) {
+            emptyView.setText(getString(R.string.log_empty_watcher_failed, failure));
+        } else {
+            emptyView.setText(R.string.log_empty_nothing_yet);
+        }
+        emptyView.setVisibility(View.VISIBLE);
     }
 
     private void initTheme() {
@@ -244,7 +260,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                 emptyView.setVisibility(View.GONE);
             } else {
                 recyclerView.setVisibility(View.GONE);
-                emptyView.setVisibility(View.VISIBLE);
+                showEmptyView();
             }
             // Keep SwipeRefreshLayout visible to allow pull-to-refresh even when log is empty
             mSwipeLayout.setVisibility(View.VISIBLE);
