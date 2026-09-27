@@ -543,7 +543,10 @@ build_nflog() {
     # avoid AV false-positive heuristics triggered by GNU cross-compiled ELFs)
     eval $(get_ndk_toolchain "$arch")
 
-    local cc="${NDK_CC}"
+    # nflog targets API 29 (busybox/iptables stay on 28): from API 29 on, the NDK's crt objects
+    # give the executable's TLS segment the alignment Bionic requires (64 bytes on arm64, 32 on
+    # arm). Android 16 refuses to start the API-28 build ("TLS segment is underaligned").
+    local cc="${NDK_CC/28-clang/29-clang}"
     local strip_tool="${NDK_STRIP}"
 
     # Build with NDK clang — static link for self-contained binary
@@ -557,6 +560,20 @@ build_nflog() {
     # Verify and strip
     file "nflog_${arch}"
     $strip_tool "nflog_${arch}"
+
+    # Same check as the CI job: Bionic refuses underaligned TLS segments
+    local min_align=0
+    case "$arch" in
+        arm64) min_align=64 ;;
+        arm) min_align=32 ;;
+    esac
+    local readelf="$(dirname "$cc")/llvm-readelf"
+    local align
+    align=$("$readelf" -lW "nflog_${arch}" | awk '/ TLS /{print $NF}')
+    if [ -n "$align" ] && [ $((align)) -lt "$min_align" ]; then
+        log_error "nflog_${arch}: TLS segment alignment is $align, needs at least $min_align"
+        exit 1
+    fi
 
     # Copy to output
     mkdir -p "${SCRIPT_DIR}/${OUTPUT_DIR}"
