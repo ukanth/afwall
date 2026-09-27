@@ -548,13 +548,20 @@ jobs:
     strategy:
       matrix:
         arch: [arm, arm64, x86]
+        # nflog targets API 29: from API 29 on, the NDK's crt objects give the executable's TLS
+        # segment the alignment Bionic requires (64 bytes on arm64, 32 on arm). Android 16
+        # refuses to start the API-28 build ("executable's TLS segment is underaligned").
+        # busybox/iptables have no TLS segment and keep API 28.
         include:
           - arch: arm
-            ndk_cc_suffix: armv7a-linux-androideabi28-clang
+            ndk_cc_suffix: armv7a-linux-androideabi29-clang
+            min_tls_align: 32
           - arch: arm64
-            ndk_cc_suffix: aarch64-linux-android28-clang
+            ndk_cc_suffix: aarch64-linux-android29-clang
+            min_tls_align: 64
           - arch: x86
-            ndk_cc_suffix: i686-linux-android28-clang
+            ndk_cc_suffix: i686-linux-android29-clang
+            min_tls_align: 0
 
     steps:
     - name: Checkout repository
@@ -614,6 +621,22 @@ jobs:
         file nflog_${{ matrix.arch }}
         ${NDK_STRIP} nflog_${{ matrix.arch }}
         ls -la nflog_${{ matrix.arch }}
+
+    - name: Check TLS segment alignment
+      run: |
+        # Bionic refuses to run executables whose TLS segment is aligned below this
+        # (issues #1505/#1506: nflog built for API 28 had 8 on arm64).
+        min=${{ matrix.min_tls_align }}
+        readelf="${ANDROID_NDK_ROOT}/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf"
+        align=$("$readelf" -lW external/nflog/nflog_${{ matrix.arch }} | awk '/ TLS /{print $NF}')
+        if [ -z "$align" ]; then
+          echo "✓ no TLS segment"
+        elif [ $((align)) -lt "$min" ]; then
+          echo "❌ TLS segment alignment is $align, needs at least $min"
+          exit 1
+        else
+          echo "✓ TLS segment alignment $align (minimum $min)"
+        fi
 
     - name: Upload nflog artifact
       uses: actions/upload-artifact@v4
