@@ -252,6 +252,10 @@
     <string name="tasker_disabled">Tasker: AFWall+ DISABLED!</string>
     <string name="tasker_profile_applied">Tasker: AFWall+ profile applied</string>
     <string name="tasker_muliprofile">Tasker: AFWall+ multi-profile disabled</string>
+    <string name="tasker_profile_not_found">Tasker: AFWall+ profile \"%1$s\" not found. Edit the Tasker action.</string>
+    <string name="allow_tasker_control">Allow Tasker/Locale control</string>
+    <string name="allow_tasker_control_summary">Let Tasker/Locale actions enable, disable or switch profiles. Any installed app can send these actions; turn off if you don\'t use them.</string>
+    <string name="profile_selected_firewall_off">Profile selected. The firewall is disabled; its rules are applied when it is enabled.</string>
 
     <!-- IPv4/IPv6 -->
     <string name="ipv6_title">IPv6 support</string>

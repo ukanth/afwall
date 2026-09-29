@@ -41,6 +41,14 @@ public final class PluginBundleManager
     public static final String BUNDLE_EXTRA_INT_VERSION_CODE = "dev.ukanth.ufirewall.plugin.extra.INT_VERSION_CODE"; //$NON-NLS-1$
 
     /**
+     * Type: {@code String}, optional.
+     * <p>
+     * Identifier of the profile to switch to, so the action keeps working after the profile is
+     * renamed. Actions saved by older versions only have the name in the message.
+     */
+    public static final String BUNDLE_EXTRA_STRING_PROFILE_ID = "dev.ukanth.ufirewall.plugin.extra.PROFILE_ID"; //$NON-NLS-1$
+
+    /**
      * Method to verify the content of the bundle are correct.
      * <p>
      * This method will not mutate {@code bundle}.
@@ -86,6 +94,17 @@ public final class PluginBundleManager
     {
         final Bundle result = new Bundle();
         result.putString(BUNDLE_EXTRA_STRING_MESSAGE, message);
+        return result;
+    }
+
+    /**
+     * @param profileId identifier of the profile the action switches to; may be null
+     */
+    public static Bundle generateBundle(final Context context, final String message, final String profileId) {
+        final Bundle result = generateBundle(context, message);
+        if (profileId != null) {
+            result.putString(BUNDLE_EXTRA_STRING_PROFILE_ID, profileId);
+        }
         return result;
     }
 

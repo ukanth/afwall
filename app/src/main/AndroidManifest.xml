@@ -175,24 +175,23 @@
 
         <!-- <activity android:name="dev.ukanth.ufirewall.AlertDialogActivity"/> -->
 
+        <!-- started only by our widgets' PendingIntents: not exported -->
         <activity
             android:name=".widget.ToggleWidgetActivity"
             android:launchMode="singleInstance"
-            android:exported="true"
-            android:theme="@style/Theme.Transparent">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
+            android:exported="false"
+            android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".widget.ToggleWidgetOldActivity"
             android:launchMode="singleInstance"
-            android:exported="true"
-            android:theme="@style/Theme.Transparent">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
+            android:exported="false"
+            android:theme="@style/Theme.Transparent" />
+        <activity
+            android:name=".widget.WidgetActionActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Transparent" />
         <activity
             android:name=".activity.CustomScriptActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
@@ -261,7 +260,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
         <receiver
@@ -276,7 +274,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
         <receiver
@@ -291,7 +288,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="dev.ukanth.ufirewall.intent.action.STATUS_CHANGED" />
-                <action android:name="dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST" />
             </intent-filter>
         </receiver>
 

@@ -3418,6 +3418,9 @@ public final class Api {
         message.setAction(STATUS_CHANGED_MSG);
         message.putExtra(Api.STATUS_EXTRA, enabled);
         ctx.sendBroadcast(message);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            dev.ukanth.ufirewall.service.ToggleTileService.requestRefresh(ctx);
+        }
     }
 
 

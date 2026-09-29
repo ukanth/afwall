@@ -18,14 +18,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.widget.Toast;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
-import dev.ukanth.ufirewall.service.RootCommand;
+import dev.ukanth.ufirewall.util.FirewallActions;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -33,6 +34,8 @@ import dev.ukanth.ufirewall.util.G;
  */
 public final class FireReceiver extends BroadcastReceiver {
     public static final String TAG = "AFWall";
+    // goAsync() must be released before the broadcast times out (10 s for foreground broadcasts)
+    private static final long ASYNC_TIMEOUT_MS = 9000;
 
     /**
      * @param context {@inheritDoc}.
@@ -65,132 +68,106 @@ public final class FireReceiver extends BroadcastReceiver {
         /*
          * Final verification of the plug-in Bundle before firing the setting.
          */
-        if (PluginBundleManager.isBundleValid(bundle)) {
-            String index = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
-            String name = null;
-            if (index.contains("::")) {
-                String[] msg = index.split("::");
-                index = msg[0];
-                name = msg[1];
-            }
-            final boolean multimode = G.enableMultiProfile();
-            final boolean disableToasts = G.disableTaskerToast();
-            if (index != null) {
-                //int id = Integer.parseInt(index);
-                switch (index) {
-                    case "0":
-                        Api.applySavedIptablesRules(context, false, new RootCommand()
-                                .setFailureToast(R.string.error_apply)
-                                .setCallback(new RootCommand.Callback() {
-                                    @Override
-                                    public void cbFunc(RootCommand state) {
-                                        Message msg = new Message();
-                                        if (state.exitCode == 0) {
-                                            msg.arg1 = R.string.rules_applied;
-                                            Api.setEnabled(context, true, false);
-                                        } else {
-                                            // error details are already in logcat
-                                            msg.arg1 = R.string.error_apply;
-                                        }
-                                        sendMessage(msg);
-                                    }
-                                }));
-                        break;
-                    case "1":
-                        if (G.protectionLevel().equals("p0")) {
-                            Api.purgeIptables(context, true, new RootCommand()
-                                    .setReopenShell(true)
-                                    .setCallback(new RootCommand.Callback() {
-                                        public void cbFunc(RootCommand state) {
-                                            Message msg = new Message();
-                                            msg.arg1 = R.string.toast_disabled;
-                                            sendMessage(msg);
-                                            Api.setEnabled(context, false, false);
-                                        }
-                                    }));
-                       /* } else {
-                            msg.arg1 = R.string.toast_error_disabling;
-                            sendMessage(msg);
-                        }*/
-                        } else {
-                            Message msg = new Message();
-                            msg.arg1 = R.string.widget_disable_fail;
-                            sendMessage(msg);
-                        }
-                        break;
-                    case "2":
-                        if (multimode) {
-                            G.setProfile(true, "AFWallPrefs");
-                        }
-                        break;
-                    default:
-                        if (multimode) {
-                            ProfileData data = null;
-                            if (name != null) {
-                                data = ProfileHelper.getProfileByName(name);
-                            } else if (index.equals("3") || index.equals("4") || index.equals("5")) {
-                                // very old actions saved only the index: 3-5 were Profile 1-3
-                                data = ProfileHelper.getProfileByIdentifier("AFWallProfile" + (Integer.parseInt(index) - 2));
-                            }
-                            if (data != null) {
-                                G.setProfile(true, data.getIdentifier());
-                            }
-                        }
-                        break;
-                }
-
-                if (Integer.parseInt(index) > 1) {
-                    if (multimode) {
-                        if (Api.isEnabled(context)) {
-                            if (!disableToasts) {
-                                Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
-                            }
-                            Api.applySavedIptablesRules(context, false, new RootCommand()
-                                    .setFailureToast(R.string.error_apply)
-                                    .setCallback(new RootCommand.Callback() {
-                                        @Override
-                                        public void cbFunc(RootCommand state) {
-                                            Message msg = new Message();
-                                            if (state.exitCode == 0) {
-                                                msg.arg1 = R.string.tasker_profile_applied;
-                                                if (!disableToasts) sendMessage(msg);
-                                            } else {
-                                                // error details are already in logcat
-                                                msg.arg1 = R.string.error_apply;
-                                            }
-                                        }
-                                    }));
-                        } else {
-                            Message msg = new Message();
-                            msg.arg1 = R.string.tasker_disabled;
-                            sendMessage(msg);
-                        }
-                    } else {
-                        Message msg = new Message();
-                        msg.arg1 = R.string.tasker_muliprofile;
-                        sendMessage(msg);
-                    }
-                    G.reloadPrefs();
-                   /* if (G.activeNotification()) {
-                        Api.showNotification(Api.isEnabled(context), context);
-                    }*/
-                    Api.updateNotification(Api.isEnabled(context), context);
-                }
-            }
+        if (!PluginBundleManager.isBundleValid(bundle)) {
+            return;
         }
+        if (!G.allowTaskerControl()) {
+            // the receiver has to be exported for Tasker/Locale, so any app can send this
+            Log.i(TAG, "Tasker/Locale action ignored: control by other apps is turned off");
+            return;
+        }
+        String index = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
+        String name = null;
+        if (index.contains("::")) {
+            String[] parts = index.split("::", 2);
+            index = parts[0];
+            name = parts[1].isEmpty() ? null : parts[1];
+        }
+        final String profileId = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_PROFILE_ID);
+        final Context app = context.getApplicationContext();
 
+        // Keep the process alive until the rules are loaded: when AFWall+ isn't running, Android
+        // may otherwise kill it as soon as onReceive() returns. Released on completion, or
+        // before the broadcast timeout.
+        final PendingResult pending = goAsync();
+        final AtomicBoolean finished = new AtomicBoolean(false);
+        final Runnable finish = () -> {
+            if (finished.compareAndSet(false, true)) {
+                pending.finish();
+            }
+        };
+        new Handler(Looper.getMainLooper()).postDelayed(finish, ASYNC_TIMEOUT_MS);
+
+        switch (index) {
+            case "0":
+                FirewallActions.setEnabled(app, true, false, ok -> {
+                    toast(app, ok ? R.string.toast_enabled : R.string.toast_error_enabling, ok);
+                    finish.run();
+                });
+                return;
+            case "1":
+                if (!G.protectionLevel().equals("p0")) {
+                    toast(app, R.string.widget_disable_fail, false);
+                    finish.run();
+                    return;
+                }
+                FirewallActions.setEnabled(app, false, false, ok -> {
+                    toast(app, ok ? R.string.toast_disabled : R.string.toast_error_disabling, ok);
+                    finish.run();
+                });
+                return;
+            default:
+                switchProfile(app, index, name, profileId, finish);
+        }
     }
 
-    private void sendMessage(Message msg) {
-        try {
-            new Handler(Looper.getMainLooper()) {
-                public void handleMessage(Message msg) {
-                    if (msg.arg1 != 0)
-                        Toast.makeText(G.getContext(), msg.arg1, Toast.LENGTH_SHORT).show();
-                }
-            }.sendMessage(msg);
-        }catch (Exception e) {
-            //unable to send toast. but don't crash
+    private static void switchProfile(Context app, String index, String name, String profileId, Runnable finish) {
+        if (!G.enableMultiProfile()) {
+            toast(app, R.string.tasker_muliprofile, false);
+            finish.run();
+            return;
+        }
+        String identifier = null;
+        if (profileId != null && (Api.DEFAULT_PREFS_NAME.equals(profileId)
+                || ProfileHelper.getProfileByIdentifier(profileId) != null)) {
+            identifier = profileId; // survives renaming
+        } else if (index.equals("2")) {
+            identifier = Api.DEFAULT_PREFS_NAME;
+        } else if (name != null) {
+            ProfileData data = ProfileHelper.getProfileByName(name);
+            identifier = data != null ? data.getIdentifier() : null;
+        } else if (index.equals("3") || index.equals("4") || index.equals("5")) {
+            // very old actions saved only the index: 3-5 were Profile 1-3
+            ProfileData data = ProfileHelper.getProfileByIdentifier("AFWallProfile" + (Integer.parseInt(index) - 2));
+            identifier = data != null ? data.getIdentifier() : null;
+        }
+        if (identifier == null) {
+            // deleted, or renamed before actions stored the identifier: don't pretend it worked
+            Api.toast(app, app.getString(R.string.tasker_profile_not_found, name != null ? name : index));
+            finish.run();
+            return;
+        }
+        final boolean enabled = Api.isEnabled(app);
+        if (enabled) {
+            toast(app, R.string.tasker_apply, true);
+        }
+        FirewallActions.switchProfile(app, identifier, false, ok -> {
+            if (!enabled) {
+                toast(app, R.string.tasker_disabled, false);
+            } else {
+                toast(app, ok ? R.string.tasker_profile_applied : R.string.error_apply, ok);
+            }
+            Api.updateNotification(Api.isEnabled(app), app);
+            finish.run();
+        });
+    }
+
+    /**
+     * @param success success messages follow the "disable Tasker toasts" setting; errors always show
+     */
+    private static void toast(Context app, int resId, boolean success) {
+        if (!success || !G.disableTaskerToast()) {
+            Api.toast(app, app.getString(resId));
         }
     }
 }

@@ -57,6 +57,7 @@ public class LocaleEdit extends AppCompatActivity {
                 RadioButton rdbtn = new RadioButton(this);
                 rdbtn.setId(View.generateViewId());
                 rdbtn.setText(data.getName());
+                rdbtn.setTag(data.getIdentifier());
                 profiles.addView(rdbtn);
             }
         }
@@ -68,7 +69,8 @@ public class LocaleEdit extends AppCompatActivity {
                     com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
             if (PluginBundleManager.isBundleValid(forwardedBundle)) {
                 // "<index>::<label>"; the index is only stable for the fixed entries, so profiles
-                // are matched by label
+                // are matched by identifier (saved since 4.2.0), else by label
+                String profileId = forwardedBundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_PROFILE_ID);
                 String index = forwardedBundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
                 String label = null;
                 if (index != null && index.contains("::")) {
@@ -90,8 +92,10 @@ public class LocaleEdit extends AppCompatActivity {
                         default:
                             for (int i = 0; i < profiles.getChildCount(); i++) {
                                 View child = profiles.getChildAt(i);
-                                if (child instanceof RadioButton && child != button1
-                                        && ((RadioButton) child).getText().toString().equals(label)) {
+                                boolean match = profileId != null
+                                        ? profileId.equals(child.getTag())
+                                        : child instanceof RadioButton && ((RadioButton) child).getText().toString().equals(label);
+                                if (child instanceof RadioButton && child != button1 && match) {
                                     ((RadioButton) child).setChecked(true);
                                     break;
                                 }
@@ -148,14 +152,20 @@ public class LocaleEdit extends AppCompatActivity {
         } else {
             RadioGroup group = findViewById(R.id.radioProfiles);
             int selectedId = group.getCheckedRadioButtonId();
-            RadioButton radioButton = findViewById(selectedId);
-            //int id = Integer.parseInt(radioButton.getHint().toString());
-            String action = radioButton.getText().toString();
-            final Intent resultIntent = new Intent();
-            int idx = group.indexOfChild(radioButton);
-            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
-            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, action);
-            setResult(RESULT_OK, resultIntent);
+            RadioButton radioButton = selectedId == View.NO_ID ? null : findViewById(selectedId);
+            if (radioButton == null) {
+                // nothing chosen: nothing to save
+                setResult(RESULT_CANCELED);
+            } else {
+                String action = radioButton.getText().toString();
+                final Intent resultIntent = new Intent();
+                int idx = group.indexOfChild(radioButton);
+                Object profileId = radioButton.getTag();
+                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(
+                        getApplicationContext(), idx + "::" + action, profileId instanceof String ? (String) profileId : null));
+                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, action);
+                setResult(RESULT_OK, resultIntent);
+            }
         }
         super.finish();
     }
