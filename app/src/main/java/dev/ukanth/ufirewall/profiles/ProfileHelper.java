@@ -162,6 +162,30 @@ public class ProfileHelper {
     }
 
     /**
+     * @return identifier of the profile named {@code name}. If there is none it is created, with
+     * {@code preferredIdentifier} when that is free (so a restore keeps the identifiers), otherwise
+     * with a new one. Null if {@code name} is empty.
+     */
+    public static String ensureProfile(String name, String preferredIdentifier) {
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
+        ProfileData data = getProfileByName(name);
+        if (data != null) {
+            return data.getIdentifier();
+        }
+        String base = preferredIdentifier == null || preferredIdentifier.trim().isEmpty()
+                || preferredIdentifier.equals(dev.ukanth.ufirewall.Api.DEFAULT_PREFS_NAME)
+                ? name.replaceAll("\\s+", "") : preferredIdentifier;
+        String identifier = base;
+        for (int i = 2; getProfileByIdentifier(identifier) != null; i++) {
+            identifier = base + i;
+        }
+        new ProfileData(name, identifier).save();
+        return identifier;
+    }
+
+    /**
      * @return identifier of the profile with this name, created (like a profile added by the user)
      * if it doesn't exist
      */

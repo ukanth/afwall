@@ -27,7 +27,72 @@ public final class AppRuleHelper {
     }
 
     public static String rulePrefixForUid(int uid) {
-        return RULE_PREFIX + currentProfileName() + ":" + uid + ":";
+        return rulePrefixForUid(currentProfileName(), uid);
+    }
+
+    private static String rulePrefixForUid(String profile, int uid) {
+        return RULE_PREFIX + profile + ":" + uid + ":";
+    }
+
+    /**
+     * A direct rule, as encoded in its name.
+     */
+    public static final class ParsedRule {
+        public final String profile;
+        public final int uid;
+        public final String destination;
+        public final String protocol;
+        public final String port;
+
+        ParsedRule(String profile, int uid, String destination, String protocol, String port) {
+            this.profile = profile;
+            this.uid = uid;
+            this.destination = destination;
+            this.protocol = protocol;
+            this.port = port;
+        }
+    }
+
+    /**
+     * Parse "direct-rule:&lt;profile&gt;:&lt;uid&gt;: allow dst=.. proto=.. dport=.." (or the legacy
+     * form without the profile, which belongs to the default profile).
+     *
+     * @return null if {@code name} is not a direct rule
+     */
+    public static ParsedRule parseRuleName(String name) {
+        if (name == null || !name.startsWith(RULE_PREFIX)) {
+            return null;
+        }
+        String profile;
+        int uidStart;
+        if (isLegacyRuleName(name)) {
+            profile = DEFAULT_PROFILE;
+            uidStart = RULE_PREFIX.length();
+        } else {
+            int sep = name.indexOf(':', RULE_PREFIX.length());
+            if (sep <= RULE_PREFIX.length()) {
+                return null;
+            }
+            profile = name.substring(RULE_PREFIX.length(), sep);
+            uidStart = sep + 1;
+        }
+        int uid = parseUidAfterPrefix(name, uidStart);
+        if (uid == Integer.MIN_VALUE) {
+            return null;
+        }
+        String destination = "";
+        String protocol = "any";
+        String port = "";
+        for (String token : name.substring(name.indexOf(':', uidStart) + 1).trim().split("\\s+")) {
+            if (token.startsWith("dst=")) {
+                destination = token.substring(4);
+            } else if (token.startsWith("proto=")) {
+                protocol = token.substring(6);
+            } else if (token.startsWith("dport=")) {
+                port = token.substring(6);
+            }
+        }
+        return new ParsedRule(profile, uid, destination, protocol, port);
     }
 
     public static String buildAllowRule(int uid, String destinationValue, String protocolValue, String portValue) {
@@ -53,11 +118,16 @@ public final class AppRuleHelper {
     }
 
     public static String buildAllowRuleName(int uid, String destinationValue, String protocolValue, String portValue) {
+        return buildAllowRuleName(currentProfileName(), uid, destinationValue, protocolValue, portValue);
+    }
+
+    public static String buildAllowRuleName(String profile, int uid, String destinationValue, String protocolValue,
+                                            String portValue) {
         String destination = normalize(destinationValue);
         String protocol = normalize(protocolValue).toLowerCase(Locale.US);
         String port = normalize(portValue);
 
-        StringBuilder name = new StringBuilder(rulePrefixForUid(uid));
+        StringBuilder name = new StringBuilder(rulePrefixForUid(profile, uid));
         name.append(" allow");
         if (!destination.isEmpty()) {
             name.append(" dst=").append(destination);

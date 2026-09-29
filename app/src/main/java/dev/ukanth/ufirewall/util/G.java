@@ -541,11 +541,25 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int logPingTimeout() {
-        try {
-            return Integer.valueOf(gPrefs.getString(LOG_PING_TIMEOUT, "10"));
-        } catch (NumberFormatException e) {
-            return 10;
+        return readInt(LOG_PING_TIMEOUT, 10);
+    }
+
+    /**
+     * Read an int preference that may also be stored as a string: the setting screen stores an int,
+     * but older versions and old backup imports wrote a string, and getInt() would throw on that.
+     */
+    private static int readInt(String key, int defaultValue) {
+        Object value = gPrefs.getAll().get(key);
+        if (value instanceof Integer) {
+            return (Integer) value;
         }
+        if (value instanceof String) {
+            try {
+                return Integer.parseInt(((String) value).trim());
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        return defaultValue;
     }
 
     /*public static void logPingTimeout(int logPingTimeout) {
@@ -1104,7 +1118,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static int getCustomDelay() {
-        return gPrefs.getInt(CUSTOM_DELAY_SECONDS, 5) * 1000;
+        return readInt(CUSTOM_DELAY_SECONDS, 5) * 1000;
     }
 
     public static int getNetworkDebounceDelay() {

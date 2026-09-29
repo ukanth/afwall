@@ -85,6 +85,7 @@ import com.topjohnwu.superuser.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -139,6 +140,7 @@ import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.customrules.CustomRule;
 import dev.ukanth.ufirewall.customrules.CustomRule_Table;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
+import dev.ukanth.ufirewall.util.BackupHelper;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
 import dev.ukanth.ufirewall.util.IptablesVersion;
@@ -247,7 +249,9 @@ public final class Api {
     private static Map<Integer, ApplicationInfo> uidToApplicationInfoMap = null;
 
 
-    private static final Pattern dual_pattern = Pattern.compile("package:(.*) uid:(.*)", Pattern.MULTILINE);
+    // "package:<name> uid:<uid>"; without --user the uids of every user follow, comma-separated
+    // ("uid:10152,1010152,1110152"): take the first one (the main user's)
+    private static final Pattern dual_pattern = Pattern.compile("package:(\\S+) uid:(\\d+)", Pattern.MULTILINE);
 
     /**
      * @brief Special user/group IDs that aren't associated with
@@ -2872,7 +2876,7 @@ public final class Api {
      * @return user id -&gt; user type (e.g. "profile.MANAGED", "profile.PRIVATE", "full.SYSTEM") as
      * reported by root "cmd user list -v"; empty if unavailable (older Android)
      */
-    private static Map<Integer, String> getProfileTypes() {
+    public static Map<Integer, String> getProfileTypes() {
         Map<Integer, String> types = new HashMap<>();
         try {
             Shell.Result result = Shell.cmd("cmd user list -v").exec();
@@ -3928,7 +3932,9 @@ public final class Api {
             exportObject.put("rules", jArray);
             String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
             exportObject.put("mode", mode);
-            
+            // portable rules; older versions ignore this key and read "rules"
+            exportObject.put(BackupHelper.V2_KEY, BackupHelper.exportRules(ctx, PREFS_NAME));
+
             myOutWriter.write(exportObject.toString());
             myOutWriter.flush(); // Ensure data is written
             res = true;
@@ -3952,25 +3958,55 @@ public final class Api {
         return profileObject;
     }
 
+    /**
+     * Full backup. The v1 sections keep their layout so older versions can still import the file;
+     * "v2" holds the complete, portable data and is what this version imports.
+     */
+    private static JSONObject buildFullExport(Context ctx) throws JSONException {
+        JSONObject exportObject = new JSONObject();
+        Map<String, String> prefOverrides = new HashMap<>();
+        if (G.enableMultiProfile()) {
+            exportObject.put("_profiles", getAllProfileRules(ctx));
+            // versions that still use the old profile model read these instead: keys are the
+            // preference file names, custom profiles are listed in "plusprofiles"
+            JSONObject legacyProfiles = new JSONObject();
+            JSONObject legacyAdditional = new JSONObject();
+            List<String> additional = new ArrayList<>();
+            legacyProfiles.put(DEFAULT_PREFS_NAME, new JSONObject(getRulesForProfile(ctx, DEFAULT_PREFS_NAME)));
+            for (ProfileData profile : ProfileHelper.getProfiles()) {
+                String identifier = profile.getIdentifier();
+                JSONObject rules = new JSONObject(getRulesForProfile(ctx, identifier));
+                if (identifier.matches("AFWallProfile[123]")) {
+                    legacyProfiles.put(identifier, rules);
+                    prefOverrides.put("profile" + identifier.charAt(identifier.length() - 1), profile.getName());
+                } else {
+                    legacyAdditional.put(identifier, rules);
+                    additional.add(identifier);
+                }
+            }
+            exportObject.put("profiles", legacyProfiles);
+            exportObject.put("additional_profiles", legacyAdditional);
+            prefOverrides.put("plusprofiles", TextUtils.join(",", additional));
+        } else {
+            exportObject.put("default", new JSONObject(getCurrentRulesAsMap(ctx)));
+        }
+
+        exportObject.put("prefs", BackupHelper.exportV1Prefs(G.gPrefs, prefOverrides));
+        // profile-specific preferences (mode, custom scripts, ...) of the active profile
+        if (G.pPrefs != null) {
+            exportObject.put("profilePrefs", BackupHelper.exportV1Prefs(G.pPrefs));
+            exportObject.put("mode", G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST));
+        }
+        exportObject.put(BackupHelper.V2_KEY, BackupHelper.exportFull(ctx));
+        return exportObject;
+    }
+
     private static boolean exportAllToFile(Context ctx, File file) {
         boolean res = false;
         try (FileOutputStream fOut = new FileOutputStream(file);
              OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
 
-            JSONObject exportObject = new JSONObject();
-            if (G.enableMultiProfile()) {
-                exportObject.put("_profiles", getAllProfileRules(ctx));
-            } else {
-                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                exportObject.put("default", obj);
-            }
-
-            exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
-            // Export profile-specific preferences (mode, custom rules, etc.)
-            if (G.pPrefs != null) {
-                exportObject.put("profilePrefs", getAllAppPreferences(ctx, G.pPrefs));
-            }
-            
+            JSONObject exportObject = buildFullExport(ctx);
             myOutWriter.write(exportObject.toString());
             myOutWriter.flush(); // Ensure data is written
             res = true;
@@ -4046,24 +4082,7 @@ public final class Api {
             try (FileOutputStream fOut = new FileOutputStream(file);
                  OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
 
-                JSONObject exportObject = new JSONObject();
-                if (G.enableMultiProfile()) {
-                    exportObject.put("_profiles", getAllProfileRules(ctx));
-                } else {
-                    JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                    exportObject.put("default", obj);
-                }
-
-                exportObject.put("prefs", getAllAppPreferences(ctx, G.gPrefs));
-                // Export profile-specific preferences (mode, custom rules, etc.)
-                if (G.pPrefs != null) {
-                    exportObject.put("profilePrefs", getAllAppPreferences(ctx, G.pPrefs));
-                }
-
-                String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-                exportObject.put("mode", mode);
-
-                myOutWriter.append(exportObject.toString());
+                myOutWriter.append(buildFullExport(ctx).toString());
                 res = true;
             }
 
@@ -4086,17 +4105,6 @@ public final class Api {
         updatePackage(ctx, prefs.getString(PREF_LAN_PKG_UIDS, ""), exportMap, LAN_EXPORT);
         updatePackage(ctx, prefs.getString(PREF_TOR_PKG_UIDS, ""), exportMap, TOR_EXPORT);
         return exportMap;
-    }
-
-    private static JSONArray getAllAppPreferences(Context ctx, SharedPreferences gPrefs) throws JSONException {
-        Map<String, ?> keys = gPrefs.getAll();
-        JSONArray arr = new JSONArray();
-        for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            JSONObject obj = new JSONObject();
-            obj.put(entry.getKey(), entry.getValue().toString());
-            arr.put(obj);
-        }
-        return arr;
     }
 
     public static boolean exportRules(Context ctx, final String fileName) {
@@ -4130,6 +4138,8 @@ public final class Api {
 
                 String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
                 exportObject.put("mode", mode);
+                // portable rules; older versions ignore this key and read "rules"
+                exportObject.put(BackupHelper.V2_KEY, BackupHelper.exportRules(ctx, PREFS_NAME));
 
                 myOutWriter.append(exportObject.toString());
                 res = true;
@@ -4158,21 +4168,7 @@ public final class Api {
             com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + safePath).exec();
             List<String> out = result.getOut();
             String data = TextUtils.join("", out);
-
-            try {
-                //old export format
-                JSONArray array = new JSONArray(data);
-                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
-            } catch (JSONException e) {
-                //new exported format
-                JSONObject jsonObject = new JSONObject(data);
-                //save mode
-                if(jsonObject.get("mode") != null) {
-                    G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).apply();
-                }
-                JSONArray array = (JSONArray) jsonObject.get("rules");
-                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
-            }
+            importRulesData(ctx, data, msg);
             returnVal = true;
         } catch (java.util.concurrent.RejectedExecutionException e) {
             Log.w(TAG, "Import rules file read rejected: " + e.getMessage());
@@ -4206,17 +4202,7 @@ public final class Api {
                 return false;
             }
             
-            JSONObject jsonObject = new JSONObject(data);
-            if (jsonObject.has("mode")) {
-                G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).apply();
-            }
-            JSONArray array = jsonObject.optJSONArray("rules");
-            if (array != null) {
-                updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
-            } else {
-                updateRulesFromJson(ctx, jsonObject, PREFS_NAME);
-            }
-
+            importRulesData(ctx, data, msg);
             returnVal = true;
         } catch (FileNotFoundException e) {
             if (e.getMessage().contains("EACCES")) {
@@ -4232,6 +4218,70 @@ public final class Api {
     }
 
 
+    /**
+     * Import a "rules only" backup into the current profile. Handles every format: the oldest
+     * (a bare array), v1 ({"rules": [...], "mode"}) and v2 (a "v2" section next to the v1 keys).
+     */
+    private static void importRulesData(Context ctx, String data, StringBuilder msg) throws JSONException {
+        Object parsed = new JSONTokener(data).nextValue();
+        if (parsed instanceof JSONArray) {
+            updateRulesFromJson(ctx, ((JSONArray) parsed).getJSONObject(0), PREFS_NAME);
+            return;
+        }
+        if (!(parsed instanceof JSONObject)) {
+            throw new JSONException("Not an AFWall+ rules backup");
+        }
+        JSONObject jsonObject = (JSONObject) parsed;
+        JSONObject v2 = jsonObject.optJSONObject(BackupHelper.V2_KEY);
+        if (v2 != null && v2.optJSONArray("rules") != null) {
+            reportSkipped(ctx, BackupHelper.importRules(ctx, v2, PREFS_NAME), msg);
+            return;
+        }
+        if (jsonObject.has("mode")) {
+            G.pPrefs.edit().putString(PREF_MODE, jsonObject.getString("mode")).apply();
+        }
+        JSONArray array = jsonObject.optJSONArray("rules");
+        if (array != null) {
+            updateRulesFromJson(ctx, (JSONObject) array.get(0), PREFS_NAME);
+        } else {
+            updateRulesFromJson(ctx, jsonObject, PREFS_NAME);
+        }
+    }
+
+    private static void reportSkipped(Context ctx, BackupHelper.ImportStats stats, StringBuilder msg) {
+        int skipped = stats.skippedApps();
+        if (skipped > 0) {
+            msg.append(ctx.getResources().getQuantityString(R.plurals.import_skipped_apps, skipped, skipped));
+        }
+    }
+
+    /**
+     * UID on this device of a v1 rule key: a package name, a special entry
+     * ("dev.afwall.special..."), or "sharedUserId:uid" as written for shared UIDs. v1 has no
+     * Android user, so entries map to the main user.
+     *
+     * @return null if it doesn't exist on this device
+     */
+    private static Integer resolveV1RuleUid(String key, BackupHelper.DeviceUidMapper mapper) {
+        if (key.startsWith("dev.afwall.special")) {
+            return mapper.specialUid(key);
+        }
+        int sep = key.lastIndexOf(':');
+        if (sep > 0) {
+            String name = key.substring(0, sep);
+            try {
+                int srcUid = Integer.parseInt(key.substring(sep + 1));
+                if (srcUid >= 0 && srcUid % 100000 < android.os.Process.FIRST_APPLICATION_UID) {
+                    return srcUid % 100000; // system UIDs are the same on every device
+                }
+            } catch (NumberFormatException ignored) {
+            }
+            Integer appId = mapper.appIdForSharedUser(name);
+            return appId != null ? appId : mapper.appIdForPackage(name);
+        }
+        return mapper.appIdForPackage(key);
+    }
+
     private static void updateRulesFromJson(Context ctx, JSONObject object, String preferenceName) throws JSONException {
         final StringBuilder[] uidBuilders = new StringBuilder[7];
         uidBuilders[WIFI_EXPORT] = new StringBuilder();
@@ -4243,34 +4293,30 @@ public final class Api {
         uidBuilders[TOR_EXPORT] = new StringBuilder();
 
         Map<String, Object> json = JsonHelper.toMap(object);
-        final PackageManager pm = ctx.getPackageManager();
+        BackupHelper.DeviceUidMapper mapper = new BackupHelper.DeviceUidMapper(ctx);
 
         for (Map.Entry<String, Object> entry : json.entrySet()) {
-            String pkgName = entry.getKey();
-            if (pkgName.contains(":")) {
-                pkgName = pkgName.split(":")[0];
+            Integer uid = resolveV1RuleUid(entry.getKey(), mapper);
+            if (uid == null) {
+                continue; // not on this device
             }
-
             JSONObject jsonObj = (JSONObject) JsonHelper.toJSON(entry.getValue());
             Iterator<?> keys = jsonObj.keys();
             while (keys.hasNext()) {
-                String key = (String) keys.next();
-                int exportType = Integer.parseInt(key);
+                int exportType;
+                try {
+                    exportType = Integer.parseInt((String) keys.next());
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+                if (exportType < 0 || exportType >= uidBuilders.length) {
+                    continue;
+                }
                 StringBuilder uidBuilder = uidBuilders[exportType];
-
                 if (uidBuilder.length() != 0) {
                     uidBuilder.append('|');
                 }
-
-                if (pkgName.startsWith("dev.afwall.special")) {
-                    uidBuilder.append(specialApps.get(pkgName));
-                } else {
-                    try {
-                        uidBuilder.append(pm.getApplicationInfo(pkgName, 0).uid);
-                    } catch (NameNotFoundException e) {
-                        // Handle exception if needed
-                    }
-                }
+                uidBuilder.append(uid);
             }
         }
 
@@ -4285,16 +4331,6 @@ public final class Api {
         edit.putString(PREF_TOR_PKG_UIDS, uidBuilders[TOR_EXPORT].toString());
 
         edit.apply();
-    }
-
-    private static boolean shouldIgnoreKey(String key) {
-        String[] ignore = {"appVersion", "fixLeak", "enableLogService", "sort", "storedProfile", "hasRoot", "logChains", "kingDetect", "fingerprintEnabled"};
-        return Arrays.asList(ignore).contains(key);
-    }
-
-    private static boolean isIntType(String key) {
-        String[] intType = {"logPingTime", "customDelay", "patternMax", "widgetX", "widgetY", "notification_priority"};
-        return Arrays.asList(intType).contains(key);
     }
 
     /**
@@ -4348,6 +4384,14 @@ public final class Api {
             }
             
             JSONObject object = new JSONObject(data);
+
+            // backups from this version on: the complete, portable section
+            JSONObject v2 = object.optJSONObject(BackupHelper.V2_KEY);
+            if (v2 != null && v2.optJSONArray("profiles") != null) {
+                reportSkipped(ctx, BackupHelper.importFull(ctx, v2), msg);
+                return true;
+            }
+
             // Basic validation of expected JSON structure
             if (!object.has("prefs") && !object.has("profiles") && !object.has("_profiles") && !object.has("default")) {
                 msg.append("Import file does not contain valid AFWall+ data");
@@ -4360,68 +4404,10 @@ public final class Api {
                 G.pPrefs.edit().putString(PREF_MODE, object.getString("mode")).apply();
             }
 
-            JSONArray prefArray = object.getJSONArray("prefs");
-            for (int i = 0; i < prefArray.length(); i++) {
-                JSONObject prefObj = prefArray.getJSONObject(i);
-                Iterator<String> keys = prefObj.keys();
-
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    String value = prefObj.getString(key);
-                    if (shouldIgnoreKey(key)) {
-                        continue;
-                    }
-                    if (value.equals("true") || value.equals("false")) {
-                        G.gPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
-                    } else {
-                        try {
-                            if (key.equals("multiUserId")) {
-                                G.gPrefs.edit().putLong(key, Long.parseLong(value)).apply();
-                            } else if (isIntType(key)) {
-                                G.gPrefs.edit().putString(key, value).apply();
-                            } else {
-                                int intValue = Integer.parseInt(value);
-                                G.gPrefs.edit().putInt(key, intValue).apply();
-                            }
-                        } catch (NumberFormatException e) {
-                            G.gPrefs.edit().putString(key, value).apply();
-                        }
-                    }
-                }
-            }
-
-            // Import profile-specific preferences if available
-            if (object.has("profilePrefs")) {
-                JSONArray profilePrefArray = object.getJSONArray("profilePrefs");
-                for (int i = 0; i < profilePrefArray.length(); i++) {
-                    JSONObject prefObj = profilePrefArray.getJSONObject(i);
-                    Iterator<String> keys = prefObj.keys();
-
-                    while (keys.hasNext()) {
-                        String key = keys.next();
-                        String value = prefObj.getString(key);
-                        if (shouldIgnoreKey(key)) {
-                            continue;
-                        }
-                        if (value.equals("true") || value.equals("false")) {
-                            G.pPrefs.edit().putBoolean(key, Boolean.parseBoolean(value)).apply();
-                        } else {
-                            try {
-                                if (key.equals("multiUserId")) {
-                                    G.pPrefs.edit().putLong(key, Long.parseLong(value)).apply();
-                                } else if (isIntType(key)) {
-                                    G.pPrefs.edit().putString(key, value).apply();
-                                } else {
-                                    int intValue = Integer.parseInt(value);
-                                    G.pPrefs.edit().putInt(key, intValue).apply();
-                                }
-                            } catch (NumberFormatException e) {
-                                G.pPrefs.edit().putString(key, value).apply();
-                            }
-                        }
-                    }
-                }
-            }
+            // v1 stored every preference as a string; write them with the types they are read with
+            BackupHelper.importV1Prefs(object.optJSONArray("prefs"), G.gPrefs);
+            // profile-specific preferences (mode, custom scripts, ...) of the exported profile
+            BackupHelper.importV1Prefs(object.optJSONArray("profilePrefs"), G.pPrefs, true);
 
             // pick the rules section by what the file contains, not by the current settings
             if (object.has("_profiles")) {
@@ -4439,8 +4425,8 @@ public final class Api {
             returnVal = true;
         } catch (FileNotFoundException e) {
             msg.append(ctx.getString(R.string.import_rules_missing));
-        } catch (IOException | JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to import " + file, e);
         }
 
         return returnVal;
@@ -4467,6 +4453,11 @@ public final class Api {
                 res = importAll(ctx, file, builder);
             } else {
                 res = importRules(ctx, file, builder);
+            }
+            if (res) {
+                // settings such as multi-profile or the active profile's file may have changed
+                G.reloadPrefs();
+                applications = null;
             }
         } else {
             builder.append("Import file does not exist: " + fileName);
@@ -4541,6 +4532,14 @@ public final class Api {
         }
         if (internetPermissionCache != null) internetPermissionCache.put(packageName, hasPermission);
         return hasPermission;
+    }
+
+    /**
+     * @return special entry name ("dev.afwall.special...") -&gt; UID on this device
+     */
+    public static Map<String, Integer> getSpecialAppUids() {
+        initSpecial();
+        return new HashMap<>(specialApps);
     }
 
     private static void initSpecial() {

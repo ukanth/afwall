@@ -1351,8 +1351,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 StringBuilder builder = new StringBuilder();
                                 if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
                                     Api.applications = null;
+                                    // imported rules take effect on the next apply; prompt for it
+                                    setDirty(true);
                                     showOrLoadApplications();
-                                    Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                    // skipped-apps note first: the long path gets truncated
+                                    Api.toast(MainActivity.this, (builder.length() > 0 ? builder + "\n" : "")
+                                            + getString(R.string.import_rules_success) + fileSelected);
                                 } else {
                                     if (builder.toString().equals("")) {
                                         Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
@@ -1387,8 +1391,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     StringBuilder builder = new StringBuilder();
                                     if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
                                         Api.applications = null;
+                                        // imported rules take effect on the next apply; prompt for it
+                                        setDirty(true);
                                         showOrLoadApplications();
-                                        Api.toast(MainActivity.this, getString(R.string.import_rules_success) + fileSelected);
+                                        // skipped-apps note first: the long path gets truncated
+                                        Api.toast(MainActivity.this, (builder.length() > 0 ? builder + "\n" : "")
+                                                + getString(R.string.import_rules_success) + fileSelected);
                                         Intent intent = getIntent();
                                         finish();
                                         startActivity(intent);

@@ -116,6 +116,10 @@
         <item quantity="one">%1$d custom script line failed; the other rules were applied. %2$s</item>
         <item quantity="other">%1$d custom script lines failed; the other rules were applied. First: %2$s</item>
     </plurals>
+    <plurals name="import_skipped_apps">
+        <item quantity="one">%1$d app in the backup is not installed on this device; its rules were skipped.</item>
+        <item quantity="other">%1$d apps in the backup are not installed on this device; their rules were skipped.</item>
+    </plurals>
     <string name="error_notification_text">Error applying firewall rules. Click to open settings.</string>
     <string name="error_notification_ticker">AFWall+ could not apply rules</string>
 
