@@ -79,7 +79,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.stericson.roottools.RootTools;
 import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONArray;
@@ -146,6 +145,7 @@ import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
 import dev.ukanth.ufirewall.util.IptablesVersion;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.NetworkChangeDebouncer;
+import dev.ukanth.ufirewall.util.RootFiles;
 import dev.ukanth.ufirewall.util.UidListParser;
 import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.widget.StatusWidget;
@@ -4845,16 +4845,15 @@ public final class Api {
         return false;
     }
 
+    /**
+     * @param mountType "RW" before writing to {@code path}, "RO" afterwards. Already writable file
+     *                  systems (e.g. /data) are left alone. Blocking.
+     */
     public static boolean mountDir(Context context, String path, String mountType) {
-        if (path != null) {
-            String busyboxPath = Api.getBusyBoxPath(context, true);
-            if (!busyboxPath.trim().isEmpty()) {
-                return RootTools.remount(path, mountType, busyboxPath);
-            } else {
-                return false;
-            }
+        if (path == null) {
+            return false;
         }
-        return false;
+        return RootFiles.remount(path, "RW".equalsIgnoreCase(mountType), Api.getBusyBoxPath(context, true));
     }
 
     public static void checkAndCopyFixLeak(final Context context, final String fileName) {
@@ -4896,7 +4895,7 @@ public final class Api {
         }
         //make sure it's executable
         com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + f.getAbsolutePath() + "'").exec();
-        RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName), true, false);
+        RootFiles.copy(srcPath, f.getAbsolutePath() + "/" + fileName);
         // init only runs executable scripts; synchronous, before remounting read-only
         com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + dest + "'").exec();
         mountDir(context, dest, "RO");
@@ -4916,7 +4915,7 @@ public final class Api {
      * @param dest full path of the installed script (e.g. in a previously used directory)
      */
     public static boolean removeFixLeakScriptAt(final Context context, final String dest) {
-        if (dest == null || !RootTools.exists(dest)) {
+        if (dest == null || !RootFiles.exists(dest)) {
             return true;
         }
         if (!mountDir(context, dest, "RW")) {
@@ -5062,89 +5061,17 @@ public final class Api {
     }
 
     /**
-     * Safe shell command execution that handles library-level crashes
+     * Run a command on libsu's main shell (a new one is started if it died).
+     *
+     * @return the output, or null if it could not be run
      */
     private static List<String> executeSafeShellCommand(String command) {
-        // First try the primary libsu approach
         try {
-            // Check if we can get a valid shell
-            if (Shell.getShell() == null || !Shell.getShell().isAlive()) {
-                Log.w(TAG, "Shell is not available or not alive, trying fallback");
-                return executeFallbackShellCommand(command);
-            }
-
-            // Execute with timeout and proper error handling
             Shell.Result result = Shell.cmd(command).exec();
             return result != null ? result.getOut() : null;
-            
-        } catch (java.util.concurrent.RejectedExecutionException e) {
-            Log.w(TAG, "Shell execution rejected - trying fallback: " + e.getMessage());
-            return executeFallbackShellCommand(command);
-        } catch (RuntimeException e) {
-            // Check for wrapped ExecutionException with InterruptedIOException
-            Throwable cause = e.getCause();
-            if (cause instanceof java.util.concurrent.ExecutionException) {
-                java.util.concurrent.ExecutionException execEx = (java.util.concurrent.ExecutionException) cause;
-                if (execEx.getCause() instanceof java.io.InterruptedIOException) {
-                    Log.w(TAG, "Shell execution interrupted at library level - trying fallback: " + execEx.getCause().getMessage());
-                    return executeFallbackShellCommand(command);
-                }
-            }
-            // Re-throw if it's not a known interruption issue
-            throw e;
         } catch (Exception e) {
-            Log.w(TAG, "Unexpected error in safe shell execution, trying fallback: " + e.getMessage());
-            return executeFallbackShellCommand(command);
-        }
-    }
-    
-    /**
-     * Fallback shell execution using the legacy RootShell library
-     * This provides an alternative when libsu fails due to interruptions
-     */
-    private static List<String> executeFallbackShellCommand(String command) {
-        try {
-            Log.d(TAG, "Using fallback shell execution for command: " + command);
-            
-            // Use the legacy RootShell library as fallback
-            final java.util.List<String> output = new java.util.ArrayList<>();
-            final boolean[] completed = {false};
-            
-            com.stericson.rootshell.execution.Command cmd = new com.stericson.rootshell.execution.Command(0, command) {
-                @Override
-                public void commandCompleted(int id, int exitcode) {
-                    super.commandCompleted(id, exitcode);
-                    completed[0] = true;
-                }
-                
-                @Override
-                public void commandOutput(int id, String line) {
-                    super.commandOutput(id, line);
-                    if (line != null) {
-                        output.add(line);
-                    }
-                }
-            };
-            
-            // Execute with timeout
-            com.stericson.roottools.RootTools.getShell(true, 0).add(cmd);
-            
-            // Wait for completion with timeout
-            long startTime = System.currentTimeMillis();
-            while (!completed[0] && (System.currentTimeMillis() - startTime) < 30000) {
-                Thread.sleep(100);
-            }
-            
-            if (completed[0]) {
-                Log.d(TAG, "Fallback shell execution completed successfully");
-                return output;
-            } else {
-                Log.w(TAG, "Fallback shell execution timed out");
-                return null;
-            }
-            
-        } catch (Exception e) {
-            Log.e(TAG, "Fallback shell execution also failed: " + e.getMessage());
+            // e.g. RejectedExecutionException / interrupted I/O while the app shuts down
+            Log.w(TAG, "Root command could not be run: " + e.getMessage());
             return null;
         }
     }

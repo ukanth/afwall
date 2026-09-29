@@ -348,9 +348,6 @@
             android:name=".service.RootShellService"
             android:exported="false" />
         <service
-            android:name=".service.RootShellService2"
-            android:exported="false" />
-        <service
             android:name=".service.LogService"
             android:foregroundServiceType="specialUse"
             android:permission="android.permission.BIND_JOB_SERVICE"

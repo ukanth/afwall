@@ -8,8 +8,6 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 
-import com.stericson.roottools.RootTools;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +15,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.RootFiles;
 
 /**
  * The "Boot" and "Advanced" settings of the Rules screen (formerly the Experimental screen):
@@ -142,7 +141,7 @@ final class BootAdvancedPreferences {
             new Thread(() -> {
                 List<String> found = new ArrayList<>();
                 for (String dir : INIT_DIRS) {
-                    if (RootTools.exists(dir, true)) {
+                    if (RootFiles.exists(dir)) {
                         found.add(dir);
                     }
                 }
@@ -233,7 +232,7 @@ final class BootAdvancedPreferences {
     private void refreshInstalledState() {
         new Thread(() -> {
             String path = Api.getFixLeakPath(SCRIPT);
-            boolean installed = path != null && RootTools.exists(path);
+            boolean installed = path != null && RootFiles.exists(path);
             runOnUi(() -> {
                 CheckBoxPreference fixLeak = (CheckBoxPreference) fragment.findPreference(KEY_FIX_LEAK);
                 if (fixLeak != null && fixLeak.isChecked() != installed) {

@@ -25,6 +25,8 @@ import android.os.SystemClock;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -34,11 +36,9 @@ import java.util.concurrent.TimeUnit;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
-import eu.chainfire.libsuperuser.Debug;
-import eu.chainfire.libsuperuser.Shell;
 
 /**
- * All engine state is confined to a single worker thread: public entry points and libsuperuser
+ * All engine state is confined to a single worker thread: public entry points and libsu
  * callbacks only post work to it. This gives a real FIFO queue (one RootCommand runs at a time,
  * never interleaved with another), and RootCommand callbacks are always invoked on that thread.
  * <p>
@@ -49,10 +49,17 @@ final class RootShellEngine {
 
     static final int EXIT_NO_ROOT_ACCESS = -1;
     static final int EXIT_STALLED = -3;
+    // same codes as libsuperuser, which this engine used before: a command ran longer than
+    // WATCHDOG_TIMEOUT_SEC / the shell died
+    static final int EXIT_WATCHDOG = -1;
+    static final int EXIT_SHELL_DIED = -2;
 
-    // Per-command libsuperuser watchdog. Must stay well above the "iptables -w 5" lock wait,
-    // otherwise waiting for the xtables lock during network changes kills the shell.
+    // Per-command watchdog: a command that doesn't finish in time kills the shell. Must stay well
+    // above the "iptables -w 5" lock wait, otherwise waiting for the xtables lock during network
+    // changes kills the shell.
     private static final int WATCHDOG_TIMEOUT_SEC = 30;
+    // How long su may take to start (includes the superuser grant prompt).
+    private static final int OPEN_TIMEOUT_SEC = 30;
     // If a script (or opening the shell) makes no progress for this long, give up on it.
     private static final long STALL_TIMEOUT_MS = 90_000;
     private static final long STALL_CHECK_INTERVAL_MS = 10_000;
@@ -73,8 +80,11 @@ final class RootShellEngine {
     // ---- confined to the worker thread ----
     private final ArrayDeque<RootCommand> queue = new ArrayDeque<>();
     private State state = State.INIT;
-    private Shell.Interactive session;
+    // a dedicated shell, not libsu's shared main shell: the rule scripts must not queue behind (or
+    // hold up) the app's other root commands, and stderr is kept apart from stdout
+    private Shell session;
     private RootCommand current;
+    private java.util.concurrent.ScheduledFuture<?> commandWatchdog;
     private long dispatchToken;
     private long openToken;
     private long lastProgress;
@@ -152,7 +162,7 @@ final class RootShellEngine {
             openShell();
             return;
         }
-        if (state == State.READY && (session == null || !session.isRunning())) {
+        if (state == State.READY && (session == null || !session.isAlive())) {
             Log.w(tag, "Root shell(" + label + ") is no longer running");
             state = State.FAIL;
         }
@@ -188,32 +198,37 @@ final class RootShellEngine {
         lastOpenAttempt = lastProgress = SystemClock.elapsedRealtime();
         final long token = ++openToken;
         Log.d(tag, "Starting root shell(" + label + ")...");
-        setupLogging();
+        Shell shell = null;
+        String failure = null;
         try {
-            session = new Shell.Builder()
-                    .useSU()
-                    .setAutoHandler(false)
-                    .setWatchdogTimeout(WATCHDOG_TIMEOUT_SEC)
-                    .open((success, reason) -> worker.execute(() -> onShellOpened(token, success, reason)));
+            // Blocks until su is up (or refused); we are on the worker thread. build("su") runs
+            // exactly su: libsu's plain build() would fall back to a non-root sh.
+            shell = Shell.Builder.create()
+                    .setFlags(0) // keep stderr separate: iptables reports its errors there
+                    .setTimeout(OPEN_TIMEOUT_SEC)
+                    .build("su");
+            if (!shell.isRoot()) {
+                failure = "not a root shell";
+            }
         } catch (Exception e) {
-            Log.e(tag, "Unable to start root shell(" + label + ")", e);
-            session = null;
-            state = State.FAIL;
-            failQueued();
+            failure = e.getClass().getSimpleName() + ": " + e.getMessage();
         }
+        onShellOpened(token, shell, failure);
     }
 
-    private void onShellOpened(long token, boolean success, int reason) {
+    private void onShellOpened(long token, Shell shell, String failure) {
         if (token != openToken || state != State.OPENING) {
-            return; // a newer shell superseded this one
+            closeQuietly(shell); // a newer shell superseded this one
+            return;
         }
-        if (!success || reason < 0) {
-            Log.e(tag, "Can't open root shell(" + label + "): exitCode " + reason);
-            closeSession();
+        if (failure != null) {
+            Log.e(tag, "Can't open root shell(" + label + "): " + failure);
+            closeQuietly(shell);
             state = State.FAIL;
             failQueued();
             return;
         }
+        session = shell;
         Log.d(tag, "Root shell(" + label + ") is open");
         everOpened = true;
         state = State.READY;
@@ -254,8 +269,13 @@ final class RootShellEngine {
         st.lastCommandResult = new StringBuilder();
         final long token = ++dispatchToken;
         try {
-            session.addCommand(command, 0, (Shell.OnCommandResultListener2) (commandCode, exitCode, output, stderr) ->
-                    worker.execute(() -> onCommandResult(token, exitCode, output, stderr)));
+            final List<String> out = new java.util.ArrayList<>();
+            final List<String> err = new java.util.ArrayList<>();
+            session.newJob().add(command).to(out, err).submit(worker,
+                    result -> onCommandResult(token, result.getCode(), out, err));
+            // libsu has no per-command timeout
+            cancelCommandWatchdog();
+            commandWatchdog = worker.schedule(() -> onCommandTimeout(token), WATCHDOG_TIMEOUT_SEC, TimeUnit.SECONDS);
         } catch (Exception e) {
             Log.e(tag, "Unable to queue command on root shell(" + label + ")", e);
             closeSession();
@@ -269,6 +289,7 @@ final class RootShellEngine {
             return; // stale result for a command the stall guard already gave up on
         }
         final RootCommand st = current;
+        cancelCommandWatchdog();
         lastProgress = SystemClock.elapsedRealtime();
         if (output != null) {
             for (String line : output) {
@@ -289,12 +310,12 @@ final class RootShellEngine {
             }
         }
 
-        if (exitCode < 0) {
-            // shell died or watchdog fired; nothing more can run on this session
-            Log.e(tag, "libsuperuser error " + exitCode + " on command '" + st.lastCommand + "'");
+        if (exitCode == Shell.Result.JOB_NOT_EXECUTED) {
+            // the shell died; nothing more can run on this session
+            Log.e(tag, "Root shell(" + label + ") could not run '" + st.lastCommand + "'");
             closeSession();
             state = State.FAIL;
-            finishCurrent(exitCode);
+            finishCurrent(EXIT_SHELL_DIED);
             return;
         }
 
@@ -337,6 +358,28 @@ final class RootShellEngine {
             finishCurrent(0);
         } else {
             dispatch();
+        }
+    }
+
+    /**
+     * The command didn't finish within the watchdog time: kill the shell, as libsuperuser's
+     * watchdog did. A hanging command would otherwise block every later script.
+     */
+    private void onCommandTimeout(long token) {
+        if (token != dispatchToken || current == null || state != State.BUSY) {
+            return; // finished in time
+        }
+        Log.e(tag, "Command '" + current.lastCommand + "' on root shell(" + label + ") didn't finish within "
+                + WATCHDOG_TIMEOUT_SEC + "s; closing the shell");
+        closeSession();
+        state = State.FAIL;
+        finishCurrent(EXIT_WATCHDOG);
+    }
+
+    private void cancelCommandWatchdog() {
+        if (commandWatchdog != null) {
+            commandWatchdog.cancel(false);
+            commandWatchdog = null;
         }
     }
 
@@ -411,13 +454,17 @@ final class RootShellEngine {
     }
 
     private void closeSession() {
-        if (session != null) {
+        closeQuietly(session);
+        session = null;
+    }
+
+    private void closeQuietly(Shell shell) {
+        if (shell != null) {
             try {
-                session.kill();
+                shell.close();
             } catch (Exception e) {
                 Log.w(tag, "Error closing root shell(" + label + "): " + e.getMessage());
             }
-            session = null;
         }
     }
 
@@ -429,14 +476,6 @@ final class RootShellEngine {
         intent.putExtra("SIZE", st.getCommmands().size());
         intent.putExtra("INDEX", st.commandIndex);
         LocalBroadcastManager.getInstance(appCtx).sendBroadcast(intent);
-    }
-
-    private void setupLogging() {
-        Debug.setDebug(false);
-        Debug.setLogTypeEnabled(Debug.LOG_ALL, false);
-        Debug.setLogTypeEnabled(Debug.LOG_GENERAL, false);
-        Debug.setSanityChecksEnabled(false);
-        Debug.setOnLogListener((type, typeIndicator, message) -> Log.i(tag, "[libsuperuser] " + message));
     }
 
     /**
