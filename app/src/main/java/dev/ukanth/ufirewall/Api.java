@@ -145,6 +145,7 @@ import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
 import dev.ukanth.ufirewall.util.IptablesVersion;
 import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.NetworkChangeDebouncer;
+import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.RootFiles;
 import dev.ukanth.ufirewall.util.UidListParser;
 import dev.ukanth.ufirewall.util.UidResolver;
@@ -300,6 +301,15 @@ public final class Api {
     private static Map<String, Integer> specialApps = null;
     private static volatile boolean rulesUpToDate = false;
     private static final Object RULES_LOCK = new Object();
+    /**
+     * @return true while a full rule apply runs
+     */
+    public static boolean isApplyInProgress() {
+        synchronized (GLOBAL_STATUS_LOCK) {
+            return globalStatus;
+        }
+    }
+
     public static void setRulesUpToDate(boolean rulesUpToDate) {
         synchronized (RULES_LOCK) {
             Api.rulesUpToDate = rulesUpToDate;
@@ -1469,12 +1479,15 @@ public final class Api {
         completionCallback.setCallback(new RootCommand.Callback() {
             @Override
             public void cbFunc(RootCommand state) {
+                // before the callbacks: they may post the error notification, which shows the details
+                Notifications.recordApplyResult(state);
                 try {
                     if (originalCallback != null) {
                         originalCallback.cbFunc(state);
                     }
                 } finally {
                     onApplyFinished(appCtx, state.exitCode == 0, networkSeqAtBuild);
+                    Notifications.onApplyFinished(appCtx, state.exitCode == 0);
                     if (!state.warnings.isEmpty() && appCtx != null) {
                         customScriptWarningNotification(appCtx, new ArrayList<>(state.warnings));
                     }
@@ -1711,6 +1724,8 @@ public final class Api {
             }
             globalStatus = true;
         }
+        // status notification: "applying rules"
+        Notifications.onApplyStarted(ctx);
 
         final RootCommand completionCallback = wrapApplyCompletionCallback(ctx, callback);
         try {
@@ -3442,171 +3457,29 @@ public final class Api {
      * An error-channel notification that opens the app.
      */
     public static void showNotification(Context ctx, int id, String title, String text) {
-        Intent appIntent = new Intent(ctx, MainActivity.class);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        showNotification(ctx, id, title, text, appIntent);
+        Notifications.show(ctx, id, title, text, text, null);
     }
 
     /**
      * An error-channel notification that opens {@code target}.
      */
     public static void showNotification(Context ctx, int id, String title, String text, Intent target) {
-        String channelId = "firewall.error";
-        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (manager == null) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    ctx.getString(R.string.firewall_error_notify), NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setSound(null, null);
-            channel.setShowBadge(false);
-            channel.enableLights(false);
-            channel.enableVibration(false);
-            manager.createNotificationChannel(channel);
-        }
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, id, target,
-                PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notification = new NotificationCompat.Builder(ctx, channelId)
-                .setSmallIcon(R.drawable.notification_warn)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
-                .setCategory(NotificationCompat.CATEGORY_ERROR)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build();
-        manager.notify(id, notification);
+        Notifications.show(ctx, id, title, text, text, target);
     }
 
+    /**
+     * "Error applying firewall rules", with the failing command of the last apply. Cleared by the
+     * next successful apply.
+     */
     public static void errorNotification(Context ctx) {
-
-        String NOTIFICATION_CHANNEL_ID = "firewall.error";
-        String channelName = ctx.getString(R.string.firewall_error_notify);
-
-        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(ERROR_NOTIFICATION_ID);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            if (G.getNotificationPriority() == 0) {
-                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
-            }
-            notificationChannel.setSound(null, null);
-            notificationChannel.setShowBadge(false);
-            notificationChannel.enableLights(false);
-            notificationChannel.enableVibration(false);
-            
-            // Android 16+ specific notification channel configurations
-            if (Build.VERSION.SDK_INT >= 36) {
-                notificationChannel.setAllowBubbles(false);
-            }
-            
-            manager.createNotificationChannel(notificationChannel);
-        }
-
-
-        Intent appIntent = new Intent(ctx, MainActivity.class);
-        appIntent.setAction(Intent.ACTION_MAIN);
-        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        // Artificial stack so that navigating backward leads back to the Home screen
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(ctx)
-                .addParentStack(MainActivity.class)
-                .addNextIntent(new Intent(ctx, MainActivity.class));
-
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder.setContentIntent(notifyPendingIntent);
-
-        Notification notification = notificationBuilder.setOngoing(false)
-                .setCategory(NotificationCompat.CATEGORY_ERROR)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .setContentTitle(ctx.getString(R.string.error_notification_title))
-                .setContentText(ctx.getString(R.string.error_notification_text))
-                .setTicker(ctx.getString(R.string.error_notification_ticker))
-                .setSmallIcon(R.drawable.notification_warn)
-                .setAutoCancel(true)
-                .setContentIntent(notifyPendingIntent)
-                .build();
-
-        manager.notify(ERROR_NOTIFICATION_ID, notification);
+        Notifications.showApplyError(ctx);
     }
 
+    /**
+     * Redraw the status notification (owned by FirewallService).
+     */
     public static void updateNotification(boolean status, Context ctx) {
-
-        String NOTIFICATION_CHANNEL_ID = "firewall.service";
-        String channelName = ctx.getString(R.string.firewall_service);
-
-        NotificationManager manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NOTIFICATION_ID);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            if (G.getNotificationPriority() == 0) {
-                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
-            }
-            notificationChannel.setSound(null, null);
-            notificationChannel.setShowBadge(false);
-            notificationChannel.enableLights(false);
-            notificationChannel.enableVibration(false);
-            
-            // Android 16+ specific notification channel configurations
-            if (Build.VERSION.SDK_INT >= 36) {
-                notificationChannel.setAllowBubbles(false);
-            }
-            
-            manager.createNotificationChannel(notificationChannel);
-        }
-
-        Intent appIntent = new Intent(ctx, MainActivity.class);
-        appIntent.setAction(Intent.ACTION_MAIN);
-        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        int icon = status ? R.drawable.notification : R.drawable.notification_error;
-        String notificationText = status ? getNotificationText(ctx) : ctx.getString(R.string.inactive);
-
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder.setContentIntent(notifyPendingIntent);
-
-        Notification notification = notificationBuilder.setOngoing(true)
-                .setContentTitle(ctx.getString(R.string.app_name))
-                .setTicker(ctx.getString(R.string.app_name))
-                .setSound(null)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE)
-                .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                .setContentText(notificationText)
-                .setSmallIcon(icon)
-                .build();
-
-        notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_FOREGROUND_SERVICE | Notification.FLAG_NO_CLEAR;
-        manager.notify(NOTIFICATION_ID, notification);
-    }
-
-    private static String getNotificationText(Context ctx) {
-        if (G.enableMultiProfile()) {
-            String storedProfile = G.storedProfile();
-            switch (storedProfile) {
-                case "AFWallPrefs":
-                    return ctx.getString(R.string.active) + " (" + G.gPrefs.getString("default", ctx.getString(R.string.defaultProfile)) + ")";
-                case "AFWallProfile1":
-                    return ctx.getString(R.string.active) + " (" + G.gPrefs.getString("profile1", ctx.getString(R.string.profile1)) + ")";
-                case "AFWallProfile2":
-                    return ctx.getString(R.string.active) + " (" + G.gPrefs.getString("profile2", ctx.getString(R.string.profile2)) + ")";
-                case "AFWallProfile3":
-                    return ctx.getString(R.string.active) + " (" + G.gPrefs.getString("profile3", ctx.getString(R.string.profile3)) + ")";
-                default:
-                    return ctx.getString(R.string.active) + " (" + storedProfile + ")";
-            }
-        } else {
-            return ctx.getString(R.string.active);
-        }
+        Notifications.refreshStatus(ctx);
     }
 
 

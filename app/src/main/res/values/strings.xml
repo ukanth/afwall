@@ -120,7 +120,41 @@
         <item quantity="one">%1$d app in the backup is not installed on this device; its rules were skipped.</item>
         <item quantity="other">%1$d apps in the backup are not installed on this device; their rules were skipped.</item>
     </plurals>
-    <string name="error_notification_text">Error applying firewall rules. Click to open settings.</string>
+    <string name="notification_settings_title">Notification settings</string>
+    <string name="notification_settings_summary">Choose which AFWall+ notifications are shown, and how (sound, lock screen, importance)</string>
+    <string name="notify_blocked_title">Blocked connection notifications</string>
+    <string name="notify_blocked_summary">Show a notification when the firewall blocks a connection</string>
+    <string name="notif_permission_title">Allow notifications</string>
+    <string name="notif_permission_rationale">AFWall+ uses notifications to show the firewall status, rules that could not be applied, newly installed apps and blocked connections.</string>
+    <string name="notif_off_title">Notifications are off</string>
+    <string name="notif_off_text">You won\'t see rules that could not be applied, newly installed apps or blocked connections. The firewall itself keeps working.</string>
+    <string name="notif_open_settings">Open settings</string>
+    <string name="notif_not_now">Not now</string>
+    <string name="notif_dont_remind">Don\'t remind me</string>
+    <string name="channel_service_desc">Always shown while AFWall+ runs: firewall status, active profile and quick actions</string>
+    <string name="channel_error_desc">Rules that could not be applied, failed custom script lines, log monitoring problems</string>
+    <string name="channel_app_desc">Newly installed apps that can use the internet</string>
+    <string name="channel_log_desc">Connections blocked by the firewall (while logging is on)</string>
+    <string name="notif_error_no_root">Root access is not available (denied, or the superuser app did not answer).</string>
+    <string name="notif_applying">Applying rules…</string>
+    <string name="notif_apply_failed">Firewall enabled · rules could not be applied</string>
+    <string name="notif_action_profile">Switch profile</string>
+    <string name="notif_new_app_title">%1$s installed</string>
+    <string name="notif_new_app_profile">%1$s (other profile)</string>
+    <string name="notif_new_app_whitelist">No internet access until you allow it (allow-list mode).</string>
+    <string name="notif_new_app_blacklist">Has internet access unless you block it (block-list mode).</string>
+    <string name="notif_new_apps_summary">New apps installed</string>
+    <string name="notif_allow">Allow</string>
+    <string name="notif_block">Block</string>
+    <string name="notif_app_allowed">%1$s allowed</string>
+    <string name="notif_app_blocked">%1$s blocked</string>
+    <plurals name="notif_blocked_title">
+        <item quantity="one">%1$d blocked connection</item>
+        <item quantity="other">%1$d blocked connections</item>
+    </plurals>
+    <string name="notif_blocked_more">+%1$d more apps</string>
+    <string name="notif_mute">Mute %1$s</string>
+    <string name="error_notification_text">Error applying firewall rules. Tap to open AFWall+.</string>
     <string name="error_notification_ticker">AFWall+ could not apply rules</string>
 
 

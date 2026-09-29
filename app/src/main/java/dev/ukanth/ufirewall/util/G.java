@@ -172,7 +172,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
-    private static final String RUN_NOTIFICATION = "runNotification";
     private static final String COPIED_OLD_EXPORTS = "copyOldExports";
 
     private static final String SHOW_ALL_APPS = "showAllApps";
@@ -258,14 +257,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
 
-    public static boolean isRun() {
-        return gPrefs.getBoolean(RUN_NOTIFICATION, true);
-    }
-
-    public static boolean isRun(boolean val) {
-        gPrefs.edit().putBoolean(RUN_NOTIFICATION, val).commit();
-        return val;
-    }
 
 
     public static boolean hasCopyOld() {
@@ -1197,6 +1188,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
             preference.setUid(uid);
             preference.setTimestamp(System.currentTimeMillis());
             preference.setDisable(true);
+            logMuteCache.put(uid, true);
             FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
         }
     }
@@ -1388,7 +1380,27 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         preference.setUid(uid);
         preference.setTimestamp(System.currentTimeMillis());
         preference.setDisable(isChecked);
+        logMuteCache.put(uid, isChecked);
         FlowManager.getDatabase(LogPreferenceDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+    }
+
+    // uid -> log notifications muted; canShow() is called for every logged packet
+    private static final java.util.concurrent.ConcurrentHashMap<Integer, Boolean> logMuteCache =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    /**
+     * Forget cached mute states after LogPreference rows were written elsewhere (e.g. an import).
+     */
+    public static void clearLogMuteCache() {
+        logMuteCache.clear();
+    }
+
+    /**
+     * Notifications for blocked connections (while the log service runs); on by default, as before
+     * the setting existed.
+     */
+    public static boolean notifyBlocked() {
+        return gPrefs.getBoolean("notifyBlocked", true);
     }
 
     /*public static void isNotificationMigrated(boolean b) {
@@ -1401,10 +1413,15 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean canShow(int uid) {
-        LogPreference logPreference = SQLite.select()
-                .from(LogPreference.class)
-                .where(LogPreference_Table.uid.eq(uid)).querySingle();
-        return (logPreference == null) || !logPreference.isDisable();
+        Boolean muted = logMuteCache.get(uid);
+        if (muted == null) {
+            LogPreference logPreference = SQLite.select()
+                    .from(LogPreference.class)
+                    .where(LogPreference_Table.uid.eq(uid)).querySingle();
+            muted = logPreference != null && logPreference.isDisable();
+            logMuteCache.put(uid, muted);
+        }
+        return !muted;
     }
 
     public static boolean isActivityVisible() {

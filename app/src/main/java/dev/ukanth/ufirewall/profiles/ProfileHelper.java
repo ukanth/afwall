@@ -162,6 +162,25 @@ public class ProfileHelper {
     }
 
     /**
+     * @return the name to show for a profile identifier ("AFWallPrefs" is the default profile)
+     */
+    public static String displayName(Context ctx, String identifier) {
+        if (identifier == null || dev.ukanth.ufirewall.Api.DEFAULT_PREFS_NAME.equals(identifier)) {
+            String name = G.gPrefs.getString("default", "");
+            return name == null || name.trim().isEmpty() ? ctx.getString(R.string.defaultProfile) : name;
+        }
+        try {
+            ProfileData data = getProfileByIdentifier(identifier);
+            if (data != null && data.getName() != null) {
+                return data.getName();
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to read profile " + identifier + ": " + e.getMessage());
+        }
+        return identifier;
+    }
+
+    /**
      * @return identifier of the profile named {@code name}. If there is none it is created, with
      * {@code preferredIdentifier} when that is free (so a restore keeps the identifiers), otherwise
      * with a new one. Null if {@code name} is empty.

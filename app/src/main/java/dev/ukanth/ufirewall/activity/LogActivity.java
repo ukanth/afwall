@@ -144,6 +144,14 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
         emptyView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // the log is being looked at: start the blocked-connections notification afresh
+        dev.ukanth.ufirewall.util.Notifications.clearBlocked();
+        dev.ukanth.ufirewall.util.Notifications.cancel(this, dev.ukanth.ufirewall.util.Notifications.ID_BLOCKED);
+    }
+
     private void initTheme() {
         ThemeHelper.applyTheme(this);
     }

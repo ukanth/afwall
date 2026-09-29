@@ -262,15 +262,53 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         PERMISSION_BLUETOOTH);
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                // permissions have not been granted.
-                ActivityCompat.requestPermissions(MainActivity.this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        PERMISSION_NOTIFICATION);
-            }
+        checkNotificationPermission();
+    }
+
+    // shown at most once per app start
+    private static boolean notificationsOffReminderShown;
+
+    /**
+     * Ask for the notification permission once, explaining why; afterwards, if notifications are
+     * off, remind (once per start, until "don't remind me") instead of asking on every launch.
+     */
+    private void checkNotificationPermission() {
+        final String asked = "notifPermissionAsked";
+        final String dontRemind = "notifOffDontRemind";
+        boolean granted = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !granted
+                && !G.gPrefs.getBoolean(asked, false)) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.notif_permission_title)
+                    .content(R.string.notif_permission_rationale)
+                    .positiveText(R.string.OK)
+                    .negativeText(R.string.notif_not_now)
+                    .onPositive((dialog, which) -> {
+                        G.gPrefs.edit().putBoolean(asked, true).apply();
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_NOTIFICATION);
+                    })
+                    .onNegative((dialog, which) -> G.gPrefs.edit().putBoolean(asked, true).apply())
+                    .show();
+            return;
         }
+        boolean enabled = granted && androidx.core.app.NotificationManagerCompat.from(this).areNotificationsEnabled();
+        if (enabled || notificationsOffReminderShown || G.gPrefs.getBoolean(dontRemind, false)) {
+            return;
+        }
+        notificationsOffReminderShown = true;
+        new MaterialDialog.Builder(this)
+                .title(R.string.notif_off_title)
+                .content(R.string.notif_off_text)
+                .positiveText(R.string.notif_open_settings)
+                .negativeText(R.string.notif_not_now)
+                .neutralText(R.string.notif_dont_remind)
+                .onPositive((dialog, which) ->
+                        dev.ukanth.ufirewall.preferences.UIPreferenceFragment.openNotificationSettings(MainActivity.this))
+                .onNeutral((dialog, which) -> G.gPrefs.edit().putBoolean(dontRemind, true).apply())
+                .show();
     }
 
     private void updateSelectedColumns() {

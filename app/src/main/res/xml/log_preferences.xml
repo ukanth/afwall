@@ -24,6 +24,13 @@
             android:key="enableLogService"
             android:title="@string/enable_firewall_log_service" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="enableLogService"
+            android:key="notifyBlocked"
+            android:summary="@string/notify_blocked_summary"
+            android:title="@string/notify_blocked_title" />
+
         <ListPreference
             android:defaultValue="LOG"
             android:summary="%s"

@@ -32,18 +32,10 @@
             android:key="activeNotification"
             android:summary="@string/activeNotification_summary"
             android:title="@string/activeNotification" />-->
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="runNotification"
-            android:summary="@string/runNotification_summary"
-            android:title="@string/runNotification" />
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/notification_type"
-            android:entryValues="@array/notification_type_val"
-            android:key="notification_priority"
-            android:summary="%s"
-            android:title="@string/notification_priority"></ListPreference>
+        <Preference
+            android:key="notification_settings"
+            android:summary="@string/notification_settings_summary"
+            android:title="@string/notification_settings_title" />
 
         <CheckBoxPreference
             android:defaultValue="false"

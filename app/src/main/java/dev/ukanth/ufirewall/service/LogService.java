@@ -25,10 +25,8 @@ package dev.ukanth.ufirewall.service;
 import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
 import static dev.ukanth.ufirewall.util.G.ctx;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -44,7 +42,6 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
@@ -70,9 +67,7 @@ import java.util.concurrent.ScheduledFuture;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceDetails;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
-import dev.ukanth.ufirewall.activity.LogActivity;
 import dev.ukanth.ufirewall.events.LogEvent;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
@@ -80,6 +75,7 @@ import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.Notifications;
 
 public class LogService extends Service {
 
@@ -95,12 +91,9 @@ public class LogService extends Service {
     private static final long LOG_FLUSH_INTERVAL_MS = 5000L;
     private static final long HEALTH_CHECK_INTERVAL_MS = 60_000L;
 
-    private String NOTIFICATION_CHANNEL_ID = "firewall.logservice";
-
     private static LogService instance;
 
     private  NotificationManager manager;
-    private  NotificationCompat.Builder notificationBuilder;
 
     private List<String> callbackList;
     private ExecutorService executorService;
@@ -575,130 +568,21 @@ public class LogService extends Service {
 
     private void createNotification() {
         manager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(109);
-
-        // On Android 8+, LogService must piggyback on FirewallService's notification
+        // the status notification shows "log monitoring"; FirewallService owns it
+        FirewallService.setLogServiceActive(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Set the flag so FirewallService knows to include log monitoring status
-            FirewallService.setLogServiceActive(true);
-            
-            // LogService MUST call startForeground() within 5 seconds on Android 8+
-            // Create a notification using FirewallService's channel and style
-            String SHARED_CHANNEL_ID = "firewall.service";
-            
-            // Ensure the channel exists
-            NotificationChannel notificationChannel = new NotificationChannel(SHARED_CHANNEL_ID, ctx.getString(R.string.firewall_service), NotificationManager.IMPORTANCE_LOW);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            if (G.getNotificationPriority() == 0) {
-                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
-            } else {
-                notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
-            }
-            notificationChannel.setSound(null, null);
-            notificationChannel.enableLights(false);
-            notificationChannel.setShowBadge(true);
-            notificationChannel.enableVibration(false);
-            manager.createNotificationChannel(notificationChannel);
-
-            // Also create the channel used by the per-event log notifications (id 109,
-            // see showNotification()). Without this, Android 8+ drops those notifications
-            // with "No Channel found for ... channelId=firewall.logservice".
-            NotificationChannel logEventChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID,
-                    ctx.getString(R.string.firewall_log_notify),
-                    G.getNotificationPriority() == 0 ? NotificationManager.IMPORTANCE_DEFAULT : NotificationManager.IMPORTANCE_LOW);
-            logEventChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            logEventChannel.setSound(null, null);
-            logEventChannel.setShowBadge(false);
-            logEventChannel.enableLights(false);
-            logEventChannel.enableVibration(false);
-            manager.createNotificationChannel(logEventChannel);
-
-            // Build notification in FirewallService style (opens MainActivity, not LogActivity)
-            Intent appIntent = new Intent(ctx, MainActivity.class);
-            appIntent.setAction(Intent.ACTION_MAIN);
-            appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            
-            PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-            
-            String notificationText = Api.isEnabled(ctx) ? ctx.getString(R.string.active) : ctx.getString(R.string.inactive);
-            notificationText += " • " + ctx.getString(R.string.log_monitoring);
-            
-            int icon = Api.isEnabled(ctx) ? R.drawable.notification : R.drawable.notification_error;
-            
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(ctx, SHARED_CHANNEL_ID);
-            builder.setContentIntent(notifyPendingIntent)
-                    .setSmallIcon(icon)
-                    .setContentTitle(ctx.getString(R.string.app_name))
-                    .setContentText(notificationText)
-                    .setOngoing(true)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .setCategory(NotificationCompat.CATEGORY_SERVICE);
-            
-            Notification notification = builder.build();
+            // LogService MUST call startForeground() within 5 seconds on Android 8+: share the
+            // status notification (same id and content as FirewallService's)
+            Notification notification = Notifications.buildStatus(ctx, true);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                startForeground(1, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+                startForeground(Notifications.ID_STATUS, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
             } else {
-                startForeground(1, notification);
+                startForeground(Notifications.ID_STATUS, notification);
             }
-            Log.i(TAG, "LogService started as foreground with shared notification ID 1");
-            
-            if (FirewallService.isInstanceRunning()) {
-                // FirewallService is already running, it will refresh and take over the notification
-                FirewallService.refreshNotification();
-                Log.i(TAG, "FirewallService notification refreshed to include log status");
-            } else {
-                // Start FirewallService so it can take over notification management
-                Log.i(TAG, "Starting FirewallService to manage shared notification");
-                Intent intent = new Intent(ctx, FirewallService.class);
-                try {
-                    ctx.startForegroundService(intent);
-                } catch (Exception e) {
-                    // refused when started from the background on Android 12+
-                    Log.w(TAG, "Unable to start FirewallService: " + e.getMessage());
-                }
-            }
-        } else {
-            // Pre-Android 8: Create notification channel for individual log events
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, ctx.getString(R.string.firewall_log_notify), NotificationManager.IMPORTANCE_DEFAULT);
-                notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-                assert manager != null;
-                if (G.getNotificationPriority() == 0) {
-                    notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
-                }
-                notificationChannel.setSound(null, null);
-                notificationChannel.setShowBadge(false);
-                notificationChannel.enableLights(false);
-                notificationChannel.enableVibration(false);
-                manager.createNotificationChannel(notificationChannel);
-            }
-            
-            // Pre-Android 8: respect user preference for showing notifications
-            if (G.activeNotification()) {
-                Intent appIntent = new Intent(ctx, LogActivity.class);
-                appIntent.setAction(Intent.ACTION_MAIN);
-                appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-                PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-                notificationBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
-                notificationBuilder.setContentIntent(notifyPendingIntent)
-                        .setSmallIcon(R.drawable.notification)
-                        .setContentTitle(ctx.getString(R.string.firewall_log_notify))
-                        .setContentText(ctx.getString(R.string.log_service_running))
-                        .setOngoing(true)
-                        .setPriority(NotificationCompat.PRIORITY_LOW)
-                        .setCategory(NotificationCompat.CATEGORY_SERVICE);
-                
-                Notification notification = notificationBuilder.build();
-                assert manager != null;
-                manager.notify(1, notification);
-                Log.i(TAG, "LogService notification shown (user preference enabled)");
-            } else {
-                Log.i(TAG, "LogService notification hidden (user preference disabled)");
-            }
+            Log.i(TAG, "LogService started as foreground with the shared status notification");
         }
+        // FirewallService keeps the status notification up to date
+        Notifications.refreshStatus(ctx);
     }
 
 
@@ -971,30 +855,10 @@ public class LogService extends Service {
         return prettyTime.format(new Date(0));
     }
 
-    @SuppressLint("RestrictedApi")
     private void showNotification(LogInfo logInfo) {
-        if(G.enableLogService() && G.canShow(logInfo.uid) && logInfo.uid != -100) {
-            // Create a separate notification for log events (disposable notifications)
-            // These use a different channel and notification ID than the foreground service
-            NotificationCompat.Builder logEventBuilder = new NotificationCompat.Builder(ctx, NOTIFICATION_CHANNEL_ID);
-            
-            Intent appIntent = new Intent(ctx, LogActivity.class);
-            appIntent.setAction(Intent.ACTION_MAIN);
-            appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-            appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent notifyPendingIntent = PendingIntent.getActivity(ctx, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-            
-            logEventBuilder.setContentIntent(notifyPendingIntent)
-                    .setContentTitle(ctx.getString(R.string.firewall_log_notify))
-                    .setContentText(logInfo.uidString)
-                    .setSmallIcon(R.drawable.ic_block_black_24dp)
-                    .setOngoing(false)
-                    .setAutoCancel(true)
-                    .setCategory(NotificationCompat.CATEGORY_EVENT)
-                    .setVisibility(NotificationCompat.VISIBILITY_SECRET)
-                    .setPriority(NotificationCompat.PRIORITY_LOW);
-            
-            manager.notify(109, logEventBuilder.build());
+        if (G.enableLogService() && G.notifyBlocked() && logInfo.uid != -100 && G.canShow(logInfo.uid)) {
+            // collected and rate limited (see Notifications.blocked)
+            Notifications.blocked(ctx, logInfo);
         }
     }
 
@@ -1139,7 +1003,7 @@ public class LogService extends Service {
         executorService = null;
 
         // Update FirewallService notification if it's running.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && FirewallService.isInstanceRunning()) {
+        if (FirewallService.isInstanceRunning()) {
             FirewallService.setLogServiceActive(false);
             Log.i(TAG, "Notified FirewallService that log monitoring stopped");
         } else {

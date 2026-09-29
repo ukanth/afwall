@@ -88,6 +88,46 @@ public final class FirewallActions {
     }
 
     /**
+     * Allow or block an app on the connection types in use, in the active profile, and apply the
+     * rules if the firewall is enabled. In allow-list mode the lists hold allowed apps, in block-list
+     * mode blocked ones.
+     */
+    public static void setAppAccess(Context ctx, int uid, boolean allow) {
+        final Context app = ctx.getApplicationContext();
+        boolean whitelist = Api.MODE_WHITELIST.equals(G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST));
+        boolean listed = whitelist == allow;
+        java.util.List<String> keys = new java.util.ArrayList<>(java.util.Arrays.asList(
+                Api.PREF_WIFI_PKG_UIDS, Api.PREF_3G_PKG_UIDS));
+        if (G.enableRoam()) {
+            keys.add(Api.PREF_ROAMING_PKG_UIDS);
+        }
+        if (G.enableVPN()) {
+            keys.add(Api.PREF_VPN_PKG_UIDS);
+        }
+        if (G.enableLAN()) {
+            keys.add(Api.PREF_LAN_PKG_UIDS);
+        }
+        if (G.enableTether()) {
+            keys.add(Api.PREF_TETHER_PKG_UIDS);
+        }
+        android.content.SharedPreferences.Editor edit = G.pPrefs.edit();
+        for (String key : keys) {
+            java.util.Set<Integer> uids = new java.util.TreeSet<>(UidListParser.parse(G.pPrefs.getString(key, "")));
+            if (listed) {
+                uids.add(uid);
+            } else {
+                uids.remove(uid);
+            }
+            edit.putString(key, android.text.TextUtils.join("|", uids));
+        }
+        edit.apply();
+        Api.applications = null; // the app list shows the new state
+        if (Api.isEnabled(app)) {
+            Api.applySavedIptablesRules(app, true, new RootCommand().setFailureToast(R.string.error_apply));
+        }
+    }
+
+    /**
      * @return identifier of the profile shown as {@code name}; the default profile's name maps to
      * the default profile. Null if there is no such profile.
      */

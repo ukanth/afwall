@@ -263,6 +263,7 @@ public final class BackupHelper {
             pref.setTimestamp(System.currentTimeMillis());
             pref.save();
         }
+        G.clearLogMuteCache();
 
         JSONArray defaults = v2.optJSONArray("defaultConnections");
         for (int i = 0; defaults != null && i < defaults.length(); i++) {

@@ -191,7 +191,11 @@
             android:excludeFromRecents="true"
             android:exported="false"
             android:taskAffinity=""
-            android:theme="@style/Theme.Transparent" />
+            android:theme="@style/Theme.Transparent.Dialogs" />
+        <!-- notification actions (mute an app, dismissed blocked-connections notification) -->
+        <receiver
+            android:name=".broadcast.NotificationActionReceiver"
+            android:exported="false" />
         <activity
             android:name=".activity.CustomScriptActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">

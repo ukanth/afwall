@@ -2,7 +2,6 @@ package dev.ukanth.ufirewall.preferences;
 
 import static dev.ukanth.ufirewall.util.G.isDonate;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -31,6 +30,34 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		if ((G.isDoKey(ctx) || isDonate())) {
 			populatePreference(findPreference("default_behavior_allow_mode"), getString(R.string.connection_default_allow), 0);
 			populatePreference(findPreference("default_behavior_block_mode"), getString(R.string.connection_default_allow), 1);
+		}
+		Preference notificationSettings = findPreference("notification_settings");
+		if (notificationSettings != null) {
+			// importance, sound, lock screen... of each notification are Android settings once the
+			// channels exist; an app setting can't change them
+			notificationSettings.setOnPreferenceClickListener(preference -> {
+				openNotificationSettings(getActivity());
+				return true;
+			});
+		}
+	}
+
+	public static void openNotificationSettings(android.app.Activity activity) {
+		if (activity == null) {
+			return;
+		}
+		android.content.Intent intent;
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+			intent = new android.content.Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+					.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, activity.getPackageName());
+		} else {
+			intent = new android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+					android.net.Uri.fromParts("package", activity.getPackageName(), null));
+		}
+		try {
+			activity.startActivity(intent);
+		} catch (Exception e) {
+			Api.toast(activity, e.getMessage());
 		}
 	}
 
@@ -62,15 +89,8 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		if(ctx == null) {
 			ctx = getActivity();
 		}
-		if(ctx != null) {
-			if (key.equals("notification_priority")) {
-				NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-				notificationManager.cancel(1);
-				//Api.showNotification(Api.isEnabled(ctx), ctx);
-				Api.updateNotification(Api.isEnabled(ctx), ctx);
-			}
-		}
 	}
+
 
 	private void populatePreference(Preference list, String title, int modeType) {
 		final ArrayList<CharSequence> entriesList = new ArrayList<CharSequence>();

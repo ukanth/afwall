@@ -3,9 +3,7 @@ package dev.ukanth.ufirewall.service;
 import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothProfile;
@@ -13,21 +11,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.IBinder;
-
-import androidx.core.app.NotificationCompat;
+import android.os.UserHandle;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.InterfaceTracker;
-import dev.ukanth.ufirewall.MainActivity;
-import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.broadcast.ConnectivityChangeReceiver;
 import dev.ukanth.ufirewall.broadcast.PackageBroadcast;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.Notifications;
 
 public class FirewallService extends Service {
 
@@ -37,6 +34,7 @@ public class FirewallService extends Service {
     private static FirewallService instance = null; // Track service instance
     BroadcastReceiver connectivityReciver;
     BroadcastReceiver packageReceiver;
+    private LauncherApps.Callback profileAppCallback;
     IntentFilter filter;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothProfile.ServiceListener btListener;
@@ -53,9 +51,9 @@ public class FirewallService extends Service {
         super.onCreate();
         context = this;
         instance = this;
-        // Reset log service status on create
-        logServiceActive = false;
-        Log.d(TAG, "FirewallService created, logServiceActive reset to false");
+        // logServiceActive is not reset here: LogService may have started first (it sets the flag
+        // when it starts and clears it when it stops)
+        Log.d(TAG, "FirewallService created, log monitoring " + (logServiceActive ? "active" : "inactive"));
     }
 
     private void registerBTListener() {
@@ -79,120 +77,64 @@ public class FirewallService extends Service {
 
 
     private void addNotification() {
-        String NOTIFICATION_CHANNEL_ID = "firewall.service";
-        String channelName = getString(R.string.firewall_service);
-
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NOTIFICATION_ID);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_LOW);
-            notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-            assert manager != null;
-            if(G.getNotificationPriority() == 0) {
-                notificationChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
-            } else {
-                notificationChannel.setImportance(NotificationManager.IMPORTANCE_LOW);
-            }
-            notificationChannel.setSound(null, null);
-            notificationChannel.enableLights(false);
-            notificationChannel.setShowBadge(true);
-            notificationChannel.enableVibration(false);
-            manager.createNotificationChannel(notificationChannel);
-        }
-
-
-        Intent appIntent = new Intent(this, MainActivity.class);
-        appIntent.setAction(Intent.ACTION_MAIN);
-        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-
-        /*TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(appIntent);*/
-
-        int icon;
-        String notificationText = "";
-
-        if (Api.isEnabled(this)) {
-            if (G.enableMultiProfile()) {
-                String profile = "";
-                switch (G.storedProfile()) {
-                    case "AFWallPrefs":
-                        profile = G.gPrefs.getString("default", getString(R.string.defaultProfile));
-                        break;
-                    case "AFWallProfile1":
-                        profile = G.gPrefs.getString("profile1", getString(R.string.profile1));
-                        break;
-                    case "AFWallProfile2":
-                        profile = G.gPrefs.getString("profile2", getString(R.string.profile2));
-                        break;
-                    case "AFWallProfile3":
-                        profile = G.gPrefs.getString("profile3", getString(R.string.profile3));
-                        break;
-                    default:
-                        profile = G.storedProfile();
-                        break;
-                }
-                notificationText = getString(R.string.active) + " (" + profile + ")";
-            } else {
-                notificationText = getString(R.string.active);
-            }
-            // Append log service status if active
-            if (logServiceActive) {
-                notificationText += " • " + getString(R.string.log_monitoring);
-            }
-            //notificationText = context.getString(R.string.active);
-            icon = R.drawable.notification;
-            Log.d(TAG, "Firewall ENABLED - notification text: " + notificationText);
-        } else {
-            notificationText = getString(R.string.inactive);
-            icon = R.drawable.notification_error;
-            Log.d(TAG, "Firewall DISABLED - notification text: " + notificationText);
-        }
-
-
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(this, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder.setContentIntent(notifyPendingIntent);
-
-        //int notifyType = G.getNotificationPriority();
-        Notification notification = notificationBuilder
-                .setContentTitle(getString(R.string.app_name))
-                .setTicker(getString(R.string.app_name))
-                .setSound(null)
-                .setChannelId(NOTIFICATION_CHANNEL_ID)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setContentText(notificationText)
-                .setSmallIcon(icon)
-                .setOngoing(true)
-                .build();
-
+        // one builder for the status notification (see Notifications); updating a foreground
+        // notification in place, without cancelling it first, avoids flicker
+        Notification notification = Notifications.buildStatus(this, logServiceActive);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             startForeground(NOTIFICATION_ID, notification, FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
-            Log.d(TAG, "Updated notification via startForeground (Android 14+): " + notificationText);
-        } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(NOTIFICATION_ID, notification);
-            Log.d(TAG, "Updated notification via startForeground (Android 8+): " + notificationText);
-        } else {
-            if(G.activeNotification()) {
+        } else if (G.activeNotification()) {
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
                 manager.notify(NOTIFICATION_ID, notification);
-                Log.d(TAG, "Updated notification via notify: " + notificationText);
             }
         }
-        /*} else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForeground(NOTIFICATION_ID, notification);
-            } else {
-                //empty one
-                startForeground(NOTIFICATION_ID, new Notification());
+    }
+
+    /**
+     * New apps in other Android users of this device (work profile, Private Space, clones): their
+     * PACKAGE_ADDED broadcasts go to those users only.
+     */
+    private void registerProfileAppListener() {
+        if (profileAppCallback != null || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+        final LauncherApps launcherApps = (LauncherApps) getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        if (launcherApps == null) {
+            return;
+        }
+        profileAppCallback = new LauncherApps.Callback() {
+            @Override
+            public void onPackageAdded(String packageName, UserHandle user) {
+                if (android.os.Process.myUserHandle().equals(user)) {
+                    return; // handled by PackageBroadcast
+                }
+                PackageBroadcast.onProfilePackageAdded(getApplicationContext(), launcherApps, packageName, user);
             }
-        }*/
 
+            @Override
+            public void onPackageRemoved(String packageName, UserHandle user) {
+            }
 
+            @Override
+            public void onPackageChanged(String packageName, UserHandle user) {
+            }
+
+            @Override
+            public void onPackagesAvailable(String[] packageNames, UserHandle user, boolean replacing) {
+            }
+
+            @Override
+            public void onPackagesUnavailable(String[] packageNames, UserHandle user, boolean replacing) {
+            }
+        };
+        try {
+            launcherApps.registerCallback(profileAppCallback);
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to watch apps of other profiles: " + e.getMessage());
+            profileAppCallback = null;
+        }
     }
 
     /**
@@ -250,6 +192,7 @@ public class FirewallService extends Service {
 
         addNotification();
         registerBTListener();
+        registerProfileAppListener();
 
         //incase if it's not null, make sure we unregister it
         if(packageReceiver != null) {
@@ -312,6 +255,13 @@ public class FirewallService extends Service {
     }
     @Override
     public void onDestroy() {
+        if (profileAppCallback != null) {
+            try {
+                ((LauncherApps) getSystemService(Context.LAUNCHER_APPS_SERVICE)).unregisterCallback(profileAppCallback);
+            } catch (Exception ignored) {
+            }
+            profileAppCallback = null;
+        }
         if (connectivityReciver != null) {
             unregisterReceiver(connectivityReciver);
             connectivityReciver = null;

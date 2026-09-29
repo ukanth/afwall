@@ -23,7 +23,6 @@
 
 package dev.ukanth.ufirewall.preferences;
 
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,6 +57,7 @@ import dev.ukanth.ufirewall.events.RxEvent;
 import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.SecurityUtil;
 import dev.ukanth.ufirewall.util.ThemeHelper;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -335,20 +335,17 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
     }
 
     private void handleNotificationChanges(SharedPreferences prefs, String key, Context ctx) {
-        if (key.equals("notification_priority")) {
-            NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.cancelAll();
-            Api.updateNotification(Api.isEnabled(ctx), ctx);
-        }
-
+        // (Android 6/7 only) show or hide the status notification
         if (key.equals("activeNotification")) {
             boolean enabled = prefs.getBoolean(key, false);
             if (!enabled) {
-                NotificationManager nm = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-                nm.cancelAll();
+                Notifications.cancel(ctx, Notifications.ID_STATUS);
             } else {
                 Api.updateNotification(Api.isEnabled(ctx), ctx);
             }
+        }
+        if (key.equals("notifyBlocked") && !prefs.getBoolean(key, true)) {
+            Notifications.clearBlocked();
         }
     }
 

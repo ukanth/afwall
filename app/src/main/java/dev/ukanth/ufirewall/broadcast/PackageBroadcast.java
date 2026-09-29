@@ -25,31 +25,27 @@ package dev.ukanth.ufirewall.broadcast;
 import static dev.ukanth.ufirewall.util.G.isDonate;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherApps;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
-import android.os.Build;
+import android.os.UserHandle;
 import android.preference.PreferenceManager;
-
-import androidx.core.app.NotificationCompat;
 
 import java.util.HashSet;
 
 import dev.ukanth.ufirewall.Api;
-import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.UidResolver;
 
 /**
@@ -147,7 +143,7 @@ public class PackageBroadcast extends BroadcastReceiver {
                         ApplicationInfo applicationInfo = packager.getApplicationInfo(added_package, 0);
                         label = packager.getApplicationLabel(applicationInfo).toString();
                         if (PackageManager.PERMISSION_GRANTED == packager.checkPermission(Manifest.permission.INTERNET, added_package)) {
-                            addNotification(context,label);
+                            Notifications.newApp(context, applicationInfo.uid, added_package, label);
                         }
                         if (Api.recentlyInstalled == null) {
                             Api.recentlyInstalled = new HashSet<>();
@@ -165,51 +161,53 @@ public class PackageBroadcast extends BroadcastReceiver {
     }
 
 
-    private void addNotification(Context context, String label) {
-        final int NOTIFICATION_ID = 100;
-        String NOTIFICATION_CHANNEL_ID = "firewall.app.notification";
-        String channelName = context.getString(R.string.app_notification);
-
-        //cancel existing notification
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.cancel(NOTIFICATION_ID);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-            chan.setShowBadge(false);
-            chan.setSound(null,null);
-            chan.enableLights(false);
-            chan.enableVibration(false);
-            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-            assert manager != null;
-            manager.createNotificationChannel(chan);
+    /**
+     * A package was installed in another Android user of this device (work profile, Private
+     * Space, clone profile), reported by LauncherApps while FirewallService runs.
+     */
+    public static void onProfilePackageAdded(Context context, LauncherApps launcherApps, String pkg, UserHandle user) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+            return; // the listener is only registered on 8+
         }
-
-
-        Intent appIntent = new Intent(context, MainActivity.class);
-        appIntent.setAction(Intent.ACTION_MAIN);
-        appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        PendingIntent notifyPendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_IMMUTABLE);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
-        notificationBuilder.setContentIntent(notifyPendingIntent);
-
-        String notificationText = context.getString(R.string.notification_new);
-        if (label != null) {
-            notificationText = label + "-" + context.getString(R.string.notification_new_package);
+        Api.applications = null;
+        UidResolver.clearCache();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!prefs.getBoolean("notifyAppInstall", true) || !Api.isEnabled(context)) {
+            return;
         }
+        try {
+            ApplicationInfo info = launcherApps.getApplicationInfo(pkg, 0, user);
+            if (info == null || !requestsInternet(context, pkg)) {
+                return;
+            }
+            String label = info.loadLabel(context.getPackageManager()).toString();
+            Notifications.newApp(context, info.uid, pkg, context.getString(R.string.notif_new_app_profile, label));
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to read new app " + pkg + " of " + user + ": " + e.getMessage());
+        }
+    }
 
-        Notification notification = notificationBuilder.setOngoing(false)
-                .setPriority(NotificationManager.IMPORTANCE_DEFAULT)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setSound(null)
-                .setSmallIcon(R.drawable.notification_quest)
-                .setContentTitle(context.getString(R.string.notification_title))
-                .setTicker(context.getString(R.string.notification_title))
-                .setContentText(notificationText)
-                .build();
-
-        manager.notify(NOTIFICATION_ID, notification);
+    /**
+     * @return true unless the package is known not to request INTERNET (packages of other users
+     * may not be visible to this user's PackageManager; notify then)
+     */
+    private static boolean requestsInternet(Context context, String pkg) {
+        PackageManager pm = context.getPackageManager();
+        if (pm.checkPermission(Manifest.permission.INTERNET, pkg) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        try {
+            PackageInfo pi = pm.getPackageInfo(pkg, PackageManager.GET_PERMISSIONS);
+            if (pi.requestedPermissions != null) {
+                for (String perm : pi.requestedPermissions) {
+                    if (Manifest.permission.INTERNET.equals(perm)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } catch (NameNotFoundException e) {
+            return true;
+        }
     }
 }
