@@ -17,29 +17,5 @@
             android:key="default"
             android:summary="@string/custom_title1"
             android:title="@string/defaultProfile" />
-        <EditTextPreference
-            android:dependency="enableMultiProfile"
-            android:key="profile1"
-            android:summary="@string/custom_title2"
-            android:title="@string/profile1" />
-        <EditTextPreference
-            android:dependency="enableMultiProfile"
-            android:key="profile2"
-            android:summary="@string/custom_title3"
-            android:title="@string/profile2" />
-        <EditTextPreference
-            android:dependency="enableMultiProfile"
-            android:key="profile3"
-            android:summary="@string/custom_title4"
-            android:title="@string/profile3" />
-
-        </PreferenceCategory>
-
-    <PreferenceCategory android:key="promigrate"
-        android:title="@string/exp_prefs_title" >
-        <Preference android:title="@string/migrate_profiles"
-            android:key="migrate_profile"
-            android:summary="@string/migrate_summary"/>
     </PreferenceCategory>
-
 </PreferenceScreen>

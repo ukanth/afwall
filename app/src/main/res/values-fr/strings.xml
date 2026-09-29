@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profils</string>
     <string name="custom_title1">Nom personnalisé pour Profil par défaut</string>
-    <string name="custom_title2">Nom personnalisé pour profil1</string>
-    <string name="custom_title3">Nom personnalisé pour profil2</string>
-    <string name="custom_title4">Nom personnalisé pour profil3</string>
     <string name="toggle_enable">Activer le pare-feu</string>
     <string name="toggle_disable">Désactiver le pare-feu</string>
     <string name="toggle_default">Activer le profil par défaut</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Nom du profil</string>
-    <string name="profile_notsupport">Veuillez migrer les données de profil pour utiliser cette option</string>
     <string name="profile_duplicate">Le profil existe déjà !</string>
     <string name="reapply_profile">Réappliquer les règles de profil</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Gérer les profils</string>
     <string name="manage_profiles_summary">Ajouter ou supprimer des profils</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Migrer les profils</string>
-    <string name="migrate_summary">Migrer toutes les données de profil</string>
     <string name="insert_profile">Nom du profil</string>
     <string name="add">Ajouter</string>
     <string name="showlog_toasts">Afficher une notification toast en cas de blocage</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">Multidiffusion DNS (mdns)</string>
     <string name="mdns">Activer la multidiffusion DNS</string>
     <string name="error_log">Impossible de démarrer le service de journalisation. LogTarget est vide ou LogService n’est pas activé.</string>
-    <string name="delete_profile">Impossible de supprimer le profil</string>
-    <string name="profile_migrate_msg">Profils migrés</string>
     <!-- Log Details -->
     <string name="destination_address">Adresse de destination</string>
     <string name="source_address">Adresse source</string>

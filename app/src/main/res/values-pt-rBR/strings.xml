@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Perfis</string>
     <string name="custom_title1">Nome personalizado para o Perfil Padrão</string>
-    <string name="custom_title2">Nome personalizado para o perfil 1</string>
-    <string name="custom_title3">Nome personalizado para o perfil 2</string>
-    <string name="custom_title4">Nome personalizado para o perfil 3</string>
     <string name="toggle_enable">Ativar firewall</string>
     <string name="toggle_disable">Desativar firewall</string>
     <string name="toggle_default">Ativar perfil padrão</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Perfil 2</string>
     <string name="profile3">Perfil 3</string>
     <string name="profile_hint">NomePerfil</string>
-    <string name="profile_notsupport">Por favor, migre os dados de perfil para usar esta opção</string>
     <string name="profile_duplicate">Perfil já existente!</string>
     <string name="reapply_profile">Reaplicar regras do perfil</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Gerenciar perfis</string>
     <string name="manage_profiles_summary">Adicionar ou remover perfis</string>
     <string name="profiles">Perfil </string>
-    <string name="migrate_profiles">Migrar Perfis</string>
-    <string name="migrate_summary">Migrar todos os dados de perfil</string>
     <string name="insert_profile">Nome do Perfil</string>
     <string name="add">Adicionar</string>
     <string name="showlog_toasts">Mostrar notificação ao bloquear</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">DNS Multicast (mdns)</string>
     <string name="mdns">Ativar DNS Multicast</string>
     <string name="error_log">Não é possível iniciar o serviço do registro. LogTarget está vazio ou LogService não está habilitado.</string>
-    <string name="delete_profile">Não foi possível excluir o perfil</string>
-    <string name="profile_migrate_msg">Perfil migrado</string>
     <!-- Log Details -->
     <string name="destination_address">Endereço do destino</string>
     <string name="source_address">Endereço de Origem</string>

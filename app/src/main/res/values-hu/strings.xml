@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profilok</string>
     <string name="custom_title1">Egyéni név az alapértelmezett profilhoz</string>
-    <string name="custom_title2">Profil 1 neve</string>
-    <string name="custom_title3">Profil 2 neve</string>
-    <string name="custom_title4">Profil 3 neve</string>
     <string name="toggle_enable">A tűzfal engedélyezése</string>
     <string name="toggle_disable">A tűzfal letiltása</string>
     <string name="toggle_default">Alapértelmezett profil bekapcsolása</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Profil neve</string>
-    <string name="profile_notsupport">Költöztesd át a profil adatokat ezen lehetőség használatához</string>
     <string name="profile_duplicate">A profil már létezik!</string>
     <string name="reapply_profile">Profil szabályok újraalkalmazása</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Profilok kezelése</string>
     <string name="manage_profiles_summary">Profilok hozzáadása vagy eltávolítása</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Profilok áttelepítése</string>
-    <string name="migrate_summary">Minden profil adat áttelepítése</string>
     <string name="insert_profile">Profil név</string>
     <string name="add">Hozzáadás</string>
     <string name="showlog_toasts">Toast üzenet mutatása zároláskor</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Mutlicast DNS engedélyezése</string>
     <string name="error_log">Nem lehet elindítani a naplószolgáltatást. A LogTarget üres vagy a LogService nincs engedélyezve.</string>
-    <string name="delete_profile">Nem lehet törölni a profilt</string>
-    <string name="profile_migrate_msg">Profilok átköltöztetve</string>
     <!-- Log Details -->
     <string name="destination_address">Cél cím</string>
     <string name="source_address">Forrás cím</string>

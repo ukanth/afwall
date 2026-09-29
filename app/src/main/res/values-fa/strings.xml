@@ -169,9 +169,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">نمایه‌‌ها</string>
     <string name="custom_title1">نام سفارشی برای نمایه پیش‌فرض</string>
-    <string name="custom_title2">نام سفارشی برای نمایه ۱</string>
-    <string name="custom_title3">نام سفارشی برای نمایه ۲</string>
-    <string name="custom_title4">نام سفارشی برای نمایه ۳</string>
     <string name="toggle_enable">فعال‌سازی فایروال</string>
     <string name="toggle_disable">غیرفعال‌سازی فایروال</string>
     <string name="toggle_default">فعال‌سازی نمایه پیش‌فرض</string>
@@ -184,7 +181,6 @@
     <string name="profile2">نمایه ۲</string>
     <string name="profile3">نمایه ۳</string>
     <string name="profile_hint">نام نمایه</string>
-    <string name="profile_notsupport">برای استفاده از این گزینه لطفا پروفایل را منتقل کنید</string>
     <string name="profile_duplicate">پروفایل از قبل وجود دارد!</string>
     <string name="reapply_profile">اجرای دوباره قوانین پروفایل</string>
     <!-- Interface -->
@@ -393,8 +389,6 @@ S-OFF پیکربندی شوند.</string>
     <string name="manage_profiles">مدیریت نمایه‌ها</string>
     <string name="manage_profiles_summary">افزودن یا حذف نمایه‌ها</string>
     <string name="profiles">نمایه </string>
-    <string name="migrate_profiles">انتقال نمایه‌ها</string>
-    <string name="migrate_summary">انتقال تمام داده‌های نمایه</string>
     <string name="insert_profile">نام نمایه</string>
     <string name="add">اضافه کردن</string>
     <string name="showlog_toasts">موقع مسدود کردن اعلان نشان بده</string>
@@ -435,8 +429,6 @@ S-OFF پیکربندی شوند.</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">فعال سازی Multicast DNS</string>
     <string name="error_log">شروع سرویس لاگ ناموفق بود. LogTarget خالی است یا LogService فعال نیست.</string>
-    <string name="delete_profile">امکان حذف نمایه وجود ندارد</string>
-    <string name="profile_migrate_msg">نمایه‌ها انتقال‌یافتند</string>
     <!-- Log Details -->
     <string name="destination_address">آدرس مقصد</string>
     <string name="source_address">آدرس منبع</string>

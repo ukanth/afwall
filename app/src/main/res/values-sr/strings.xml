@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Профили</string>
     <string name="custom_title1">Посебно име за подразумевани профил</string>
-    <string name="custom_title2">Посебно име за профил 1</string>
-    <string name="custom_title3">Посебно име за профил 2</string>
-    <string name="custom_title4">Посебно име за профил 3</string>
     <string name="toggle_enable">Укључи ватробран</string>
     <string name="toggle_disable">Искључи ватробран</string>
     <string name="toggle_default">Активирај подразумевани профил</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Профил 2</string>
     <string name="profile3">Профил 3</string>
     <string name="profile_hint">НазивПрофила</string>
-    <string name="profile_notsupport">Преселите податке профила да бисте користили ову опцију</string>
     <string name="profile_duplicate">Профил већ постоји!</string>
     <string name="reapply_profile">Опет примени правила профила</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Управљање профилима</string>
     <string name="manage_profiles_summary">Додај или уклони профиле</string>
     <string name="profiles">Профил </string>
-    <string name="migrate_profiles">Пресели профиле</string>
-    <string name="migrate_summary">Пресели све податке профила</string>
     <string name="insert_profile">Назив профила</string>
     <string name="add">Додај</string>
     <string name="showlog_toasts">Прикажи екранско обавештење при блокирању</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) мултикаст ДНС</string>
     <string name="mdns">Укључи мултикаст ДНС</string>
     <string name="error_log">Не могу да покренем сервис дневника. LogTarget је празан или LogService није укључен.</string>
-    <string name="delete_profile">Не могу да обришем профил</string>
-    <string name="profile_migrate_msg">Профили пресељени</string>
     <!-- Log Details -->
     <string name="destination_address">Адреса одредишта</string>
     <string name="source_address">Адреса извора</string>

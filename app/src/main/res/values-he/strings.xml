@@ -168,9 +168,6 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">פרופילים</string>
     <string name="custom_title1">שם מותאם אישית עבור פרופיל ברירת מחדל</string>
-    <string name="custom_title2">שם מותאם אישית עבור פרופיל 1</string>
-    <string name="custom_title3">שם מותאם אישית עבור פרופיל 2</string>
-    <string name="custom_title4">שם מותאם אישית עבור פרופיל 3</string>
     <string name="toggle_enable">הפעל חומת אש</string>
     <string name="toggle_disable">השבת חומת אש</string>
     <string name="toggle_default">הפעל פרופיל ברירת מחדל</string>
@@ -183,7 +180,6 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="profile2">פרופיל 2</string>
     <string name="profile3">פרופיל 3</string>
     <string name="profile_hint">שם-פרופיל</string>
-    <string name="profile_notsupport">יש להעביר את נתוני הפרופילים כדי להשתמש באפשרות זו</string>
     <string name="profile_duplicate">פרופיל קיים כבר!</string>
     <string name="reapply_profile">החל מחדש חוקי פרופיל</string>
     <!-- Interface -->
@@ -387,8 +383,6 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="manage_profiles">ניהול פרופילים</string>
     <string name="manage_profiles_summary">הוספה או הסרת פרופילים</string>
     <string name="profiles">פרופיל </string>
-    <string name="migrate_profiles">היגור פרופילים</string>
-    <string name="migrate_summary">היגור כל המידע בפרופילים</string>
     <string name="insert_profile">שם פרופיל</string>
     <string name="add">הוסף</string>
     <string name="showlog_toasts">הצגת התראה בעת חסימה</string>
@@ -429,8 +423,6 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">לאפשר Multicast DNS</string>
     <string name="error_log">לא ניתן להפעיל את שירות היומן. LogTarget ריק או LogService אינו מופעל.</string>
-    <string name="delete_profile">לא ניתן למחוק פרופיל</string>
-    <string name="profile_migrate_msg">פרופילים הועברו</string>
     <!-- Log Details -->
     <string name="destination_address">כתובת יעד</string>
     <string name="source_address">כתובת מקור</string>

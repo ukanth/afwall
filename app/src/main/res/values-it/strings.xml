@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profili</string>
     <string name="custom_title1">Nome personalizzato per il Profilo Predefinito</string>
-    <string name="custom_title2">Nome personalizzato del profilo 1</string>
-    <string name="custom_title3">Nome personalizzato del profilo 2</string>
-    <string name="custom_title4">Nome personalizzato del profilo 3</string>
     <string name="toggle_enable">Abilita firewall</string>
     <string name="toggle_disable">Disabilita firewall</string>
     <string name="toggle_default">Attiva profilo predefinito</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profilo 2</string>
     <string name="profile3">Profilo 3</string>
     <string name="profile_hint">NomeProfilo</string>
-    <string name="profile_notsupport">Migrare i dati del profilo per utilizzare questa opzione</string>
     <string name="profile_duplicate">Il profilo esiste già!</string>
     <string name="reapply_profile">Applica nuovamente le regole</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Gestione profili</string>
     <string name="manage_profiles_summary">Aggiungi o rimuovi profili</string>
     <string name="profiles">Profilo </string>
-    <string name="migrate_profiles">Eseguire la migrazione dei profili</string>
-    <string name="migrate_summary">Migrazione di tutti i dati del profilo</string>
     <string name="insert_profile">Nome del profilo</string>
     <string name="add">Aggiungi</string>
     <string name="showlog_toasts">Mostra notifica toast quando si blocca</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Abilita Multicast DNS</string>
     <string name="error_log">Impossibile avviare il servizio Registro. LogTarget è vuoto o LogService non è abilitato.</string>
-    <string name="delete_profile">Impossibile eliminare il profilo</string>
-    <string name="profile_migrate_msg">Profili migrati</string>
     <!-- Log Details -->
     <string name="destination_address">Indirizzo di destinazione</string>
     <string name="source_address">Indirizzo di origine</string>

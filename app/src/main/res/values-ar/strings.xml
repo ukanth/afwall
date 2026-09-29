@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">الأوضاع</string>
     <string name="custom_title1">اسم مخصص للوضع الإفتراضي</string>
-    <string name="custom_title2">اسم مخصص للوضع 1</string>
-    <string name="custom_title3">اسم مخصص للوضع 2</string>
-    <string name="custom_title4">اسم مخصص للوضع 3</string>
     <string name="toggle_enable">تفعيل جدار الحماية</string>
     <string name="toggle_disable">تعطيل جدار الحماية</string>
     <string name="toggle_default">تنشيط الوضع الإفتراضي</string>
@@ -182,7 +179,6 @@
     <string name="profile2">ملف التعريف 2</string>
     <string name="profile3">ملف التعريف 3</string>
     <string name="profile_hint">اسم الملف الشخصي</string>
-    <string name="profile_notsupport">الرجاء ترحيل بيانات الملف الشخصي لاستخدام هذا الخيار</string>
     <string name="profile_duplicate">الملف الشخصي موجود بالفعل!</string>
     <string name="reapply_profile">إعادة تطبيق قواعد الملف الشخصي</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">إدارة الأوضاع</string>
     <string name="manage_profiles_summary">إضافة أو إزالة ملفات تعريف</string>
     <string name="profiles">ملف التعريف </string>
-    <string name="migrate_profiles">ترحيل الأوضاع</string>
-    <string name="migrate_summary">ترحيل كافة البيانات الشخصية</string>
     <string name="insert_profile">اسم الملف الشخصي</string>
     <string name="add">إضافة</string>
     <string name="showlog_toasts">تمكين اظهار الاشعار على المانع</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) DNS متعدد</string>
     <string name="mdns">تمكين DNS متعدد</string>
     <string name="error_log">غير قادر على بدء خدمة السجل. LogTarget فارغ أو لم يتم تمكين خدمة السجل.</string>
-    <string name="delete_profile">غير قادر على حذف الملف الشخصي</string>
-    <string name="profile_migrate_msg">ترحيل الملفات الشخصية</string>
     <!-- Log Details -->
     <string name="destination_address">عنوان الوجهة</string>
     <string name="source_address">عنوان المصدر</string>

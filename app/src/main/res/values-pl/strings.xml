@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profile</string>
     <string name="custom_title1">Zmiana nazwy domyślnego profilu</string>
-    <string name="custom_title2">Własna nazwa dla Profilu 1</string>
-    <string name="custom_title3">Własna nazwa dla Profilu 2</string>
-    <string name="custom_title4">Własna nazwa dla Profilu 3</string>
     <string name="toggle_enable">Włącz zaporę</string>
     <string name="toggle_disable">Wyłącz zaporę</string>
     <string name="toggle_default">Aktywuj profil domyślny</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">NazwaProfilu</string>
-    <string name="profile_notsupport">Proszę przenieść dane profilu, aby skorzystać z tej opcji</string>
     <string name="profile_duplicate">Profil już istnieje!</string>
     <string name="reapply_profile">Zaaplikuj ponownie reguły profili</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Zarządzaj profilami</string>
     <string name="manage_profiles_summary">Dodaj lub usuń profile</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Migruj profile</string>
-    <string name="migrate_summary">Migracja wszystkich danych profilu</string>
     <string name="insert_profile">Nazwa profilu</string>
     <string name="add">Dodaj</string>
     <string name="showlog_toasts">Pokazuje dymki powiadomień przy blokowaniu</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Włącz Multicast DNS</string>
     <string name="error_log">Nie można uruchomić usługi dziennika. LogTarget jest pusty lub Logservice nie jest włączona.</string>
-    <string name="delete_profile">Nie można usunąć profilu</string>
-    <string name="profile_migrate_msg">Profile zmigrowane</string>
     <!-- Log Details -->
     <string name="destination_address">Adres docelowy</string>
     <string name="source_address">Adres źródłowy</string>

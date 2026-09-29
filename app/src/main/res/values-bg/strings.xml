@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Профили</string>
     <string name="custom_title1">Потребителско име за профил по подразбиране</string>
-    <string name="custom_title2">Потребителско име за профил 1</string>
-    <string name="custom_title3">Потребителско име за профила 2</string>
-    <string name="custom_title4">Потребителско име за профила 3</string>
     <string name="toggle_enable">Разреши Защитната стена</string>
     <string name="toggle_disable">Забрани Защитната стена</string>
     <string name="toggle_default">Активиране на профила по подразбиране</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Профил 2</string>
     <string name="profile3">Профил 3</string>
     <string name="profile_hint">Име на профил</string>
-    <string name="profile_notsupport">Моля мигрирайте данни за профила, за да използвате тази опция</string>
     <string name="profile_duplicate">Профилът вече съществува!</string>
     <string name="reapply_profile">Приложи наново профилни правила</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Управление на профили</string>
     <string name="manage_profiles_summary">Добавяне или премахване на профили</string>
     <string name="profiles">Профил </string>
-    <string name="migrate_profiles">Мигриране на профили</string>
-    <string name="migrate_summary">Мигриране на всички данни за профила</string>
     <string name="insert_profile">Име на профил</string>
     <string name="add">Добави</string>
     <string name="showlog_toasts">Покажи тост уведомление при блокиране</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Активиране на Multicast DNS</string>
     <string name="error_log">Не може да се стартира журналния сървис. LogTarget е празен или LogService не е разрешен.</string>
-    <string name="delete_profile">Не може да изтрие профил</string>
-    <string name="profile_migrate_msg">Профилите са пренесени</string>
     <!-- Log Details -->
     <string name="destination_address">Адрес на дестинация</string>
     <string name="source_address">Изходен адрес</string>

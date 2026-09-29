@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profilak</string>
     <string name="custom_title1">Lehenetsitako profilaren izen pertsonalizatua</string>
-    <string name="custom_title2">1 Profilaren izen pertsonalizatua</string>
-    <string name="custom_title3">2 Profilaren izen pertsonalizatua</string>
-    <string name="custom_title4">3 Profilaren izen pertsonalizatua</string>
     <string name="toggle_enable">Gaitu suebakia</string>
     <string name="toggle_disable">Ezgaitu suebakia</string>
     <string name="toggle_default">Aktibatu lehenetsitako profila</string>
@@ -182,7 +179,6 @@
     <string name="profile2">2 profila</string>
     <string name="profile3">3 profila</string>
     <string name="profile_hint">ProfilIzena</string>
-    <string name="profile_notsupport">Migratu profileko datuak aukera hau erabiltzeko</string>
     <string name="profile_duplicate">Profil hori dagoeneko existitzen da!</string>
     <string name="reapply_profile">Berraplikatu profilaren arauak</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Kudeatu profilak</string>
     <string name="manage_profiles_summary">Gehitu edo kendu profilak</string>
     <string name="profiles">Profila </string>
-    <string name="migrate_profiles">Migratu profilak</string>
-    <string name="migrate_summary">Migratu profileko datu guztiak</string>
     <string name="insert_profile">Profilaren izena</string>
     <string name="add">Gehitu</string>
     <string name="showlog_toasts">Erakutsi laster-leiho jakinarazpenak blokean</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Gaitu Mutlicast DNS</string>
     <string name="error_log">Ezin izan da egunkari zerbitzua hasi. LogTarget hutsik dago edo LogService desgaituta dago.</string>
-    <string name="delete_profile">Ezin izan da profila ezabatu</string>
-    <string name="profile_migrate_msg">Profilak migratu dira</string>
     <!-- Log Details -->
     <string name="destination_address">Helburuaren helbidea</string>
     <string name="source_address">Iturriaren helbidea</string>

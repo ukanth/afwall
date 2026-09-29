@@ -3939,6 +3939,19 @@ public final class Api {
         return res;
     }
 
+    /**
+     * @return rules of every profile, keyed by profile name ("AFWallPrefs" for the default profile)
+     */
+    private static JSONObject getAllProfileRules(Context ctx) throws JSONException {
+        JSONObject profileObject = new JSONObject();
+        profileObject.put(DEFAULT_PREFS_NAME, new JSONObject(getRulesForProfile(ctx, DEFAULT_PREFS_NAME)));
+        for (ProfileData profile : ProfileHelper.getProfiles()) {
+            // rules are stored under the identifier, which differs from the name (e.g. spaces removed)
+            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profile.getIdentifier())));
+        }
+        return profileObject;
+    }
+
     private static boolean exportAllToFile(Context ctx, File file) {
         boolean res = false;
         try (FileOutputStream fOut = new FileOutputStream(file);
@@ -3946,33 +3959,7 @@ public final class Api {
 
             JSONObject exportObject = new JSONObject();
             if (G.enableMultiProfile()) {
-                if (!G.isProfileMigrated()) {
-                    JSONObject profileObject = new JSONObject();
-                    for (String profile : G.profiles) {
-                        profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                    }
-                    exportObject.put("profiles", profileObject);
-
-                    JSONObject addProfileObject = new JSONObject();
-                    for (String profile : G.getAdditionalProfiles()) {
-                        addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                    }
-                    exportObject.put("additional_profiles", addProfileObject);
-                } else {
-                    JSONObject profileObject = new JSONObject();
-                    String profileName = "AFWallPrefs";
-                    profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
-
-                    List<ProfileData> profileDataList = ProfileHelper.getProfiles();
-                    for (ProfileData profile : profileDataList) {
-                        profileName = profile.getName();
-                        if (profile.getIdentifier().startsWith("AFWallProfile")) {
-                            profileName = profile.getIdentifier();
-                        }
-                        profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
-                    }
-                    exportObject.put("_profiles", profileObject);
-                }
+                exportObject.put("_profiles", getAllProfileRules(ctx));
             } else {
                 JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
                 exportObject.put("default", obj);
@@ -4061,33 +4048,7 @@ public final class Api {
 
                 JSONObject exportObject = new JSONObject();
                 if (G.enableMultiProfile()) {
-                    if (!G.isProfileMigrated()) {
-                        JSONObject profileObject = new JSONObject();
-                        for (String profile : G.profiles) {
-                            profileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                        }
-                        exportObject.put("profiles", profileObject);
-
-                        JSONObject addProfileObject = new JSONObject();
-                        for (String profile : G.getAdditionalProfiles()) {
-                            addProfileObject.put(profile, new JSONObject(getRulesForProfile(ctx, profile)));
-                        }
-                        exportObject.put("additional_profiles", addProfileObject);
-                    } else {
-                        JSONObject profileObject = new JSONObject();
-                        String profileName = "AFWallPrefs";
-                        profileObject.put(profileName, new JSONObject(getRulesForProfile(ctx, profileName)));
-
-                        List<ProfileData> profileDataList = ProfileHelper.getProfiles();
-                        for (ProfileData profile : profileDataList) {
-                            profileName = profile.getName();
-                            if (profile.getIdentifier().startsWith("AFWallProfile")) {
-                                profileName = profile.getIdentifier();
-                            }
-                            profileObject.put(profile.getName(), new JSONObject(getRulesForProfile(ctx, profileName)));
-                        }
-                        exportObject.put("_profiles", profileObject);
-                    }
+                    exportObject.put("_profiles", getAllProfileRules(ctx));
                 } else {
                     JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
                     exportObject.put("default", obj);
@@ -4336,18 +4297,39 @@ public final class Api {
         return Arrays.asList(intType).contains(key);
     }
 
-    private static void importProfiles(Context ctx, JSONObject profileObject) throws JSONException {
+    /**
+     * Import a "_profiles" section: keys are profile names. Profiles that don't exist yet are
+     * created.
+     */
+    private static void importProfilesByName(Context ctx, JSONObject profileObject) throws JSONException {
         Iterator<String> keys = profileObject.keys();
         while (keys.hasNext()) {
-            String key = keys.next();
-            try {
-                JSONObject obj = profileObject.getJSONObject(key);
-                updateRulesFromJson(ctx, obj, key);
-            } catch (JSONException e) {
-                if (e.getMessage().contains("No value")) {
-                    // continue;
-                }
+            String name = keys.next();
+            String identifier = DEFAULT_PREFS_NAME.equals(name) ? name : ProfileHelper.ensureProfileNamed(name);
+            importProfileRules(ctx, profileObject, name, identifier);
+        }
+    }
+
+    /**
+     * Import a "profiles" / "additional_profiles" section of the old profile model: keys are the
+     * preference file names (AFWallPrefs, AFWallProfile1-3, or the custom profile name).
+     */
+    private static void importLegacyProfiles(Context ctx, JSONObject profileObject) throws JSONException {
+        Iterator<String> keys = profileObject.keys();
+        while (keys.hasNext()) {
+            String identifier = keys.next();
+            if (!DEFAULT_PREFS_NAME.equals(identifier)) {
+                ProfileHelper.ensureProfile(ctx, identifier);
             }
+            importProfileRules(ctx, profileObject, identifier, identifier);
+        }
+    }
+
+    private static void importProfileRules(Context ctx, JSONObject profileObject, String key, String identifier) {
+        try {
+            updateRulesFromJson(ctx, profileObject.getJSONObject(key), identifier);
+        } catch (JSONException e) {
+            Log.w(TAG, "Skipping profile " + key + " on import: " + e.getMessage());
         }
     }
     private static boolean importAll(Context ctx, File file, StringBuilder msg) {
@@ -4441,15 +4423,14 @@ public final class Api {
                 }
             }
 
-            if (G.enableMultiProfile()) {
-                if (G.isProfileMigrated()) {
-                    JSONObject profileObject = object.getJSONObject("_profiles");
-                    importProfiles(ctx, profileObject);
-                } else {
-                    JSONObject profileObject = object.getJSONObject("profiles");
-                    importProfiles(ctx, profileObject);
-                    JSONObject customProfileObject = object.getJSONObject("additional_profiles");
-                    importProfiles(ctx, customProfileObject);
+            // pick the rules section by what the file contains, not by the current settings
+            if (object.has("_profiles")) {
+                importProfilesByName(ctx, object.getJSONObject("_profiles"));
+            } else if (object.has("profiles")) {
+                // backup from the old profile model: keys are the preference file names
+                importLegacyProfiles(ctx, object.getJSONObject("profiles"));
+                if (object.has("additional_profiles")) {
+                    importLegacyProfiles(ctx, object.getJSONObject("additional_profiles"));
                 }
             } else {
                 JSONObject defaultRules = object.getJSONObject("default");

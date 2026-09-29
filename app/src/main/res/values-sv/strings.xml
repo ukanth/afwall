@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiler</string>
     <string name="custom_title1">Eget namn för standardprofil</string>
-    <string name="custom_title2">Eget namn för Profil 1</string>
-    <string name="custom_title3">Eget namn för Profil 2</string>
-    <string name="custom_title4">Eget namn för Profil 3</string>
     <string name="toggle_enable">Aktivera brandväggen</string>
     <string name="toggle_disable">Inaktivera brandväggen</string>
     <string name="toggle_default">Aktivera standardprofil</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Profilnamn</string>
-    <string name="profile_notsupport">Vänligen migrera profildata för att använda det här alternativet</string>
     <string name="profile_duplicate">Profilen finns redan!</string>
     <string name="reapply_profile">Tillämpa profilens regler</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Hantera profiler</string>
     <string name="manage_profiles_summary">Lägga till eller ta bort profiler</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Migrera profiler</string>
-    <string name="migrate_summary">Migrera alla profiler</string>
     <string name="insert_profile">Profilnamn</string>
     <string name="add">Lägg tilll</string>
     <string name="showlog_toasts">Aktivera för att visa popup-notifieringar vid nekade paket</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Aktivera Multicast DNS</string>
     <string name="error_log">Det gick inte att starta loggtjänsten. LogTarget är tom eller LogService är inte aktiverad.</string>
-    <string name="delete_profile">Det gick inte att ta bort profilen</string>
-    <string name="profile_migrate_msg">Profiler migrerade</string>
     <!-- Log Details -->
     <string name="destination_address">Destinationsadress</string>
     <string name="source_address">Källadress</string>

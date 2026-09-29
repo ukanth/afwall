@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profil</string>
     <string name="custom_title1">Atur nama profil default</string>
-    <string name="custom_title2">Atur nama untuk profil 1</string>
-    <string name="custom_title3">Atur nama untuk profil 2</string>
-    <string name="custom_title4">Atur nama untuk profil 3</string>
     <string name="toggle_enable">Aktifkan firewall</string>
     <string name="toggle_disable">Nonaktifkan firewall</string>
     <string name="toggle_default">Aktifkan profil default</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">NamaProfil</string>
-    <string name="profile_notsupport">Harap pindahkan data profile untuk menggunakan pilihan ini</string>
     <string name="profile_duplicate">Profil sudah ada!</string>
     <string name="reapply_profile">Terapkan kembali aturan profil</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Atur profil</string>
     <string name="manage_profiles_summary">Tambah atau hapus profil</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Pindah profil</string>
-    <string name="migrate_summary">Migrasi semua data profil</string>
     <string name="insert_profile">Nama profil</string>
     <string name="add">Tambahkan</string>
     <string name="showlog_toasts">Tampilkan pemberitahuan melayang pada blok</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) DNS Multicast</string>
     <string name="mdns">Aktifkan DNS Multicast</string>
     <string name="error_log">Tidak dapat memulai layanan log. LogTarget kosong atau LogService tidak diaktifkan.</string>
-    <string name="delete_profile">Tidak dapat menghapus profil</string>
-    <string name="profile_migrate_msg">Profil dipindahkan</string>
     <!-- Log Details -->
     <string name="destination_address">Alamat tujuan</string>
     <string name="source_address">Alamat sumber</string>

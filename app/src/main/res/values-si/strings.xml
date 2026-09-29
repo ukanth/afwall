@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">පැතිකඩ</string>
     <string name="custom_title1">පෙරනිමි පැතිකඩ සඳහා අභිරුචි නම</string>
-    <string name="custom_title2">පැතිකඩ 1 සඳහා අභිරුචි නම</string>
-    <string name="custom_title3">පැතිකඩ 2 සඳහා අභිරුචි නම</string>
-    <string name="custom_title4">පැතිකඩ 3 සඳහා අභිරුචි නම</string>
     <string name="toggle_enable">ගිනි පවුර සක්රිය කරන්න</string>
     <string name="toggle_disable">ගිනි පවුර අක්රිය කරන්න</string>
     <string name="toggle_default">පෙරනිමි පැතිකඩ සක්රිය කරන්න</string>
@@ -182,7 +179,6 @@
     <string name="profile2">පැතිකඩ 2</string>
     <string name="profile3">පැතිකඩ 3</string>
     <string name="profile_hint">පැතිකඩ නම</string>
-    <string name="profile_notsupport">මෙම විකල්පය භාවිතා කිරීමට කරුණාකර පැතිකඩ දත්ත සංක්‍රමණය කරන්න</string>
     <string name="profile_duplicate">පැතිකඩ දැනටමත් පවතී!</string>
     <string name="reapply_profile">පැතිකඩ නීති නැවත යොදන්න</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">පැතිකඩ කළමනාකරණය</string>
     <string name="manage_profiles_summary">පැතිකඩ එකතු කිරීම හෝ ඉවත් කිරීම</string>
     <string name="profiles">පැතිකඩ </string>
-    <string name="migrate_profiles">පැතිකඩ සංක්‍රමණය කරන්න</string>
-    <string name="migrate_summary">සියලුම පැතිකඩ දත්ත සංක්‍රමණය කරන්න</string>
     <string name="insert_profile">පැතිකඩ නම</string>
     <string name="add">එකතු</string>
     <string name="showlog_toasts">බ්ලොක් එකේ ටෝස්ට් දැනුම්දීම පෙන්වන්න</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Multicast DNS සබල කරන්න</string>
     <string name="error_log">ලොග් සේවාව ආරම්භ කළ නොහැක. LogTarget හිස් හෝ LogService සබල කර නැත.</string>
-    <string name="delete_profile">පැතිකඩ මැකීමට නොහැකිය</string>
-    <string name="profile_migrate_msg">පැතිකඩ සංක්‍රමණය විය</string>
     <!-- Log Details -->
     <string name="destination_address">ගමනාන්තය ලිපිනය</string>
     <string name="source_address">මූලාශ්ර ලිපිනය</string>

@@ -69,6 +69,7 @@ import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreferenceDB;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.preferences.DefaultConnectionPref;
+import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.preferences.DefaultConnectionPrefDB;
 
 public class G extends Application implements Application.ActivityLifecycleCallbacks{
@@ -185,7 +186,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String AFWALL_STATUS = "AFWallStatus";
     //private static final String BLOCKED_NOTIFICATION = "block_filter_app";
     /* Profiles */
-    private static final String ADDITIONAL_PROFILES = "plusprofiles";
     //private static final String PROFILES = "profiles_json";
     private static final String PROFILES_MIGRATED = "profilesmigrated";
     private static final String WIDGET_X = "widgetX";
@@ -203,9 +203,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
     private static final String INITPATH = "initPath";
 
-    private static final String AFWALL_PROFILE = "AFWallProfile";
-    public static String[] profiles = {"AFWallPrefs", AFWALL_PROFILE + 1, AFWALL_PROFILE + 2, AFWALL_PROFILE + 3};
-    public static String[] default_profiles = {"AFWallProfile1", "AFWallProfile2", "AFWallProfile3"};
     public static Context ctx;
     public static SharedPreferences gPrefs;
     public static SharedPreferences pPrefs;
@@ -1288,6 +1285,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
         ctx = this.getApplicationContext();
         reloadPrefs();
+        ProfileHelper.migrateProfiles(ctx);
 
         //registerNetworkObserver();
     }
@@ -1322,23 +1320,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return true;
     }
 
-    public static void addAdditionalProfile(String profile) {
-        String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-        StringBuilder builder = new StringBuilder();
-        if (profile != null && profile.length() > 0) {
-            profile = profile.trim();
-            if (previousProfiles.length() == 0) {
-                builder.append(profile);
-            } else {
-                builder.append(previousProfiles);
-                builder.append(",");
-                builder.append(profile);
-            }
-            gPrefs.edit().putString(ADDITIONAL_PROFILES, builder.toString()).commit();
-        }
-    }
-
-
     public static boolean clearSharedPreferences(Context ctx, String preferenceName) {
         File dir = new File(ctx.getFilesDir().getParent() + "/shared_prefs/");
         String[] children = dir.list();
@@ -1349,41 +1330,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
             }
         }
         return true;
-    }
-
-    public static boolean removeAdditionalProfile(String profileName) {
-        //after remove clear all the data inside the custom profile
-        if (ctx != null) {
-            //actually delete the file from disk
-            if (clearSharedPreferences(ctx, profileName)) {
-                String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-                if (!previousProfiles.isEmpty()) {
-                    List<String> items = new ArrayList<String>(Arrays.asList(previousProfiles.split("\\s*,\\s*")));
-                    if (items.remove(profileName)) {
-                        gPrefs.edit().putString(ADDITIONAL_PROFILES, TextUtils.join(",", items)).commit();
-                        return true;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    public static List<String> getAdditionalProfiles() {
-        String previousProfiles = gPrefs.getString(ADDITIONAL_PROFILES, "");
-        List<String> items = new ArrayList<>();
-        if (!previousProfiles.isEmpty()) {
-            items = new ArrayList<String>(Arrays.asList(previousProfiles.split("\\s*,\\s*")));
-        }
-        return items;
-    }
-
-    public static List<String> getDefaultProfiles() {
-        return new ArrayList<String>(Arrays.asList(default_profiles));
     }
 
     public static void updateLogNotification(int uid, boolean isChecked) {

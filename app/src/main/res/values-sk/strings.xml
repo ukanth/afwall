@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profily</string>
     <string name="custom_title1">Vlastný názov pre Predvolený Profil</string>
-    <string name="custom_title2">Vlastný názov pre Profil 1</string>
-    <string name="custom_title3">Vlastný názov pre Profil 2</string>
-    <string name="custom_title4">Vlastný názov pre Profil 3</string>
     <string name="toggle_enable">Zapnúť Firewall</string>
     <string name="toggle_disable">Vypnúť Firewall</string>
     <string name="toggle_default">Aktivovať predvolený profil</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Názov Profilu</string>
-    <string name="profile_notsupport">Prosím, presuňte dáta profilu pre použitie tejto funkcie</string>
     <string name="profile_duplicate">Profil už existuje!</string>
     <string name="reapply_profile">Opätovné aplikovanie pravidiel profilu</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Spravovať profily</string>
     <string name="manage_profiles_summary">Pridať alebo odstrániť profily</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Migrovať profily</string>
-    <string name="migrate_summary">Migrácia všetkých profilových dát</string>
     <string name="insert_profile">Názov profilu</string>
     <string name="add">Pridať</string>
     <string name="showlog_toasts">Zobraziť toast notifikácie pri blokovaní</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Zapnúť Multicast DNS</string>
     <string name="error_log">Nie je možné spustiť službu pre denník. LogTarget je prázdny alebo LogService nie je zapnutý.</string>
-    <string name="delete_profile">Profil sa nedá odstrániť</string>
-    <string name="profile_migrate_msg">Profily migrované</string>
     <!-- Log Details -->
     <string name="destination_address">Cieľová adresa</string>
     <string name="source_address">Zdrojová adresa</string>

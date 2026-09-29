@@ -170,9 +170,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profielen</string>
     <string name="custom_title1">Aangepaste naam voor standaardprofiel</string>
-    <string name="custom_title2">Aangepaste naam voor Profiel 1</string>
-    <string name="custom_title3">Aangepaste naam voor Profiel 2</string>
-    <string name="custom_title4">Aangepaste naam voor Profiel 3</string>
     <string name="toggle_enable">Firewall inschakelen</string>
     <string name="toggle_disable">Firewall uitschakelen</string>
     <string name="toggle_default">Standaard profiel activeren</string>
@@ -185,7 +182,6 @@
     <string name="profile2">Profiel 2</string>
     <string name="profile3">Profiel 3</string>
     <string name="profile_hint">Profiel naam</string>
-    <string name="profile_notsupport">Migreer profieldata om deze optie te gebruiken</string>
     <string name="profile_duplicate">Profiel bestaat al!</string>
     <string name="reapply_profile">Profiel regels opnieuw toepassen</string>
     <!-- Interface -->
@@ -389,8 +385,6 @@
     <string name="manage_profiles">Beheer profielen</string>
     <string name="manage_profiles_summary">Profielen toevoegen of verwijderen</string>
     <string name="profiles">Profiel </string>
-    <string name="migrate_profiles">Profielen migreren</string>
-    <string name="migrate_summary">Alle profielgegevens migreren</string>
     <string name="insert_profile">Profielnaam</string>
     <string name="add">Toevoegen</string>
     <string name="showlog_toasts">Toast-melding weergeven bij blokkeren</string>
@@ -431,8 +425,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Multicast DNS inschakelen</string>
     <string name="error_log">Kan log-service niet starten. LogTarget is leeg of LogService is niet ingeschakeld.</string>
-    <string name="delete_profile">Kan profiel niet verwijderen</string>
-    <string name="profile_migrate_msg">Profielen gemigreerd</string>
     <!-- Log Details -->
     <string name="destination_address">Adres bestemming</string>
     <string name="source_address">Bron adres</string>

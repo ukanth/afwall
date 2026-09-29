@@ -805,32 +805,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mSpinner.setOnItemSelectedListener(this);
         String currentProfile = G.storedProfile();
         if (currentProfile != null) {
-            if (!G.isProfileMigrated()) {
-                switch (currentProfile) {
-                    case Api.DEFAULT_PREFS_NAME:
-                        mSpinner.setSelection(0);
-                        break;
-                    case "AFWallProfile1":
-                        mSpinner.setSelection(1);
-                        break;
-                    case "AFWallProfile2":
-                        mSpinner.setSelection(2);
-                        break;
-                    case "AFWallProfile3":
-                        mSpinner.setSelection(3);
-                        break;
-                    default:
-                        mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile), false);
+            if (!currentProfile.equals(Api.DEFAULT_PREFS_NAME)) {
+                ProfileData data = ProfileHelper.getProfileByIdentifier(currentProfile);
+                if (data != null) {
+                    mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()), false);
                 }
             } else {
-                if (!currentProfile.equals(Api.DEFAULT_PREFS_NAME)) {
-                    ProfileData data = ProfileHelper.getProfileByIdentifier(currentProfile);
-                    if (data != null) {
-                        mSpinner.setSelection(spinnerAdapter.getPosition(data.getName()), false);
-                    }
-                } else {
-                    mSpinner.setSelection(spinnerAdapter.getPosition(currentProfile), false);
-                }
+                mSpinner.setSelection(0, false);
             }
         }
     }
@@ -842,21 +823,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         mlocalList.add(G.gPrefs.getString("default", getString(R.string.defaultProfile)));
 
-        if (!G.isProfileMigrated()) {
-            mlocalList.add(G.gPrefs.getString("profile1", getString(R.string.profile1)));
-            mlocalList.add(G.gPrefs.getString("profile2", getString(R.string.profile2)));
-            mlocalList.add(G.gPrefs.getString("profile3", getString(R.string.profile3)));
-            List<String> profilesList = G.getAdditionalProfiles();
-            for (String profiles : profilesList) {
-                if (profiles != null && profiles.length() > 0) {
-                    mlocalList.add(profiles);
-                }
-            }
-        } else {
-            List<ProfileData> profilesList = ProfileHelper.getProfiles();
-            for (ProfileData data : profilesList) {
-                mlocalList.add(data.getName());
-            }
+        List<ProfileData> profilesList = ProfileHelper.getProfiles();
+        for (ProfileData data : profilesList) {
+            mlocalList.add(data.getName());
         }
     }
 
@@ -962,40 +931,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (initDone > 1) {
             Spinner spinner = findViewById(R.id.profileGroup);
             String profileName = spinner.getSelectedItem().toString();
-            if (!G.isProfileMigrated()) {
-                switch (position) {
-                    case 0:
-                        G.setProfile(true, "AFWallPrefs");
-                        break;
-                    case 1:
-                        G.setProfile(true, "AFWallProfile1");
-                        break;
-                    case 2:
-                        G.setProfile(true, "AFWallProfile2");
-                        break;
-                    case 3:
-                        G.setProfile(true, "AFWallProfile3");
-                        break;
-                    default:
-                        if (profileName != null) {
-                            G.setProfile(true, profileName);
-                        }
-
+            if (position == 0) {
+                G.setProfile(true, Api.DEFAULT_PREFS_NAME);
+            } else if (profileName != null) {
+                ProfileData data = ProfileHelper.getProfileByName(profileName);
+                if (data != null) {
+                    G.setProfile(true, data.getIdentifier());
                 }
-                setDirty(true);
-            } else {
-                switch (position) {
-                    case 0:
-                        G.setProfile(true, "AFWallPrefs");
-                        break;
-                    default:
-                        if (profileName != null) {
-                            ProfileData data = ProfileHelper.getProfileByName(profileName);
-                            G.setProfile(true, data.getIdentifier());
-                        }
-                }
-                setDirty(true);
             }
+            setDirty(true);
             G.reloadProfile();
             refreshHeader();
             showOrLoadApplications();

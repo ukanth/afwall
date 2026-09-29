@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profili</string>
     <string name="custom_title1">Prilagođeno ime za zadani profil</string>
-    <string name="custom_title2">Prilagođeno ime za Profil 1</string>
-    <string name="custom_title3">Prilagođeno ime za Profil 2</string>
-    <string name="custom_title4">Prilagođeno ime za Profil 3</string>
     <string name="toggle_enable">Omogući vatrozid</string>
     <string name="toggle_disable">Onemogući vatrozid</string>
     <string name="toggle_default">Aktiviraj zadani profil</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">NazivProfila</string>
-    <string name="profile_notsupport">Molimo da premjestite podatke profila da bi koristili ovu opciju</string>
     <string name="profile_duplicate">Profil već postoji!</string>
     <string name="reapply_profile">Ponovno primijenite pravila profila</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Upravljanje profilima</string>
     <string name="manage_profiles_summary">Dodaj ili ukloni profile</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Migrirajte profile</string>
-    <string name="migrate_summary">Migrirajte sve podatke profila</string>
     <string name="insert_profile">Naziv profila</string>
     <string name="add">Dodaj</string>
     <string name="showlog_toasts">Prikaži skočnu obavijest prilikom blokiranja</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Omogući Multicast DNS</string>
     <string name="error_log">Nije moguće pokrenuti servis zapisnika. LogTarget je prazan ili LogService nije omogućen.</string>
-    <string name="delete_profile">Nije moguće obrisati profil</string>
-    <string name="profile_migrate_msg">Profili premješteni</string>
     <!-- Log Details -->
     <string name="destination_address">Odredišna adresa</string>
     <string name="source_address">Izvorišna adresa</string>

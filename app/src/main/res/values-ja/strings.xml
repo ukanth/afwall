@@ -170,9 +170,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">プロファイル</string>
     <string name="custom_title1">デフォルトプロファイルの名前を変更</string>
-    <string name="custom_title2">プロファイル1の名前を変更</string>
-    <string name="custom_title3">プロファイル2の名前を変更</string>
-    <string name="custom_title4">プロファイル3の名前を変更</string>
     <string name="toggle_enable">Firewall を有効にする</string>
     <string name="toggle_disable">Firewall を無効にする</string>
     <string name="toggle_default">デフォルトプロファイルを有効にする</string>
@@ -185,7 +182,6 @@
     <string name="profile2">プロファイル 2</string>
     <string name="profile3">プロファイル 3</string>
     <string name="profile_hint">プロファイル名</string>
-    <string name="profile_notsupport">このオプションを使用して、プロファイルデータを移行してください</string>
     <string name="profile_duplicate">プロファイルは既に存在します!</string>
     <string name="reapply_profile">プロファイルのルールを再適用</string>
     <!-- Interface -->
@@ -389,8 +385,6 @@
     <string name="manage_profiles">プロファイルの管理</string>
     <string name="manage_profiles_summary">プロファイルを追加または削除します</string>
     <string name="profiles">プロファイル </string>
-    <string name="migrate_profiles">プロファイルを移行</string>
-    <string name="migrate_summary">すべてのプロファイル データを移行します</string>
     <string name="insert_profile">プロファイル名</string>
     <string name="add">追加</string>
     <string name="showlog_toasts">ブロック時にトースト通知を表示</string>
@@ -431,8 +425,6 @@
     <string name="mdnslabel">(mdns) マルチキャスト DNS</string>
     <string name="mdns">マルチキャスト DNS を有効にする</string>
     <string name="error_log">ログ サービスを開始できません。LogTarget が空か、LogService が有効ではありません。</string>
-    <string name="delete_profile">プロファイルを削除できません</string>
-    <string name="profile_migrate_msg">プロファイルを移行しました</string>
     <!-- Log Details -->
     <string name="destination_address">宛先アドレス</string>
     <string name="source_address">送信元アドレス</string>

@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiluri</string>
     <string name="custom_title1">Nume personalizat pentru profilul implicit</string>
-    <string name="custom_title2">Nume personalizat pentru Profilul 1</string>
-    <string name="custom_title3">Nume personalizat pentru Profilul 2</string>
-    <string name="custom_title4">Nume personalizat pentru Profilul 3</string>
     <string name="toggle_enable">Activează Firewall</string>
     <string name="toggle_disable">Dezactivează Firewall</string>
     <string name="toggle_default">Activează profilul implicit</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profilul 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Nume Profil</string>
-    <string name="profile_notsupport">Migrează datele profilului pentru a folosi această opțiune</string>
     <string name="profile_duplicate">Profile exists already!</string>
     <string name="reapply_profile">Reaplică regulile profilului</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Administrează profiluri</string>
     <string name="manage_profiles_summary">Adaugă sau elimină profiluri</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Migrează profiluri</string>
-    <string name="migrate_summary">Migrează toate datele profilului</string>
     <string name="insert_profile">Nume profil</string>
     <string name="add">Adaugă</string>
     <string name="showlog_toasts">Afișează o notificare la blocare</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Serviciul jurnal nu poate fi pornit. LogTarget este gol sau LogService nu este activat.</string>
-    <string name="delete_profile">Profilul nu a putut fi șters</string>
-    <string name="profile_migrate_msg">Profile migrat</string>
     <!-- Log Details -->
     <string name="destination_address">Adresa destinației</string>
     <string name="source_address">Adresa sursei</string>

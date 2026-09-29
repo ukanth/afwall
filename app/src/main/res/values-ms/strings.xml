@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profil</string>
     <string name="custom_title1">Nama kustom untuk Profil Asal</string>
-    <string name="custom_title2">Nama kustom untuk Profil 1</string>
-    <string name="custom_title3">Nama kustom untuk Profil 2</string>
-    <string name="custom_title4">Nama kustom untuk Profil 3</string>
     <string name="toggle_enable">Aktif Firewall</string>
     <string name="toggle_disable">Nyahaktif Firewall</string>
     <string name="toggle_default">Aktifkan profil asal</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Nama Profil</string>
-    <string name="profile_notsupport">Sila pindahkan data profil untuk menggunakan opsyen ini</string>
     <string name="profile_duplicate">Profile exists already!</string>
     <string name="reapply_profile">Mengaktif semula arahan profil</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Uruskan profil</string>
     <string name="manage_profiles_summary">Menambah atau mengalih keluar profil</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Memindahkan profil</string>
-    <string name="migrate_summary">Memindahkan semua data profil</string>
     <string name="insert_profile">Nama profil</string>
     <string name="add">Tambah</string>
     <string name="showlog_toasts">Papar notifikasi semasa disekat</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Tidak dapat mulakan log servis. TargetLog adalah kosong atau ServisLog dinyahaktifkan.</string>
-    <string name="delete_profile">Tidak dapat hapuskan profil</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Alamat destinasi</string>
     <string name="source_address">Sumber Alamat</string>

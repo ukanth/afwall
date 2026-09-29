@@ -168,9 +168,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profily</string>
     <string name="custom_title1">Vlastní název pro výchozí profil</string>
-    <string name="custom_title2">Vlastní název pro Profil1</string>
-    <string name="custom_title3">Vlastní název pro Profil 2</string>
-    <string name="custom_title4">Vlastní název pro Profil 3</string>
     <string name="toggle_enable">Zapnout firewall</string>
     <string name="toggle_disable">Vypnout firewall</string>
     <string name="toggle_default">Aktivovat výchozí profil</string>
@@ -183,7 +180,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Název_profilu</string>
-    <string name="profile_notsupport">Pro tuto možnost prosím migrujte profilové data</string>
     <string name="profile_duplicate">Profil již existuje!</string>
     <string name="reapply_profile">Znova aplikovat pravidla profilu</string>
     <!-- Interface -->
@@ -387,8 +383,6 @@
     <string name="manage_profiles">Správa profilů</string>
     <string name="manage_profiles_summary">Přidat nebo odebrat profily</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Přenést profily</string>
-    <string name="migrate_summary">Migrovat všechna data profilu</string>
     <string name="insert_profile">Název profilu</string>
     <string name="add">Přidat</string>
     <string name="showlog_toasts">Zobrazit vyskakovací oznámení v bloku</string>
@@ -429,8 +423,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Nelze spustit službu protokolů. LogTarget je prázdný nebo LogService není povolen.</string>
-    <string name="delete_profile">Nelze odstranit profil</string>
-    <string name="profile_migrate_msg">Profily migrovány</string>
     <!-- Log Details -->
     <string name="destination_address">Cílová adresa</string>
     <string name="source_address">Zdrojová adresa</string>

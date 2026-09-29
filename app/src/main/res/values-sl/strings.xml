@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profili</string>
     <string name="custom_title1">Ime po meri za Osnovni profil</string>
-    <string name="custom_title2">Ime po meri za Profil 1</string>
-    <string name="custom_title3">Ime po meri za Profil 2</string>
-    <string name="custom_title4">Ime po meri za Profil 3</string>
     <string name="toggle_enable">Vklopi požarni zid</string>
     <string name="toggle_disable">Izklopi požarni zid</string>
     <string name="toggle_default">Aktiviraj osnovni profil</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">ImeProfila</string>
-    <string name="profile_notsupport">Za uporabo te opcije morate prej izvesti selitev profilnih podatkov</string>
     <string name="profile_duplicate">Profile exists already!</string>
     <string name="reapply_profile">Ponovno uveljavi pravila</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Urejanje profilov</string>
     <string name="manage_profiles_summary">Dodajanje/odstranjevanje profilov</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Prenos profilov</string>
-    <string name="migrate_summary">Selitev vseh podatkov profila</string>
     <string name="insert_profile">Ime profila</string>
     <string name="add">Dodaj</string>
     <string name="showlog_toasts">To bo omogočilo prikazovanje sporočil ob blokadah</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Dnevnika aktivnosti ni bilo mogoče zagnati. Storitev ni vklopljena ali pa je polje LogTarget prazmo.</string>
-    <string name="delete_profile">Izbris profila ni možen</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Ciljni naslov</string>
     <string name="source_address">Naslov vira</string>

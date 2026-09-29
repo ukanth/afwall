@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Cấu hình</string>
     <string name="custom_title1">Đặt tên cho Cấu hình mặc định</string>
-    <string name="custom_title2">Tên khác cho Cấu hình 1</string>
-    <string name="custom_title3">Tên khác cho Cấu hình 2</string>
-    <string name="custom_title4">Tên khác cho Cấu hình 3</string>
     <string name="toggle_enable">Bật tường lửa</string>
     <string name="toggle_disable">Tắt tường lửa</string>
     <string name="toggle_default">Kích hoạt cấu hình mặc định</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Cấu hình 2</string>
     <string name="profile3">Cấu hình 3</string>
     <string name="profile_hint">Tên_cấu_hình</string>
-    <string name="profile_notsupport">Hãy đổi mới dữ liệu cấu hình để dùng tuỳ chọn này</string>
     <string name="profile_duplicate">Cấu hình đã tồn tại!</string>
     <string name="reapply_profile">Áp dụng lại các quy tắc</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Quản lý cấu hình</string>
     <string name="manage_profiles_summary">Tạo và xoá cấu hình</string>
     <string name="profiles">Cấu hình </string>
-    <string name="migrate_profiles">Đổi mới cấu hình</string>
-    <string name="migrate_summary">Đổi mới tất cả dữ liệu cấu hình</string>
     <string name="insert_profile">Tên cấu hình</string>
     <string name="add">Thêm</string>
     <string name="showlog_toasts">Hiện thông báo khi chặn</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Bật Mutlicast DNS</string>
     <string name="error_log">Không thể bật tác vụ ghi chép. LogTarget trống hoặc LogService đang tắt.</string>
-    <string name="delete_profile">Không thể xoá cấu hình</string>
-    <string name="profile_migrate_msg">Đã nhập cấu hình</string>
     <!-- Log Details -->
     <string name="destination_address">Địa chỉ đích</string>
     <string name="source_address">Địa chỉ nguồn</string>

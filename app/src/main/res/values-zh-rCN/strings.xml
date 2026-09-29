@@ -168,9 +168,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">配置文件</string>
     <string name="custom_title1">自定义默认配置名称</string>
-    <string name="custom_title2">配置文件 1 自定义名称</string>
-    <string name="custom_title3">配置文件 2 自定义名称</string>
-    <string name="custom_title4">配置文件 3 自定义名称</string>
     <string name="toggle_enable">启用防火墙</string>
     <string name="toggle_disable">禁用防火墙</string>
     <string name="toggle_default">激活默认配置文件</string>
@@ -183,7 +180,6 @@
     <string name="profile2">配置文件 2</string>
     <string name="profile3">配置文件 3</string>
     <string name="profile_hint">配置名</string>
-    <string name="profile_notsupport">请迁移配置数据以使用此选项</string>
     <string name="profile_duplicate">配置文件已存在!</string>
     <string name="reapply_profile">重新应用配置文件规则</string>
     <!-- Interface -->
@@ -387,8 +383,6 @@
     <string name="manage_profiles">管理配置文件</string>
     <string name="manage_profiles_summary">添加或移除配置文件</string>
     <string name="profiles">配置文件 </string>
-    <string name="migrate_profiles">迁移配置文件</string>
-    <string name="migrate_summary">迁移所有配置数据</string>
     <string name="insert_profile">配置文件名称:</string>
     <string name="add">添加</string>
     <string name="showlog_toasts">阻止时显示 toast 通知</string>
@@ -429,8 +423,6 @@
     <string name="mdnslabel">(mdns) 组播DNS</string>
     <string name="mdns">启用组播DNS</string>
     <string name="error_log">无法启用日志服务。LogTarget 为空或未启用 LogService。</string>
-    <string name="delete_profile">无法删除配置</string>
-    <string name="profile_migrate_msg">配置文件已迁移</string>
     <!-- Log Details -->
     <string name="destination_address">目标地址</string>
     <string name="source_address">源地址</string>

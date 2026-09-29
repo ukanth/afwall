@@ -75,11 +75,76 @@ public final class FireReceiver extends BroadcastReceiver {
             }
             final boolean multimode = G.enableMultiProfile();
             final boolean disableToasts = G.disableTaskerToast();
-            if (!G.isProfileMigrated()) {
-                if (index != null) {
-                    //int id = Integer.parseInt(index);
-                    switch (index) {
-                        case "0":
+            if (index != null) {
+                //int id = Integer.parseInt(index);
+                switch (index) {
+                    case "0":
+                        Api.applySavedIptablesRules(context, false, new RootCommand()
+                                .setFailureToast(R.string.error_apply)
+                                .setCallback(new RootCommand.Callback() {
+                                    @Override
+                                    public void cbFunc(RootCommand state) {
+                                        Message msg = new Message();
+                                        if (state.exitCode == 0) {
+                                            msg.arg1 = R.string.rules_applied;
+                                            Api.setEnabled(context, true, false);
+                                        } else {
+                                            // error details are already in logcat
+                                            msg.arg1 = R.string.error_apply;
+                                        }
+                                        sendMessage(msg);
+                                    }
+                                }));
+                        break;
+                    case "1":
+                        if (G.protectionLevel().equals("p0")) {
+                            Api.purgeIptables(context, true, new RootCommand()
+                                    .setReopenShell(true)
+                                    .setCallback(new RootCommand.Callback() {
+                                        public void cbFunc(RootCommand state) {
+                                            Message msg = new Message();
+                                            msg.arg1 = R.string.toast_disabled;
+                                            sendMessage(msg);
+                                            Api.setEnabled(context, false, false);
+                                        }
+                                    }));
+                       /* } else {
+                            msg.arg1 = R.string.toast_error_disabling;
+                            sendMessage(msg);
+                        }*/
+                        } else {
+                            Message msg = new Message();
+                            msg.arg1 = R.string.widget_disable_fail;
+                            sendMessage(msg);
+                        }
+                        break;
+                    case "2":
+                        if (multimode) {
+                            G.setProfile(true, "AFWallPrefs");
+                        }
+                        break;
+                    default:
+                        if (multimode) {
+                            ProfileData data = null;
+                            if (name != null) {
+                                data = ProfileHelper.getProfileByName(name);
+                            } else if (index.equals("3") || index.equals("4") || index.equals("5")) {
+                                // very old actions saved only the index: 3-5 were Profile 1-3
+                                data = ProfileHelper.getProfileByIdentifier("AFWallProfile" + (Integer.parseInt(index) - 2));
+                            }
+                            if (data != null) {
+                                G.setProfile(true, data.getIdentifier());
+                            }
+                        }
+                        break;
+                }
+
+                if (Integer.parseInt(index) > 1) {
+                    if (multimode) {
+                        if (Api.isEnabled(context)) {
+                            if (!disableToasts) {
+                                Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
+                            }
                             Api.applySavedIptablesRules(context, false, new RootCommand()
                                     .setFailureToast(R.string.error_apply)
                                     .setCallback(new RootCommand.Callback() {
@@ -87,201 +152,30 @@ public final class FireReceiver extends BroadcastReceiver {
                                         public void cbFunc(RootCommand state) {
                                             Message msg = new Message();
                                             if (state.exitCode == 0) {
-                                                msg.arg1 = R.string.rules_applied;
-                                                Api.setEnabled(context, true, false);
+                                                msg.arg1 = R.string.tasker_profile_applied;
+                                                if (!disableToasts) sendMessage(msg);
                                             } else {
                                                 // error details are already in logcat
                                                 msg.arg1 = R.string.error_apply;
                                             }
-                                            sendMessage(msg);
                                         }
                                     }));
-                            break;
-                        case "1":
-                            if (G.protectionLevel().equals("p0")) {
-                                Api.purgeIptables(context, true, new RootCommand()
-                                        .setReopenShell(true)
-                                        .setCallback(new RootCommand.Callback() {
-                                            public void cbFunc(RootCommand state) {
-                                                Message msg = new Message();
-                                                msg.arg1 = R.string.toast_disabled;
-                                                sendMessage(msg);
-                                                Api.setEnabled(context, false, false);
-                                            }
-                                        }));
-                            } else {
-                                Message msg = new Message();
-                                msg.arg1 = R.string.widget_disable_fail;
-                                sendMessage(msg);
-                            }
-                            break;
-                        case "2":
-                            if (multimode) {
-                                G.setProfile(true, "AFWallPrefs");
-                            }
-                            break;
-                        case "3":
-                            if (multimode) {
-                                G.setProfile(true, "AFWallProfile1");
-                            }
-                            break;
-                        case "4":
-                            if (multimode) {
-                                G.setProfile(true, "AFWallProfile2");
-                            }
-                            break;
-                        case "5":
-                            if (multimode) {
-                                G.setProfile(true, "AFWallProfile3");
-                            }
-                            break;
-                        default:
-                            if (multimode) {
-                                G.setProfile(true, name);
-                            }
-                            break;
-                    }
-
-                    if (Integer.parseInt(index) > 1) {
-                        if (multimode) {
-                            if (Api.isEnabled(context)) {
-                                if (!disableToasts) {
-                                    Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
-                                }
-                                Api.applySavedIptablesRules(context, false, new RootCommand()
-                                        .setFailureToast(R.string.error_apply)
-                                        .setCallback(new RootCommand.Callback() {
-                                            @Override
-                                            public void cbFunc(RootCommand state) {
-                                                Message msg = new Message();
-                                                if (state.exitCode == 0) {
-                                                    msg.arg1 = R.string.tasker_profile_applied;
-                                                    if (!disableToasts)
-                                                        sendMessage(msg);
-                                                } else {
-                                                    // error details are already in logcat
-                                                    msg.arg1 = R.string.error_apply;
-                                                }
-                                                sendMessage(msg);
-                                            }
-                                        }));
-                            } else {
-                                Message msg = new Message();
-                                msg.arg1 = R.string.tasker_disabled;
-                                sendMessage(msg);
-                            }
                         } else {
                             Message msg = new Message();
-                            msg.arg1 = R.string.tasker_muliprofile;
+                            msg.arg1 = R.string.tasker_disabled;
                             sendMessage(msg);
                         }
-                        G.reloadPrefs();
-                        /*if (G.activeNotification()) {
-                            Api.showNotification(Api.isEnabled(context), context);
-                        }*/
-                        Api.updateNotification(Api.isEnabled(context), context);
+                    } else {
+                        Message msg = new Message();
+                        msg.arg1 = R.string.tasker_muliprofile;
+                        sendMessage(msg);
                     }
+                    G.reloadPrefs();
+                   /* if (G.activeNotification()) {
+                        Api.showNotification(Api.isEnabled(context), context);
+                    }*/
+                    Api.updateNotification(Api.isEnabled(context), context);
                 }
-            } else {
-                if (index != null) {
-                    //int id = Integer.parseInt(index);
-                    switch (index) {
-                        case "0":
-                            Api.applySavedIptablesRules(context, false, new RootCommand()
-                                    .setFailureToast(R.string.error_apply)
-                                    .setCallback(new RootCommand.Callback() {
-                                        @Override
-                                        public void cbFunc(RootCommand state) {
-                                            Message msg = new Message();
-                                            if (state.exitCode == 0) {
-                                                msg.arg1 = R.string.rules_applied;
-                                                Api.setEnabled(context, true, false);
-                                            } else {
-                                                // error details are already in logcat
-                                                msg.arg1 = R.string.error_apply;
-                                            }
-                                            sendMessage(msg);
-                                        }
-                                    }));
-                            break;
-                        case "1":
-                            if (G.protectionLevel().equals("p0")) {
-                                Api.purgeIptables(context, true, new RootCommand()
-                                        .setReopenShell(true)
-                                        .setCallback(new RootCommand.Callback() {
-                                            public void cbFunc(RootCommand state) {
-                                                Message msg = new Message();
-                                                msg.arg1 = R.string.toast_disabled;
-                                                sendMessage(msg);
-                                                Api.setEnabled(context, false, false);
-                                            }
-                                        }));
-                           /* } else {
-                                msg.arg1 = R.string.toast_error_disabling;
-                                sendMessage(msg);
-                            }*/
-                            } else {
-                                Message msg = new Message();
-                                msg.arg1 = R.string.widget_disable_fail;
-                                sendMessage(msg);
-                            }
-                            break;
-                        case "2":
-                            if (multimode) {
-                                G.setProfile(true, "AFWallPrefs");
-                            }
-                            break;
-                        default:
-                            if (multimode) {
-                                ProfileData data = ProfileHelper.getProfileByName(name);
-                                if (data != null) {
-                                    G.setProfile(true, data.getIdentifier());
-                                }
-
-                            }
-                            break;
-                    }
-
-                    if (Integer.parseInt(index) > 1) {
-                        if (multimode) {
-                            if (Api.isEnabled(context)) {
-                                if (!disableToasts) {
-                                    Toast.makeText(context, R.string.tasker_apply, Toast.LENGTH_SHORT).show();
-                                }
-                                Api.applySavedIptablesRules(context, false, new RootCommand()
-                                        .setFailureToast(R.string.error_apply)
-                                        .setCallback(new RootCommand.Callback() {
-                                            @Override
-                                            public void cbFunc(RootCommand state) {
-                                                Message msg = new Message();
-                                                if (state.exitCode == 0) {
-                                                    msg.arg1 = R.string.tasker_profile_applied;
-                                                    if (!disableToasts) sendMessage(msg);
-                                                } else {
-                                                    // error details are already in logcat
-                                                    msg.arg1 = R.string.error_apply;
-                                                }
-                                            }
-                                        }));
-                            } else {
-                                Message msg = new Message();
-                                msg.arg1 = R.string.tasker_disabled;
-                                sendMessage(msg);
-                            }
-                        } else {
-                            Message msg = new Message();
-                            msg.arg1 = R.string.tasker_muliprofile;
-                            sendMessage(msg);
-                        }
-                        G.reloadPrefs();
-                       /* if (G.activeNotification()) {
-                            Api.showNotification(Api.isEnabled(context), context);
-                        }*/
-                        Api.updateNotification(Api.isEnabled(context), context);
-                    }
-                }
-
-
             }
         }
 

@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Perfis</string>
     <string name="custom_title1">Nome personalizado para o perfil padrão</string>
-    <string name="custom_title2">Nome personalizado para o perfil 1</string>
-    <string name="custom_title3">Nome personalizado para o perfil 2</string>
-    <string name="custom_title4">Nome personalizado para o perfil 3</string>
     <string name="toggle_enable">Ativar firewall</string>
     <string name="toggle_disable">Desativar firewall</string>
     <string name="toggle_default">Ativar perfil padrão</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Perfil 2</string>
     <string name="profile3">Perfil 3</string>
     <string name="profile_hint">Nome do perfil</string>
-    <string name="profile_notsupport">Efetue a migração dos dados para poder usar esta opção</string>
     <string name="profile_duplicate">O Perfil já existe!</string>
     <string name="reapply_profile">Reaplicar regras do perfil</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Gerir perfis</string>
     <string name="manage_profiles_summary">Adicionar/remover perfis</string>
     <string name="profiles">Perfil </string>
-    <string name="migrate_profiles">Migrar perfis</string>
-    <string name="migrate_summary">Migrar todos os dados do perfil</string>
     <string name="insert_profile">Nome do perfil</string>
     <string name="add">Adicionar</string>
     <string name="showlog_toasts">Mostrar notificação ao bloquear</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-    <string name="delete_profile">Incapaz de apagar o perfil</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Endereço do destino</string>
     <string name="source_address">Endereço da origem</string>

@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Perfiles</string>
     <string name="custom_title1">Nombre personalizado para el perfil predeterminado</string>
-    <string name="custom_title2">Nombre personalizado para el perfil 1</string>
-    <string name="custom_title3">Nombre personalizado para el perfil 2</string>
-    <string name="custom_title4">Nombre personalizado para el perfil 3</string>
     <string name="toggle_enable">Activar cortafuegos</string>
     <string name="toggle_disable">Desactivar cortafuegos</string>
     <string name="toggle_default">Activar el perfil predeterminado</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Perfil 2</string>
     <string name="profile3">Perfil 3</string>
     <string name="profile_hint">Nombre del perfil</string>
-    <string name="profile_notsupport">Por favor migra los datos de perfil para usar esta opción</string>
     <string name="profile_duplicate">¡Éste perfil ya existe!</string>
     <string name="reapply_profile">Re-Aplicar reglas del perfil</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Administrar perfiles</string>
     <string name="manage_profiles_summary">Agregar o eliminar perfiles</string>
     <string name="profiles">Perfil </string>
-    <string name="migrate_profiles">Migrar perfiles</string>
-    <string name="migrate_summary">Migrar todos los datos de perfil</string>
     <string name="insert_profile">Nombre de perfil</string>
     <string name="add">Agregar</string>
     <string name="showlog_toasts">Mostrar notificaciones toast en bloque</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) DNS de Multidifusión</string>
     <string name="mdns">Activar DNS de Multidifusión</string>
     <string name="error_log">No se puede iniciar el servicio de registro. LogTarget está vacío o LogService no está activado.</string>
-    <string name="delete_profile">No se pudo eliminar el perfil</string>
-    <string name="profile_migrate_msg">Profiles migrados</string>
     <!-- Log Details -->
     <string name="destination_address">Dirección de destino</string>
     <string name="source_address">Dirección de origen</string>

@@ -123,9 +123,6 @@
   <string name="refresh">Refresh</string>
   <string name="mp_prefs_title">Multiple Profile Preferences</string>
   <string name="custom_title1">Custom name for Default Profile</string>
-  <string name="custom_title2">Custom name for Profile1</string>
-  <string name="custom_title3">Custom name for Profile2</string>
-  <string name="custom_title4">Custom name for Profile3</string>
   <string name="toggle_enable">Enable Firewall</string>
   <string name="toggle_disable">Disable Firewall</string>
   <string name="toggle_default">Activate Default Profile</string>

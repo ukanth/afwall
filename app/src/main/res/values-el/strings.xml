@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Προφίλ</string>
     <string name="custom_title1">Προσαρμοσμένο όνομα για το προεπιλεγμένο προφίλ</string>
-    <string name="custom_title2">Προσαρμοσμένο όνομα για το Προφίλ 1</string>
-    <string name="custom_title3">Προσαρμοσμένο όνομα για το Προφίλ 2</string>
-    <string name="custom_title4">Προσαρμοσμένο όνομα για το Προφίλ 3</string>
     <string name="toggle_enable">Ενεργοποίηση του τείχους</string>
     <string name="toggle_disable">Απενεργοποίηση του τείχους</string>
     <string name="toggle_default">Ενεργοποίηση προεπιλεγμένου προφίλ</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Προφίλ 2</string>
     <string name="profile3">Προφίλ 3</string>
     <string name="profile_hint">Όνομα Προφίλ</string>
-    <string name="profile_notsupport">Παρακαλώ μετεγκαταστήσετε τα δεδομένα του προφίλ για να χρησιμοποιήσετε αυτήν την επιλογή</string>
     <string name="profile_duplicate">Το προφίλ υπάρχει ήδη!</string>
     <string name="reapply_profile">Επανάληψη εφαρμογής κανόνων προφίλ</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Διαχείριση προφίλ</string>
     <string name="manage_profiles_summary">Προσθήκη ή κατάργηση προφίλ</string>
     <string name="profiles">Προφίλ </string>
-    <string name="migrate_profiles">Μετεγκατάσταση προφίλ</string>
-    <string name="migrate_summary">Μετεγκατάσταση όλων των δεδομένων προφίλ</string>
     <string name="insert_profile">Όνομα προφίλ</string>
     <string name="add">Προσθήκη</string>
     <string name="showlog_toasts">Εμφάνιση αναδυόμενων ειδοποιήσεων κατά τον αποκλεισμό</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Ενεργοποίηση Mutlicast DNS</string>
     <string name="mdns">Ενεργοποίηση Mutlicast DNS</string>
     <string name="error_log">Δεν είναι δυνατή η εκκίνηση της υπηρεσίας καταγραφής. Η θέση καταγραφής είναι κενή ή δεν είναι ενεργοποιημένη η υπηρεσία καταγραφής.</string>
-    <string name="delete_profile">Δεν είναι δυνατή η διαγραφή του προφίλ</string>
-    <string name="profile_migrate_msg">Τα προφίλ μετεγκαταστάθηκαν</string>
     <!-- Log Details -->
     <string name="destination_address">Διεύθυνση προορισμού</string>
     <string name="source_address">Διεύθυνση προέλευσης</string>

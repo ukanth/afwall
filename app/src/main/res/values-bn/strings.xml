@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">প্রোফাইল</string>
     <string name="custom_title1">কাস্টম নাম ডিফল্ট প্রোফাইলের জন্য</string>
-    <string name="custom_title2">কাস্টম নাম প্রোফাইলের ১ জন্য</string>
-    <string name="custom_title3">প্রোফাইলের ২ এর জন্য কাস্টম নাম</string>
-    <string name="custom_title4">প্রোফাইলের ৩ এর জন্য কাস্টম নাম</string>
     <string name="toggle_enable">Firewall চালু করুন</string>
     <string name="toggle_disable">Firewall বন্ধ করুন</string>
     <string name="toggle_default">ডিফল্ট প্রোফাইল সক্রিয় করুন</string>
@@ -182,7 +179,6 @@
     <string name="profile2">প্রোফাইল ২</string>
     <string name="profile3">প্রোফাইল ৩</string>
     <string name="profile_hint">প্রোফাইল এর নাম</string>
-    <string name="profile_notsupport">প্রোফাইল তথ্য আপনি এই অপশন ব্যবহার করতে অনুগ্রহ করে স্থানান্তর</string>
     <string name="profile_duplicate">Profile exists already!</string>
     <string name="reapply_profile">প্রোফাইল নিয়ম পুনরায় সক্রিয় করুন</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">প্রোফাইল ব্যবস্থাপনা</string>
     <string name="manage_profiles_summary">গোষ্ঠীগুলি যোগ অথবা অপসারণ করুন</string>
     <string name="profiles">প্রোফাইল </string>
-    <string name="migrate_profiles">প্রোফাইল মাইগ্রেট</string>
-    <string name="migrate_summary">সব প্রোফাইল ডেটা স্থানান্তর</string>
     <string name="insert_profile">Profile নাম</string>
     <string name="add">যুক্ত করুন</string>
     <string name="showlog_toasts">Show toast notification on block</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">লগ সেবা শুরু করতে অক্ষম। LogTarget খালি থাকে বা LogService সক্রিয় করা হয় না।</string>
-    <string name="delete_profile">প্রোফাইল মুছে ফেলা যায়নি</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">গন্তব্য ঠিকানা প্রদর্শন করা হবে</string>
     <string name="source_address">উৎস ঠিকানা প্রদর্শন করা হবে</string>

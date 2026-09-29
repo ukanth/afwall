@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">프로필</string>
     <string name="custom_title1">기본프로필 이름 바꾸기</string>
-    <string name="custom_title2">Profile1 의 이름</string>
-    <string name="custom_title3">Profile2 의 이름</string>
-    <string name="custom_title4">Profile3 의 이름</string>
     <string name="toggle_enable">방화벽 시작</string>
     <string name="toggle_disable">방화벽 중단</string>
     <string name="toggle_default">기본프로필 적용</string>
@@ -182,7 +179,6 @@
     <string name="profile2">프로필 2</string>
     <string name="profile3">프로필 3</string>
     <string name="profile_hint">프로필 이름</string>
-    <string name="profile_notsupport">이 옵션을 사용하시려면 프로필 정보를 옮겨 주세요.</string>
     <string name="profile_duplicate">프로파일이 이미 존재합니다!</string>
     <string name="reapply_profile">프로필 규칙 재적용</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">프로필 관리</string>
     <string name="manage_profiles_summary">프로필을 추가/제거</string>
     <string name="profiles">프로필 </string>
-    <string name="migrate_profiles">프로필 이동</string>
-    <string name="migrate_summary">프로필 정보 옮기기</string>
     <string name="insert_profile">프로필 이름</string>
     <string name="add">추가</string>
     <string name="showlog_toasts">차단할 때 알림을 받도록 허용</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">멀티캐스트 DNS (mdns)</string>
     <string name="mdns">멀티캐스트 DNS를 사용하도록 설정</string>
     <string name="error_log">로그 서비스를 시작할 수 없습니다. LogTarget이 비었거나 LogService가 활성화되지 않았습니다.</string>
-    <string name="delete_profile">프로필을 삭제하는데 실패하였습니다</string>
-    <string name="profile_migrate_msg">프로파일들이 이전되었습니다.</string>
     <!-- Log Details -->
     <string name="destination_address">목적지 주소</string>
     <string name="source_address">출발지 주소</string>

@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Профілі</string>
     <string name="custom_title1">Власне ім\'я для типового профілю</string>
-    <string name="custom_title2">Власне ім\'я для Профілю1</string>
-    <string name="custom_title3">Власне ім\'я для Профілю2</string>
-    <string name="custom_title4">Власне ім\'я для Профілю3</string>
     <string name="toggle_enable">Увімкнути мережевий екран</string>
     <string name="toggle_disable">Вимкнути мережевий екран</string>
     <string name="toggle_default">Активувати типовий профіль</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Профіль 2</string>
     <string name="profile3">Профіль 3</string>
     <string name="profile_hint">Назва профілю</string>
-    <string name="profile_notsupport">Будь ласка, перенесіть дані профілю, щоб використовувати цю опцію</string>
     <string name="profile_duplicate">Профіль вже існує!</string>
     <string name="reapply_profile">Повторне застосування правил профілю</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Керування профілями</string>
     <string name="manage_profiles_summary">Додавання або вилучення профілів</string>
     <string name="profiles">Профіль </string>
-    <string name="migrate_profiles">Перенесення профілів</string>
-    <string name="migrate_summary">Перенести всі дані профілю</string>
     <string name="insert_profile">Ім\'я профілю</string>
     <string name="add">Додати</string>
     <string name="showlog_toasts">Спливне сповіщення під час блокування</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Увімкнути Mutlicast DNS</string>
     <string name="error_log">Не вдалося запустити службу журналу. LogTarget є порожнім або LogService не ввімкнуто.</string>
-    <string name="delete_profile">Не вдалося видалити профіль</string>
-    <string name="profile_migrate_msg">Профілі перенесено</string>
     <!-- Log Details -->
     <string name="destination_address">Адреса призначення</string>
     <string name="source_address">Адреса джерела</string>

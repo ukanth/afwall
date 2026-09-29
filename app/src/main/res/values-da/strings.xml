@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiler</string>
     <string name="custom_title1">Brugerdefineret navn for standard profil</string>
-    <string name="custom_title2">Brugerdefineret navn profil 1</string>
-    <string name="custom_title3">Brugerdefineret navn for profil 2</string>
-    <string name="custom_title4">Brugerdefineret navn for profil 3</string>
     <string name="toggle_enable">Aktivere firewall</string>
     <string name="toggle_disable">Deaktiver firewall</string>
     <string name="toggle_default">Aktivere standardprofil</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">ProfileName</string>
-    <string name="profile_notsupport">Skal du overflytte profildata for at bruge denne indstilling</string>
     <string name="profile_duplicate">Profile exists already!</string>
     <string name="reapply_profile">Genanvende profil regler</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Administrere profiler</string>
     <string name="manage_profiles_summary">Tilføje eller fjerne profiler</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Overflytte profiler</string>
-    <string name="migrate_summary">Overføre alle profildata</string>
     <string name="insert_profile">Profilnavn</string>
     <string name="add">Tilføje</string>
     <string name="showlog_toasts">Vis toast anmeldelse på blok</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Stand til at starte Logtjenesten. LogTarget er tom eller LogService er ikke aktiveret.</string>
-    <string name="delete_profile">Ude af stand til at opdatere profilen</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Destinationsadressen</string>
     <string name="source_address">Kildeadresse</string>

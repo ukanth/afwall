@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">設定檔</string>
     <string name="custom_title1">自定義預設配置名稱</string>
-    <string name="custom_title2">自定義配置1名稱</string>
-    <string name="custom_title3">自定義配置2名稱</string>
-    <string name="custom_title4">自定義配置3名稱</string>
     <string name="toggle_enable">啟用防火牆</string>
     <string name="toggle_disable">停用防火牆</string>
     <string name="toggle_default">啟用預設配置</string>
@@ -182,7 +179,6 @@
     <string name="profile2">設定檔 2</string>
     <string name="profile3">設定檔 3</string>
     <string name="profile_hint">配置文件名稱</string>
-    <string name="profile_notsupport">請轉移設定檔資料以使用此選項</string>
     <string name="profile_duplicate">設定檔已存在！</string>
     <string name="reapply_profile">重新應用設定檔規則</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">管理設定檔</string>
     <string name="manage_profiles_summary">新增或刪除設定檔</string>
     <string name="profiles">設定檔 </string>
-    <string name="migrate_profiles">遷移設定檔</string>
-    <string name="migrate_summary">將所有設定檔資料移轉</string>
     <string name="insert_profile">檔案名稱</string>
     <string name="add">新增</string>
     <string name="showlog_toasts">在阻擋時顯示 toast 通知</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) 組播 DNS</string>
     <string name="mdns">啟用組播 DNS</string>
     <string name="error_log">無法啟用開機記錄服務。LogTarget 為空或未啟用 LogService。</string>
-    <string name="delete_profile">無法刪除項目</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">目的地址</string>
     <string name="source_address">來源位址</string>

@@ -7,25 +7,21 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.util.List;
-
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
-import dev.ukanth.ufirewall.util.G;
 
 public class LocaleEdit extends AppCompatActivity {
     //public static final String LOCALE_BRIGHTNESS = "dev.ukanth.ufirewall.plugin.LocaleEdit.ACTIVE_PROFLE";
 
     private boolean mIsCancelled = false;
-
-    private final int CUSTOM_PROFILE_ID = 100;
 
     protected void onCreate(Bundle paramBundle) {
         super.onCreate(paramBundle);
@@ -50,120 +46,56 @@ public class LocaleEdit extends AppCompatActivity {
         button1.setText(name != null && name.length() == 0 ? getString(R.string.defaultProfile) : name);
 
 
-        if (!G.isProfileMigrated()) {
+        RadioGroup profiles = findViewById(R.id.radioProfiles);
+        // the layout's fixed Profile 1-3 buttons are from the old profile model; list the saved ones
+        profiles.removeView(findViewById(R.id.profile1));
+        profiles.removeView(findViewById(R.id.profile2));
+        profiles.removeView(findViewById(R.id.profile3));
 
-            RadioGroup profiles = findViewById(R.id.radioProfiles);
-
-            RadioButton button2 = findViewById(R.id.profile1);
-            RadioButton button3 = findViewById(R.id.profile2);
-            RadioButton button4 = findViewById(R.id.profile3);
-
-            List<String> profilesList = G.getAdditionalProfiles();
-            //int textColor = Color.parseColor("#000000");
-
-            int counter = CUSTOM_PROFILE_ID;
-            for (String profile : profilesList) {
+        for (ProfileData data : ProfileHelper.getProfiles()) {
+            if (data != null) {
                 RadioButton rdbtn = new RadioButton(this);
-                rdbtn.setId(counter++);
-                rdbtn.setText(profile);
+                rdbtn.setId(View.generateViewId());
+                rdbtn.setText(data.getName());
                 profiles.addView(rdbtn);
             }
+        }
 
-            name = prefs.getString("profile1", getString(R.string.profile1));
-            button2.setText(name != null && name.length() == 0 ? getString(R.string.profile1) : name);
-            name = prefs.getString("profile2", getString(R.string.profile2));
-            button3.setText(name != null && name.length() == 0 ? getString(R.string.profile2) : name);
-            name = prefs.getString("profile3", getString(R.string.profile3));
-            button4.setText(name != null && name.length() == 0 ? getString(R.string.profile3) : name);
+        setupTitleApi11();
 
-            setupTitleApi11();
-
-            if (null == paramBundle) {
-                final Bundle forwardedBundle = getIntent().getBundleExtra(
-                        com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
-                if (PluginBundleManager.isBundleValid(forwardedBundle)) {
-                    String index = forwardedBundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
-                    if (index.contains("::")) {
-                        index = index.split("::")[0];
-                    }
-                    if (index != null) {
-                        switch (index) {
-                            case "0":
-                                tasker_enable.setChecked(true);
-                                break;
-                            case "1":
-                                tasker_disable.setChecked(true);
-                                break;
-                            case "2":
-                                button1.setChecked(true);
-                                break;
-                            case "3":
-                                button2.setChecked(true);
-                                break;
-                            case "4":
-                                button3.setChecked(true);
-                                break;
-                            case "5":
-                                button4.setChecked(true);
-                                break;
-                            default:
-                                int diff = CUSTOM_PROFILE_ID + (Integer.parseInt(index) - 6);
-                                RadioButton btn = findViewById(diff);
-                                if (btn != null) {
-                                    btn.setChecked(true);
-                                }
-                        }
-                    }
+        if (null == paramBundle) {
+            final Bundle forwardedBundle = getIntent().getBundleExtra(
+                    com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
+            if (PluginBundleManager.isBundleValid(forwardedBundle)) {
+                // "<index>::<label>"; the index is only stable for the fixed entries, so profiles
+                // are matched by label
+                String index = forwardedBundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
+                String label = null;
+                if (index != null && index.contains("::")) {
+                    String[] parts = index.split("::", 2);
+                    index = parts[0];
+                    label = parts[1];
                 }
-            }
-        } else {
-            //TODO: lets do it on new way
-            RadioGroup profiles = findViewById(R.id.radioProfiles);
-            //remove the existing profiles
-            RadioButton button2 = findViewById(R.id.profile1);
-            RadioButton button3 = findViewById(R.id.profile2);
-            RadioButton button4 = findViewById(R.id.profile3);
-            profiles.removeView(button2);
-            profiles.removeView(button3);
-            profiles.removeView(button4);
-
-            for (ProfileData data : ProfileHelper.getProfiles()) {
-                if (data != null) {
-                    String profile = data.getName();
-                    Long id = data.getId();
-                    RadioButton rdbtn = new RadioButton(this);
-                    rdbtn.setId(id.intValue());
-                    rdbtn.setText(profile);
-                    profiles.addView(rdbtn);
-                }
-            }
-
-            if (null == paramBundle) {
-                final Bundle forwardedBundle = getIntent().getBundleExtra(
-                        com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
-                if (PluginBundleManager.isBundleValid(forwardedBundle)) {
-                    String index = forwardedBundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_MESSAGE);
-                    if (index.contains("::")) {
-                        index = index.split("::")[0];
-                    }
-                    if (index != null) {
-                        switch (index) {
-                            case "0":
-                                tasker_enable.setChecked(true);
-                                break;
-                            case "1":
-                                tasker_disable.setChecked(true);
-                                break;
-                            case "2":
-                                button1.setChecked(true);
-                                break;
-                            default:
-                                int diff = Integer.parseInt(index);
-                                RadioButton btn = findViewById(diff);
-                                if (btn != null) {
-                                    btn.setChecked(true);
+                if (index != null) {
+                    switch (index) {
+                        case "0":
+                            tasker_enable.setChecked(true);
+                            break;
+                        case "1":
+                            tasker_disable.setChecked(true);
+                            break;
+                        case "2":
+                            button1.setChecked(true);
+                            break;
+                        default:
+                            for (int i = 0; i < profiles.getChildCount(); i++) {
+                                View child = profiles.getChildAt(i);
+                                if (child instanceof RadioButton && child != button1
+                                        && ((RadioButton) child).getText().toString().equals(label)) {
+                                    ((RadioButton) child).setChecked(true);
+                                    break;
                                 }
-                        }
+                            }
                     }
                 }
             }
@@ -220,13 +152,8 @@ public class LocaleEdit extends AppCompatActivity {
             //int id = Integer.parseInt(radioButton.getHint().toString());
             String action = radioButton.getText().toString();
             final Intent resultIntent = new Intent();
-            if (!G.isProfileMigrated()) {
-                int idx = group.indexOfChild(radioButton);
-                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
-            } else {
-                int idx = group.indexOfChild(radioButton);
-                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
-            }
+            int idx = group.indexOfChild(radioButton);
+            resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, PluginBundleManager.generateBundle(getApplicationContext(), idx + "::" + action));
             resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, action);
             setResult(RESULT_OK, resultIntent);
         }

@@ -168,9 +168,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">प्रोफाइल्स</string>
     <string name="custom_title1">डिफ़ॉल्ट प्रोफ़ाइल के लिए कस्टम नाम</string>
-    <string name="custom_title2">प्रोफ़ाइल 1 के लिए कस्टम नाम</string>
-    <string name="custom_title3">प्रोफ़ाइल 2 के लिए कस्टम नाम</string>
-    <string name="custom_title4">प्रोफ़ाइल 3 के लिए कस्टम नाम</string>
     <string name="toggle_enable">फ़ायरवॉल सक्षम करें</string>
     <string name="toggle_disable">फ़ायरवॉल अक्षम करें</string>
     <string name="toggle_default">डिफ़ॉल्ट प्रोफ़ाइल सक्रिय करें</string>
@@ -183,7 +180,6 @@
     <string name="profile2">प्रोफ़ाइल 2</string>
     <string name="profile3">प्रोफ़ाइल 3</string>
     <string name="profile_hint">प्रोफाइल नाम</string>
-    <string name="profile_notsupport">कृपया इस विकल्प का उपयोग करने के लिए प्रोफ़ाइल डेटा माइग्रेट करें</string>
     <string name="profile_duplicate">प्रोफ़ाइल पहले से मौजूद है!</string>
     <string name="reapply_profile">प्रोफ़ाइल नियम फिर से लागू करें</string>
     <!-- Interface -->
@@ -387,8 +383,6 @@
     <string name="manage_profiles">Manage profiles</string>
     <string name="manage_profiles_summary">Add or remove profiles</string>
     <string name="profiles">Profile </string>
-    <string name="migrate_profiles">Migrate profiles</string>
-    <string name="migrate_summary">Migrate all profile data</string>
     <string name="insert_profile">Profile name</string>
     <string name="add">Add</string>
     <string name="showlog_toasts">Show toast notification on block</string>
@@ -429,8 +423,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-    <string name="delete_profile">Unable to delete profile</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Destination Address</string>
     <string name="source_address">Source Address</string>

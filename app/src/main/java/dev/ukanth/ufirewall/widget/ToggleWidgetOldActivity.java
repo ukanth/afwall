@@ -67,55 +67,15 @@ public class ToggleWidgetOldActivity extends Activity implements
             disableOthers();
         }
 
-        if (!G.isProfileMigrated()) {
-            profButton1.setText(G.gPrefs.getString("profile1", getApplicationContext().getString(R.string.profile1)));
-            profButton2.setText(G.gPrefs.getString("profile2", getApplicationContext().getString(R.string.profile2)));
-            profButton3.setText(G.gPrefs.getString("profile3", getApplicationContext().getString(R.string.profile3)));
-        } else {
-            //hide by default
-            profButton1.setVisibility(View.INVISIBLE);
-            profButton2.setVisibility(View.INVISIBLE);
-            profButton3.setVisibility(View.INVISIBLE);
-
-            if (ProfileHelper.getProfileByIdentifier("AFWallProfile1") != null) {
-                profButton1.setVisibility(View.VISIBLE);
-            }
-            if (ProfileHelper.getProfileByIdentifier("AFWallProfile2") != null) {
-                profButton2.setVisibility(View.VISIBLE);
-            }
-            if (ProfileHelper.getProfileByIdentifier("AFWallProfile3") != null) {
-                profButton3.setVisibility(View.VISIBLE);
-            }
-            List<ProfileData> listData = ProfileHelper.getProfiles();
-            //worst case 10 !
-            if (listData.size() <= 20) {
-                switch (listData.size()) {
-                    case 1:
-                        profButton1.setText(listData.get(0).getName());
-                        profButton1.setVisibility(View.VISIBLE);
-                        break;
-                    case 2:
-                        profButton1.setText(listData.get(0).getName());
-                        profButton1.setVisibility(View.VISIBLE);
-                        profButton2.setText(listData.get(1).getName());
-                        profButton2.setVisibility(View.VISIBLE);
-                    case 3:
-                        profButton1.setText(listData.get(0).getName());
-                        profButton1.setVisibility(View.VISIBLE);
-                        profButton2.setText(listData.get(1).getName());
-                        profButton2.setVisibility(View.VISIBLE);
-                        profButton3.setText(listData.get(2).getName());
-                        profButton3.setVisibility(View.VISIBLE);
-                    default:
-                        //enable first 3
-                        profButton1.setText(listData.get(0).getName());
-                        profButton1.setVisibility(View.VISIBLE);
-                        profButton2.setText(listData.get(1).getName());
-                        profButton2.setVisibility(View.VISIBLE);
-                        profButton3.setText(listData.get(2).getName());
-                        profButton3.setVisibility(View.VISIBLE);
-
-                }
+        // this widget has room for the first three profiles only
+        Button[] profButtons = {profButton1, profButton2, profButton3};
+        List<ProfileData> listData = ProfileHelper.getProfiles();
+        for (int i = 0; i < profButtons.length; i++) {
+            if (i < listData.size()) {
+                profButtons[i].setText(listData.get(i).getName());
+                profButtons[i].setVisibility(View.VISIBLE);
+            } else {
+                profButtons[i].setVisibility(View.INVISIBLE);
             }
         }
 
@@ -146,24 +106,9 @@ public class ToggleWidgetOldActivity extends Activity implements
             startAction(2);
         } else if(buttonId == R.id.toggle_default_profile) {
             startAction(3);
-        } else if(buttonId == R.id.toggle_profile1) {
-            if (!G.isProfileMigrated()) {
-                startAction(4);
-            } else {
-                runProfile(profileName);
-            }
-        } else if(buttonId == R.id.toggle_profile2) {
-            if (!G.isProfileMigrated()) {
-                startAction(5);
-            } else {
-                runProfile(profileName);
-            }
-        } else if(buttonId == R.id.toggle_profile3) {
-            if (!G.isProfileMigrated()) {
-                startAction(6);
-            } else {
-                runProfile(profileName);
-            }
+        } else if (buttonId == R.id.toggle_profile1 || buttonId == R.id.toggle_profile2
+                || buttonId == R.id.toggle_profile3) {
+            runProfile(profileName);
         }
     }
 
@@ -255,6 +200,9 @@ public class ToggleWidgetOldActivity extends Activity implements
             public void run() {
                 Looper.prepare();
                 ProfileData data = ProfileHelper.getProfileByName(profileName);
+                if (data == null) {
+                    return;
+                }
                 G.setProfile(true, data.getIdentifier());
                 Api.applySavedIptablesRules(context, false, new RootCommand()
                         .setCallback(new RootCommand.Callback() {
@@ -369,75 +317,6 @@ public class ToggleWidgetOldActivity extends Activity implements
                             disableDefault();
                         }*/
                         break;
-                    case 4:
-                        G.setProfile(true, "AFWallProfile1");
-                        Api.applySavedIptablesRules(context, false, new RootCommand()
-                                .setCallback(new RootCommand.Callback() {
-                                    @Override
-                                    public void cbFunc(RootCommand state) {
-                                        Message msg = new Message();
-                                        if (state.exitCode == 0) {
-                                            msg.arg1 = R.string.rules_applied;
-                                            toaster.sendMessage(msg);
-                                            enableOthers();
-                                            disableCustom("AFWallProfile1");
-                                        } else {
-                                            // error details are already in logcat
-                                            msg.arg1 = R.string.error_apply;
-                                            toaster.sendMessage(msg);
-                                        }
-                                    }
-                                }));
-                        /*if (applyProfileRules(context, msg, toaster)) {
-                            disableCustom("AFWallProfile1");
-                        }*/
-                        break;
-                    case 5:
-                        G.setProfile(true, "AFWallProfile2");
-                        Api.applySavedIptablesRules(context, false, new RootCommand()
-                                .setCallback(new RootCommand.Callback() {
-                                    @Override
-                                    public void cbFunc(RootCommand state) {
-                                        Message msg = new Message();
-                                        if (state.exitCode == 0) {
-                                            msg.arg1 = R.string.rules_applied;
-                                            toaster.sendMessage(msg);
-                                            enableOthers();
-                                            disableCustom("AFWallProfile2");
-                                        } else {
-                                            // error details are already in logcat
-                                            msg.arg1 = R.string.error_apply;
-                                            toaster.sendMessage(msg);
-                                        }
-                                    }
-                                }));
-                        /*if (applyProfileRules(context, msg, toaster)) {
-                            disableCustom("AFWallProfile2");
-                        }*/
-                        break;
-                    case 6:
-                        G.setProfile(true, "AFWallProfile3");
-                        Api.applySavedIptablesRules(context, false, new RootCommand()
-                                .setCallback(new RootCommand.Callback() {
-                                    @Override
-                                    public void cbFunc(RootCommand state) {
-                                        Message msg = new Message();
-                                        if (state.exitCode == 0) {
-                                            msg.arg1 = R.string.rules_applied;
-                                            toaster.sendMessage(msg);
-                                            enableOthers();
-                                            disableCustom("AFWallProfile3");
-                                        } else {
-                                            // error details are already in logcat
-                                            msg.arg1 = R.string.error_apply;
-                                            toaster.sendMessage(msg);
-                                        }
-                                    }
-                                }));
-                       /* if (applyProfileRules(context, msg, toaster)) {
-                            disableCustom("AFWallProfile3");
-                        }*/
-                        break;
                 }
                 //Api.showNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
                 Api.updateNotification(Api.isEnabled(getApplicationContext()), getApplicationContext());
@@ -487,28 +366,18 @@ public class ToggleWidgetOldActivity extends Activity implements
         });
     }
 
-    private void disableCustom(final String code) {
+    /**
+     * @param identifier identifier of the active profile; its button is disabled
+     */
+    private void disableCustom(final String identifier) {
+        ProfileData data = ProfileHelper.getProfileByIdentifier(identifier);
+        final String name = data != null ? data.getName() : null;
         runOnUiThread(new Runnable() {
             public void run() {
-                switch (code) {
-                    case "AFWallProfile1":
-                        defaultButton.setEnabled(true);
-                        profButton1.setEnabled(false);
-                        profButton2.setEnabled(true);
-                        profButton3.setEnabled(true);
-                        break;
-                    case "AFWallProfile2":
-                        defaultButton.setEnabled(true);
-                        profButton1.setEnabled(true);
-                        profButton2.setEnabled(false);
-                        profButton3.setEnabled(true);
-                        break;
-                    case "AFWallProfile3":
-                        defaultButton.setEnabled(true);
-                        profButton1.setEnabled(true);
-                        profButton2.setEnabled(true);
-                        profButton3.setEnabled(false);
-                }
+                defaultButton.setEnabled(true);
+                profButton1.setEnabled(!profButton1.getText().toString().equals(name));
+                profButton2.setEnabled(!profButton2.getText().toString().equals(name));
+                profButton3.setEnabled(!profButton3.getText().toString().equals(name));
             }
         });
     }

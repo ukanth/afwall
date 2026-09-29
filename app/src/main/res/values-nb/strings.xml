@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiler</string>
     <string name="custom_title1">Egendefinert navn for standardprofil</string>
-    <string name="custom_title2">Egendefinert navn for profil 1</string>
-    <string name="custom_title3">Egendefinert navn for profil 2</string>
-    <string name="custom_title4">Egendefinert navn for profil 3</string>
     <string name="toggle_enable">Aktiver brannmur</string>
     <string name="toggle_disable">Deaktiver brannmur</string>
     <string name="toggle_default">Aktiver standardprofil</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">ProfilNavn</string>
-    <string name="profile_notsupport">Overfør profildata for å bruke dette alternativet</string>
     <string name="profile_duplicate">Profilen eksisterer allerede!</string>
     <string name="reapply_profile">Bruk profilregler igjen</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Behandle profiler</string>
     <string name="manage_profiles_summary">Legg til eller fjern profiler</string>
     <string name="profiles">Profil</string>
-    <string name="migrate_profiles">Overfør profiler</string>
-    <string name="migrate_summary">Overfør alle profildata</string>
     <string name="insert_profile">Profilnavn</string>
     <string name="add">Legg til</string>
     <string name="showlog_toasts">Show toast notification on block</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
-    <string name="delete_profile">Kan ikke slette profil</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Måladresse</string>
     <string name="source_address">Kildeadresse</string>

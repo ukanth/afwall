@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiller</string>
     <string name="custom_title1">Varsayılan profil için özel isim</string>
-    <string name="custom_title2">Profil 1 için özel isim</string>
-    <string name="custom_title3">Profil 2 için özel isim</string>
-    <string name="custom_title4">Profil 3 için özel isim</string>
     <string name="toggle_enable">Güvenlik duvarını etkinleştir</string>
     <string name="toggle_disable">Güvenlik duvarını devre dışı bırak</string>
     <string name="toggle_default">Varsayılan profili etkinleştir</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Profil 2</string>
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">ProfilAdı</string>
-    <string name="profile_notsupport">Bu seçeneği kullanmak için lütfen profil verinizi aktarın</string>
     <string name="profile_duplicate">Profil zaten mevcut!</string>
     <string name="reapply_profile">Profil kurallarını yeniden uygula</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Profilleri yönet</string>
     <string name="manage_profiles_summary">Profil ekle veya kaldır</string>
     <string name="profiles">Profil </string>
-    <string name="migrate_profiles">Profilleri taşı</string>
-    <string name="migrate_summary">Tüm profil verilerini taşı</string>
     <string name="insert_profile">Profil adı</string>
     <string name="add">Ekle</string>
     <string name="showlog_toasts">Engellemelerde bildirim göster</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Multicast DNS\'i etkinleştir</string>
     <string name="error_log">Günlük hizmeti başlatılamıyor. LogTarget boş veya LogService etkin değil.</string>
-    <string name="delete_profile">Profil silinemiyor</string>
-    <string name="profile_migrate_msg">Profiller taşındı</string>
     <!-- Log Details -->
     <string name="destination_address">Hedef Adres</string>
     <string name="source_address">Kaynak Adres</string>

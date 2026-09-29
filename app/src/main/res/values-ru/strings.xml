@@ -168,9 +168,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Профили</string>
     <string name="custom_title1">Задать имя для профиля по умолчанию</string>
-    <string name="custom_title2">Имя для профиля 1</string>
-    <string name="custom_title3">Имя для профиля 2</string>
-    <string name="custom_title4">Имя для профиля 3</string>
     <string name="toggle_enable">Включить брандмауэр</string>
     <string name="toggle_disable">Отключить брандмауэр</string>
     <string name="toggle_default">Активировать профиль по умолчанию</string>
@@ -183,7 +180,6 @@
     <string name="profile2">Профиль 2</string>
     <string name="profile3">Профиль 3</string>
     <string name="profile_hint">Имя_профиля</string>
-    <string name="profile_notsupport">Пожалуйста, перенесите данные профиля, чтобы использовать эту функцию</string>
     <string name="profile_duplicate">Профиль уже существует!</string>
     <string name="reapply_profile">Повтор применения правил профиля</string>
     <!-- Interface -->
@@ -387,8 +383,6 @@
     <string name="manage_profiles">Управление профилями</string>
     <string name="manage_profiles_summary">Добавление или удаление профилей</string>
     <string name="profiles">Профиль </string>
-    <string name="migrate_profiles">Перенос профилей</string>
-    <string name="migrate_summary">Перенести все данные профиля</string>
     <string name="insert_profile">Имя профиля</string>
     <string name="add">Добавить</string>
     <string name="showlog_toasts">Всплывающее уведомление при блокировке</string>
@@ -429,8 +423,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Включить Multicast DNS</string>
     <string name="error_log">Не удалось запустить службу журнала. LogTarget пуст или LogService не включён.</string>
-    <string name="delete_profile">Невозможно удалить профиль</string>
-    <string name="profile_migrate_msg">Профили перемещены</string>
     <!-- Log Details -->
     <string name="destination_address">Адрес назначения</string>
     <string name="source_address">Адрес источника</string>

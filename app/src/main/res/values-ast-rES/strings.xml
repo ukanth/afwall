@@ -167,9 +167,6 @@
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Perfiles</string>
     <string name="custom_title1">Nome personalizáu pal perfil por defeutu</string>
-    <string name="custom_title2">Nome personalizáu pa perfil1</string>
-    <string name="custom_title3">Nome personalizáu pa perfil2</string>
-    <string name="custom_title4">Nome personalizáu pa perfil3</string>
     <string name="toggle_enable">HabilItar tornafuéu</string>
     <string name="toggle_disable">DeshabilItar tornafuéu</string>
     <string name="toggle_default">Activar perfil predetermináu</string>
@@ -182,7 +179,6 @@
     <string name="profile2">Perfil 2</string>
     <string name="profile3">Perfil 3</string>
     <string name="profile_hint">ProfileName</string>
-    <string name="profile_notsupport">Please migrate profile data to use this option</string>
     <string name="profile_duplicate">¡El perfil yá esiste!</string>
     <string name="reapply_profile">Reaplicar regles de perfiles</string>
     <!-- Interface -->
@@ -386,8 +382,6 @@
     <string name="manage_profiles">Xestionar perfiles</string>
     <string name="manage_profiles_summary">Amiesta o desanicia perfiles</string>
     <string name="profiles">Perfil </string>
-    <string name="migrate_profiles">Migrar perfiles</string>
-    <string name="migrate_summary">Migrate all profile data</string>
     <string name="insert_profile">Nome de perfil</string>
     <string name="add">Amestar</string>
     <string name="showlog_toasts">Amuesa avisos burbuya al bloquiar</string>
@@ -428,8 +422,6 @@
     <string name="mdnslabel">(mdns) Multicast DNS</string>
     <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Nun ye posible aniciar el serviciu de rexistru. LogTarget ta baleru o LogService nun ta activáu.</string>
-    <string name="delete_profile">Nun ye posible desaniciar el perfil</string>
-    <string name="profile_migrate_msg">Profiles migrated</string>
     <!-- Log Details -->
     <string name="destination_address">Direición de destín</string>
     <string name="source_address">Direición d\'orixe</string>

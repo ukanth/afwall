@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ITransaction;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
 
 import dev.ukanth.ufirewall.R;
@@ -88,48 +88,89 @@ public class ProfileHelper {
         return true;
     }
 
+    private static final String LEGACY_PROFILE_PREFIX = "AFWallProfile";
+    // comma-separated custom profile names of the old profile model
+    private static final String LEGACY_ADDITIONAL_PROFILES = "plusprofiles";
+
+    /**
+     * Move the profiles of the old model (fixed Profile 1-3, custom names kept in the "profile1..3"
+     * preferences, plus the "plusprofiles" list) into the profile database, once. The rules stay
+     * in their preference files, which are keyed by the identifier, so they are not touched.
+     * Profiles that are already in the database are skipped, so it is safe to run again after a
+     * partial failure.
+     * <p>
+     * Profile 1-3 always existed in the old model; they are only carried over when they may be in
+     * use, so a new install doesn't start with three empty profiles.
+     */
     public static void migrateProfiles(Context ctx) {
-        if (!G.isProfileMigrated()) {
-            List<ProfileData> listProfile = new ArrayList<>();
-            List<String> addProfiles = G.getAdditionalProfiles();
-            List<String> defaultProfiles = G.getDefaultProfiles();
-            if (defaultProfiles != null && addProfiles != null) {
-                for (int i = 0; i < defaultProfiles.size(); i++) {
-                    String profileName = defaultProfiles.get(i);
-                    String customName = "";
-                    switch (i) {
-                        case 0:
-                            customName = G.gPrefs.getString("profile1", ctx.getString(R.string.profile1));
-                            break;
-                        case 1:
-                            customName = G.gPrefs.getString("profile2", ctx.getString(R.string.profile2));
-                            break;
-                        case 2:
-                            customName = G.gPrefs.getString("profile3", ctx.getString(R.string.profile3));
-                            break;
-                    }
-                    ProfileData profile = new ProfileData();
-                    profile.setName(customName);
-                    profile.setIdentifier(profileName);
-                    listProfile.add(profile);
-                }
-                for (String profileName : addProfiles) {
-                    ProfileData profile = new ProfileData();
-                    profile.setName(profileName);
-                    profile.setIdentifier(profileName);
-                    listProfile.add(profile);
+        if (G.isProfileMigrated()) {
+            return;
+        }
+        try {
+            for (int i = 1; i <= 3; i++) {
+                String identifier = LEGACY_PROFILE_PREFIX + i;
+                boolean hasRules = new File(ctx.getFilesDir().getParent(), "shared_prefs/" + identifier + ".xml").exists();
+                boolean renamed = !G.gPrefs.getString("profile" + i, "").trim().isEmpty();
+                if (G.enableMultiProfile() || hasRules || renamed) {
+                    ensureProfile(ctx, identifier);
                 }
             }
-            //now store the migrateProfile
-            try {
-                for (ProfileData profile : listProfile) {
-                    ProfileHelper.storeProfile(profile, ctx, null);
+            String additional = G.gPrefs.getString(LEGACY_ADDITIONAL_PROFILES, "");
+            for (String name : additional.split("\\s*,\\s*")) {
+                if (!name.trim().isEmpty()) {
+                    ensureProfile(ctx, name.trim());
                 }
-                //now all is well, mark as migrated
-                G.isProfileMigrated(true);
-            } catch (Exception e) {
-                G.isProfileMigrated(false);
+            }
+            G.isProfileMigrated(true);
+            Log.i(TAG, "Profiles migrated to the profile database");
+        } catch (Exception e) {
+            Log.e(TAG, "Profile migration failed; will retry on next start", e);
+        }
+    }
+
+    /**
+     * Make sure a profile with this identifier exists. A missing one is created with its old-model
+     * name: the custom name of Profile 1-3, otherwise the identifier itself.
+     */
+    public static void ensureProfile(Context ctx, String identifier) {
+        if (getProfileByIdentifier(identifier) != null) {
+            return;
+        }
+        String name = identifier;
+        if (identifier.startsWith(LEGACY_PROFILE_PREFIX)) {
+            String suffix = identifier.substring(LEGACY_PROFILE_PREFIX.length());
+            int resId = 0;
+            switch (suffix) {
+                case "1":
+                    resId = R.string.profile1;
+                    break;
+                case "2":
+                    resId = R.string.profile2;
+                    break;
+                case "3":
+                    resId = R.string.profile3;
+                    break;
+            }
+            if (resId != 0) {
+                name = G.gPrefs.getString("profile" + suffix, "");
+                if (name.trim().isEmpty()) {
+                    name = ctx.getString(resId);
+                }
             }
         }
+        new ProfileData(name, identifier).save();
+    }
+
+    /**
+     * @return identifier of the profile with this name, created (like a profile added by the user)
+     * if it doesn't exist
+     */
+    public static String ensureProfileNamed(String name) {
+        ProfileData data = getProfileByName(name);
+        if (data == null) {
+            data = new ProfileData(name, name.replaceAll("\\s+", ""));
+            data.save();
+        }
+        return data.getIdentifier();
     }
 }
