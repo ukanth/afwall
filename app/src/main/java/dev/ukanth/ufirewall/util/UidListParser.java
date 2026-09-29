@@ -40,4 +40,28 @@ public final class UidListParser {
         Collections.sort(uids);
         return uids;
     }
+
+    /**
+     * Update a saved list with the state of the apps shown in the app list, keeping every UID
+     * that isn't shown (apps of other profiles when dual apps is off, apps without INTERNET when
+     * "show all apps" is off, ...): saving must not delete rules the user can't see.
+     *
+     * @param saved    "|"-separated UIDs as stored
+     * @param shown    UIDs of the apps in the app list
+     * @param selected those of {@code shown} that are checked
+     * @return the updated "|"-separated list, sorted
+     */
+    public static String merge(String saved, java.util.Collection<Integer> shown, java.util.Collection<Integer> selected) {
+        java.util.TreeSet<Integer> result = new java.util.TreeSet<>(parse(saved));
+        result.removeAll(shown);
+        result.addAll(selected);
+        StringBuilder sb = new StringBuilder();
+        for (Integer uid : result) {
+            if (sb.length() > 0) {
+                sb.append('|');
+            }
+            sb.append(uid);
+        }
+        return sb.toString();
+    }
 }

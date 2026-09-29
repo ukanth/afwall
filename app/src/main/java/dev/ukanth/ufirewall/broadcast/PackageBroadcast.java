@@ -133,28 +133,15 @@ public class PackageBroadcast extends BroadcastReceiver {
                 UidResolver.clearCache();
                 Log.d(TAG, "Package added, cleared UID resolver cache");
                 
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                boolean isNotify = prefs.getBoolean("notifyAppInstall", true);
-                if (isNotify && Api.isEnabled(context)) {
-                    String added_package = intent.getData().getSchemeSpecificPart();
-                    final PackageManager packager = context.getPackageManager();
-                    String label = null;
-                    try {
-                        ApplicationInfo applicationInfo = packager.getApplicationInfo(added_package, 0);
-                        label = packager.getApplicationLabel(applicationInfo).toString();
-                        if (PackageManager.PERMISSION_GRANTED == packager.checkPermission(Manifest.permission.INTERNET, added_package)) {
-                            Notifications.newApp(context, applicationInfo.uid, added_package, label);
-                        }
-                        if (Api.recentlyInstalled == null) {
-                            Api.recentlyInstalled = new HashSet<>();
-                        }
-                        Api.recentlyInstalled.add(applicationInfo.packageName);
-                        //sets default permissions
-                        if ((G.isDoKey(context) || isDonate())) {
-                            Api.setDefaultPermission(applicationInfo);
-                        }
-                    } catch (NameNotFoundException e) {
-                    }
+                String added_package = intent.getData().getSchemeSpecificPart();
+                final PackageManager packager = context.getPackageManager();
+                try {
+                    ApplicationInfo applicationInfo = packager.getApplicationInfo(added_package, 0);
+                    String label = packager.getApplicationLabel(applicationInfo).toString();
+                    onAppInstalled(context, applicationInfo.uid, added_package, label,
+                            PackageManager.PERMISSION_GRANTED == packager.checkPermission(Manifest.permission.INTERNET, added_package));
+                } catch (NameNotFoundException e) {
+                    Log.w(TAG, "New package " + added_package + " not found");
                 }
             }
         }
@@ -171,19 +158,35 @@ public class PackageBroadcast extends BroadcastReceiver {
         }
         Api.applications = null;
         UidResolver.clearCache();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!prefs.getBoolean("notifyAppInstall", true) || !Api.isEnabled(context)) {
-            return;
-        }
         try {
             ApplicationInfo info = launcherApps.getApplicationInfo(pkg, 0, user);
-            if (info == null || !requestsInternet(context, pkg)) {
+            if (info == null) {
                 return;
             }
             String label = info.loadLabel(context.getPackageManager()).toString();
-            Notifications.newApp(context, info.uid, pkg, context.getString(R.string.notif_new_app_profile, label));
+            onAppInstalled(context, info.uid, pkg, context.getString(R.string.notif_new_app_profile, label),
+                    requestsInternet(context, pkg));
         } catch (Exception e) {
             Log.w(TAG, "Unable to read new app " + pkg + " of " + user + ": " + e.getMessage());
+        }
+    }
+
+    /**
+     * A new app (in any Android user): apply the default connections (donate) in the active
+     * profile, then notify. The defaults don't depend on the notification setting.
+     */
+    private static void onAppInstalled(Context context, int uid, String pkg, String label, boolean internet) {
+        if (Api.recentlyInstalled == null) {
+            Api.recentlyInstalled = new HashSet<>();
+        }
+        Api.recentlyInstalled.add(pkg);
+        if (G.isDoKey(context) || isDonate()) {
+            Api.setDefaultPermission(context, uid);
+        }
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        if (internet && prefs.getBoolean("notifyAppInstall", true) && Api.isEnabled(context)) {
+            // after the defaults: the text says what access the app now has
+            Notifications.newApp(context, uid, pkg, label);
         }
     }
 

@@ -1193,36 +1193,64 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
     }
 
-    public static void storeDefaultConnection(List<Integer> list1, List<Integer> list2, int modeType) {
-        // store to DB
+    // Default connections for new apps. The table's key ("uid") is the connection column; it
+    // used to be the bare column (0-6) for both modes, so saving one mode overwrote the other.
+    // Each mode now has its own key range; rows of the old form are still read for the mode they
+    // were saved in, until that mode is saved again.
+    private static final int DEFAULT_CONNECTION_KEY_BASE = 1000;
 
-        for (Integer uid : list1) {
-            DefaultConnectionPref preference = new DefaultConnectionPref();
-            preference.setUid(uid);
-            preference.setState(true);
-            preference.setModeType(modeType);
-            FlowManager.getDatabase(DefaultConnectionPrefDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+    private static int defaultConnectionKey(int modeType, int column) {
+        return DEFAULT_CONNECTION_KEY_BASE + modeType * 100 + column;
+    }
+
+    /**
+     * @param list1     connection columns selected by default
+     * @param list2     the other columns
+     * @param modeType  0 = allow-list mode, 1 = block-list mode
+     */
+    public static void storeDefaultConnection(List<Integer> list1, List<Integer> list2, int modeType) {
+        for (DefaultConnectionPref legacy : SQLite.select().from(DefaultConnectionPref.class).queryList()) {
+            if (legacy.getUid() < DEFAULT_CONNECTION_KEY_BASE && legacy.getModeType() == modeType) {
+                legacy.delete(); // replaced by this mode's own rows
+            }
         }
-        for (Integer uid : list2) {
-            DefaultConnectionPref preference = new DefaultConnectionPref();
-            preference.setUid(uid);
-            preference.setState(false);
-            preference.setModeType(modeType);
-            FlowManager.getDatabase(DefaultConnectionPrefDB.class).beginTransactionAsync(databaseWrapper -> preference.save(databaseWrapper)).build().execute();
+        for (Integer column : list1) {
+            saveDefaultConnection(modeType, column, true);
+        }
+        for (Integer column : list2) {
+            saveDefaultConnection(modeType, column, false);
         }
     }
 
+    private static void saveDefaultConnection(int modeType, int column, boolean state) {
+        DefaultConnectionPref preference = new DefaultConnectionPref();
+        preference.setUid(defaultConnectionKey(modeType, column));
+        preference.setState(state);
+        preference.setModeType(modeType);
+        preference.save();
+    }
+
+    /**
+     * @return connection columns selected by default for new apps in {@code modeType}
+     */
     public static List<Integer> readDefaultConnection(int modeType) {
-        List<DefaultConnectionPref> list = SQLite.select()
-                .from(DefaultConnectionPref.class)
-                .queryList();
-        List<Integer> listSelected = new ArrayList<>();
-        for (DefaultConnectionPref pref : list) {
-            if (pref.isState() && pref.getModeType() == modeType) {
-                listSelected.add(pref.getUid());
+        List<Integer> current = new ArrayList<>();
+        List<Integer> legacy = new ArrayList<>();
+        boolean hasCurrent = false;
+        for (DefaultConnectionPref pref : SQLite.select().from(DefaultConnectionPref.class).queryList()) {
+            if (pref.getModeType() != modeType) {
+                continue;
+            }
+            if (pref.getUid() >= DEFAULT_CONNECTION_KEY_BASE) {
+                hasCurrent = true;
+                if (pref.isState()) {
+                    current.add(pref.getUid() % 100);
+                }
+            } else if (pref.isState()) {
+                legacy.add(pref.getUid());
             }
         }
-        return listSelected;
+        return hasCurrent ? current : legacy;
     }
 
     public static List<Integer> readBlockedApps() {

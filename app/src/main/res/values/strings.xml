@@ -141,8 +141,9 @@
     <string name="notif_action_profile">Switch profile</string>
     <string name="notif_new_app_title">%1$s installed</string>
     <string name="notif_new_app_profile">%1$s (other profile)</string>
-    <string name="notif_new_app_whitelist">No internet access until you allow it (allow-list mode).</string>
-    <string name="notif_new_app_blacklist">Has internet access unless you block it (block-list mode).</string>
+    <string name="notif_new_app_none">No internet access. Allow it if it needs the internet.</string>
+    <string name="notif_new_app_all">Has internet access. Block it if it shouldn\'t.</string>
+    <string name="notif_new_app_some">Internet access on %1$s only.</string>
     <string name="notif_new_apps_summary">New apps installed</string>
     <string name="notif_allow">Allow</string>
     <string name="notif_block">Block</string>
@@ -706,6 +707,8 @@
 
     <string name="connection_default_allow">Default Allow Connection</string>
     <string name="connection_default_block">Default Block Connection</string>
+    <string name="default_connection_scope_allow">In allow-list mode, new apps get internet access on the selected connections. Applies to the active profile.</string>
+    <string name="default_connection_scope_block">In block-list mode, new apps are blocked on the selected connections. Applies to the active profile.</string>
     <string name="log_service_start">Starting Log service</string>
     <string name="log_service_stop">Stopping Log service</string>
     <string name="log_service_select">Please select log target first</string>

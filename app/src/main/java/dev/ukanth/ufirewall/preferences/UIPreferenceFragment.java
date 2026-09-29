@@ -29,7 +29,7 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 		addPreferencesFromResource(R.xml.ui_preferences);
 		if ((G.isDoKey(ctx) || isDonate())) {
 			populatePreference(findPreference("default_behavior_allow_mode"), getString(R.string.connection_default_allow), 0);
-			populatePreference(findPreference("default_behavior_block_mode"), getString(R.string.connection_default_allow), 1);
+			populatePreference(findPreference("default_behavior_block_mode"), getString(R.string.connection_default_block), 1);
 		}
 		Preference notificationSettings = findPreference("notification_settings");
 		if (notificationSettings != null) {
@@ -117,6 +117,7 @@ public class UIPreferenceFragment extends PreferenceFragment  implements
 
 			MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
 					.title(title)
+					.content(modeType == 0 ? R.string.default_connection_scope_allow : R.string.default_connection_scope_block)
 					.itemsIds(convertIntegers(entryValuesList))
 					.items(entriesList)
 					.itemsCallbackMultiChoice(null, (dialog1, which, text) -> {

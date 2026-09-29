@@ -111,6 +111,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.StringTokenizer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -129,8 +130,6 @@ import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
-import dev.ukanth.ufirewall.preferences.DefaultConnectionPref;
-import dev.ukanth.ufirewall.preferences.DefaultConnectionPref_Table;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
@@ -1911,24 +1910,37 @@ public final class Api {
                 }
             }
 
-            String wifi = android.text.TextUtils.join("|", newpkg_wifi);
-            String data = android.text.TextUtils.join("|", newpkg_3g);
-            String roam = android.text.TextUtils.join("|", newpkg_roam);
-            String vpn = android.text.TextUtils.join("|", newpkg_vpn);
-            String tether = android.text.TextUtils.join("|", newpkg_tether);
-            String lan = android.text.TextUtils.join("|", newpkg_lan);
-            String tor = android.text.TextUtils.join("|", newpkg_tor);
             // save the new list of UIDs
             if (store) {
+                // Only the apps in the list change; UIDs not shown there (other profiles with dual
+                // apps off, apps without INTERNET with "show all apps" off, ...) keep their rules,
+                // and so do the lists of connection types that are switched off. Rebuilding the
+                // lists from the shown apps alone deleted all of those.
+                Set<Integer> shown = new HashSet<>();
+                for (PackageInfoData app : apps) {
+                    if (app != null) {
+                        shown.add(app.uid);
+                    }
+                }
                 SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
                 Editor edit = prefs.edit();
-                edit.putString(PREF_WIFI_PKG_UIDS, wifi);
-                edit.putString(PREF_3G_PKG_UIDS, data);
-                edit.putString(PREF_ROAMING_PKG_UIDS, roam);
-                edit.putString(PREF_VPN_PKG_UIDS, vpn);
-                edit.putString(PREF_TETHER_PKG_UIDS, tether);
-                edit.putString(PREF_LAN_PKG_UIDS, lan);
-                edit.putString(PREF_TOR_PKG_UIDS, tor);
+                edit.putString(PREF_WIFI_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_WIFI_PKG_UIDS, ""), shown, newpkg_wifi));
+                edit.putString(PREF_3G_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_3G_PKG_UIDS, ""), shown, newpkg_3g));
+                if (G.enableRoam()) {
+                    edit.putString(PREF_ROAMING_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_ROAMING_PKG_UIDS, ""), shown, newpkg_roam));
+                }
+                if (G.enableVPN()) {
+                    edit.putString(PREF_VPN_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_VPN_PKG_UIDS, ""), shown, newpkg_vpn));
+                }
+                if (G.enableTether()) {
+                    edit.putString(PREF_TETHER_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_TETHER_PKG_UIDS, ""), shown, newpkg_tether));
+                }
+                if (G.enableLAN()) {
+                    edit.putString(PREF_LAN_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_LAN_PKG_UIDS, ""), shown, newpkg_lan));
+                }
+                if (G.enableTor()) {
+                    edit.putString(PREF_TOR_PKG_UIDS, UidListParser.merge(prefs.getString(PREF_TOR_PKG_UIDS, ""), shown, newpkg_tor));
+                }
                 edit.apply();
             } else {
                 dataSet = new RuleDataSet(new ArrayList<>(newpkg_wifi),
@@ -4832,61 +4844,45 @@ public final class Api {
         return context;
     }
 
-    public static void setDefaultPermission(ApplicationInfo applicationInfo) {
-
-        boolean isModified = false;
+    /**
+     * Apply the "default connections for new apps" (donate) to a newly installed app, in the
+     * active profile. The lists hold allowed apps in allow-list mode and blocked apps in block-list
+     * mode, so the same columns mean "allowed" resp. "blocked".
+     *
+     * @return true if the app was added to any list
+     */
+    public static boolean setDefaultPermission(Context ctx, int uid) {
+        int modeType = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST).equals(Api.MODE_WHITELIST) ? 0 : 1;
+        List<Integer> columns = G.readDefaultConnection(modeType);
+        if (columns.isEmpty()) {
+            return false;
+        }
+        // column (as in the setting) -> rule list
+        String[] lists = {PREF_LAN_PKG_UIDS, PREF_WIFI_PKG_UIDS, PREF_3G_PKG_UIDS, PREF_ROAMING_PKG_UIDS,
+                PREF_TOR_PKG_UIDS, PREF_VPN_PKG_UIDS, PREF_TETHER_PKG_UIDS};
         SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         Editor edit = prefs.edit();
-
-        // Get the mode type
-        int modeType = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST).equals(Api.MODE_WHITELIST) ? 0 : 1;
-
-        // Get the preference list
-        List<DefaultConnectionPref> list = SQLite.select().from(DefaultConnectionPref.class)
-                .where(DefaultConnectionPref_Table.modeType.eq(modeType))
-                .queryList();
-
-        for (DefaultConnectionPref pref : list) {
-            if (pref.isState()) {
-                int uid = applicationInfo.uid;
-                switch (pref.getUid()) {
-                    case 0:
-                        edit.putString(PREF_LAN_PKG_UIDS, prefs.getString(PREF_LAN_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                    case 1:
-                        edit.putString(PREF_WIFI_PKG_UIDS, prefs.getString(PREF_WIFI_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                    case 2:
-                        edit.putString(PREF_3G_PKG_UIDS, prefs.getString(PREF_3G_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                    case 3:
-                        edit.putString(PREF_ROAMING_PKG_UIDS, prefs.getString(PREF_ROAMING_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                    case 4:
-                        edit.putString(PREF_TOR_PKG_UIDS, prefs.getString(PREF_TOR_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                    case 5:
-                        edit.putString(PREF_VPN_PKG_UIDS, prefs.getString(PREF_VPN_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                    case 6:
-                        edit.putString(PREF_TETHER_PKG_UIDS, prefs.getString(PREF_TETHER_PKG_UIDS, "") + "|" + uid);
-                        isModified = true;
-                        break;
-                }
+        boolean isModified = false;
+        for (int column : columns) {
+            if (column < 0 || column >= lists.length) {
+                continue;
+            }
+            Set<Integer> uids = new TreeSet<>(UidListParser.parse(prefs.getString(lists[column], "")));
+            if (uids.add(uid)) {
+                edit.putString(lists[column], TextUtils.join("|", uids));
+                isModified = true;
             }
         }
         if (isModified) {
             edit.apply();
-            // Make sure rules are modified flag is set
-            Api.setRulesUpToDate(false);
-            fastApply(ctx, new RootCommand());
+            applications = null;
+            if (isEnabled(ctx)) {
+                // the per-app rules changed: a full apply
+                setRulesUpToDate(false);
+                fastApply(ctx, new RootCommand());
+            }
         }
+        return isModified;
     }
 
     static class RuleDataSet {

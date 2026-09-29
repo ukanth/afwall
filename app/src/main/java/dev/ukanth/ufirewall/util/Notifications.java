@@ -258,9 +258,8 @@ public final class Notifications {
         if (nm == null) {
             return;
         }
-        boolean whitelist = Api.MODE_WHITELIST.equals(G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST));
         String name = label != null ? label : pkg;
-        String text = ctx.getString(whitelist ? R.string.notif_new_app_whitelist : R.string.notif_new_app_blacklist);
+        String text = accessText(ctx, uid);
         // distinct PendingIntent request codes per app and Android user (extras don't make them distinct)
         int requestBase = 1000 + (uid % 100000) * 16 + ((uid / 100000) % 4) * 4;
 
@@ -290,6 +289,44 @@ public final class Notifications {
                 .setContentIntent(openApp(ctx, ID_NEW_APP_SUMMARY))
                 .build();
         nm.notify(ID_NEW_APP_SUMMARY, summary);
+    }
+
+    /**
+     * What internet access an app has in the active profile (after any default connections were
+     * applied): allowed everywhere, nowhere, or on some connection types.
+     */
+    private static String accessText(Context ctx, int uid) {
+        boolean whitelist = Api.MODE_WHITELIST.equals(G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST));
+        List<String[]> types = new ArrayList<>(); // {name, rule list}
+        types.add(new String[]{ctx.getString(R.string.wifi), Api.PREF_WIFI_PKG_UIDS});
+        types.add(new String[]{ctx.getString(R.string.data), Api.PREF_3G_PKG_UIDS});
+        if (G.enableLAN()) {
+            types.add(new String[]{ctx.getString(R.string.lan), Api.PREF_LAN_PKG_UIDS});
+        }
+        if (G.enableRoam()) {
+            types.add(new String[]{ctx.getString(R.string.roaming), Api.PREF_ROAMING_PKG_UIDS});
+        }
+        if (G.enableVPN()) {
+            types.add(new String[]{ctx.getString(R.string.vpn), Api.PREF_VPN_PKG_UIDS});
+        }
+        if (G.enableTether()) {
+            types.add(new String[]{ctx.getString(R.string.tether), Api.PREF_TETHER_PKG_UIDS});
+        }
+        List<String> allowed = new ArrayList<>();
+        for (String[] type : types) {
+            boolean listed = UidListParser.parse(G.pPrefs.getString(type[1], "")).contains(uid);
+            // the lists hold allowed apps in allow-list mode, blocked apps in block-list mode
+            if (whitelist == listed) {
+                allowed.add(type[0]);
+            }
+        }
+        if (allowed.isEmpty()) {
+            return ctx.getString(R.string.notif_new_app_none);
+        }
+        if (allowed.size() == types.size()) {
+            return ctx.getString(R.string.notif_new_app_all);
+        }
+        return ctx.getString(R.string.notif_new_app_some, android.text.TextUtils.join(", ", allowed));
     }
 
     public static void cancelNewApp(Context ctx, int uid, String pkg) {
