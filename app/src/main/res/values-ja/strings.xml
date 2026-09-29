@@ -472,8 +472,6 @@
     <string name="label_zoomout">縮小</string>
     <string name="exception_pref">環境設定が破損しているため、活動を開始できません。アプリケーションのデータをクリアしてください</string>
     <string name="ipdetect">AFWall+ が IPv6 接続を検出しました。環境設定-ルール/接続から有効にして再適用してください</string>
-    <string name="delayTitle">カスタム遅延秒数</string>
-    <string name="delaySummary">AFWall+ が起動後、ルールを適用する前に指定された秒数待ちます</string>
     <string name="delayDialog">設定時間（秒数）</string>
     <string name="pingDelayTitle">Ping タイムアウト</string>
     <string name="notification_priority">通知の優先度</string>

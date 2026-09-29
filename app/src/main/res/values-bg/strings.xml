@@ -469,8 +469,6 @@
     <string name="label_zoomout">Отдалечаване</string>
     <string name="exception_pref">Не може да започне дейността поради повредени предпочитания, моля изчистете данни на приложението</string>
     <string name="ipdetect">AFWall + откри IPv6 връзка. Моля, активирайте от предпочитания->правила/свързаност и потвърдете наново</string>
-    <string name="delayTitle">Персонално закъснение в секунди</string>
-    <string name="delaySummary">След стартиране AFWall+ изчаква зададените секунди преди да приложи правилата</string>
     <string name="delayDialog">Задайте забавяне в секунди</string>
     <string name="pingDelayTitle">Време за изчакване на Ping</string>
     <string name="notification_priority">Приоритет на известие</string>

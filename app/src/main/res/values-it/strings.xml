@@ -469,8 +469,6 @@
     <string name="label_zoomout">Riduci</string>
     <string name="exception_pref">Impossibile avviare a causa di un errore nelle preferenze, elimina i dati dell\'applicazione</string>
     <string name="ipdetect">AFWall+ ha rilevato una connessione IPv6. Abilitala da Preferenze-Regole/Connettività e riprova</string>
-    <string name="delayTitle">Ritardo personalizzato (in sec.)</string>
-    <string name="delaySummary">Dopo l\'avvio AFWall+ attende i secondi impostati prima di applicare le regole</string>
     <string name="delayDialog">Imposta ritardo in secondi</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">Priorità notifiche</string>

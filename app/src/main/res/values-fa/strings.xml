@@ -476,8 +476,6 @@ S-OFF پیکربندی شوند.</string>
     <string name="label_zoomout">کوچک‌نمایی</string>
     <string name="exception_pref">شروع فعالیت ها به دلیل سلیقه خراب ناموفق بود، لطفا دیتا های برنامه رو پاکسازی کنید</string>
     <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
-    <string name="delayTitle">زمان درنگ سفارشی</string>
-    <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
     <string name="delayDialog">تنظیم درنگ به ثانیه</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">اولویت اعلان</string>

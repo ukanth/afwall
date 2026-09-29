@@ -469,8 +469,6 @@
     <string name="label_zoomout">تكبير خارج</string>
     <string name="exception_pref">غير قادر على بدء النشاط بسبب تفضيلات معطوبة، يرجى مسح بيانات التطبيق</string>
     <string name="ipdetect">AFWall+ تم اكتشاف اتصال IPv6. الرجاء التمكين من تفضيلات-القواعد/الاتصال وإعادة التطبيق</string>
-    <string name="delayTitle">تأخير الثواني المخصصة</string>
-    <string name="delaySummary">انتظار AFWall+ لثوان معينة بعد بدء التشغيل قبل تطبيق القواعد</string>
     <string name="delayDialog">تعيين التأخير بالثواني</string>
     <string name="pingDelayTitle">مهلة Ping</string>
     <string name="notification_priority">أولوية الإشعار</string>

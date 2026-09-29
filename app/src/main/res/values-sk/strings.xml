@@ -469,8 +469,6 @@
     <string name="label_zoomout">Vzdialiť</string>
     <string name="exception_pref">Nie je možné spustiť aktivitu z dôvodu poškodenej preferencie, prosím vymazať údaje aplikácie</string>
     <string name="ipdetect">AFWall+ zistil pripojenie IPv6. Zapnite cez Nastavenia-Pravidlá/Pripojenie a znova aplikujte</string>
-    <string name="delayTitle">Vlastné oneskorenie v sekundách</string>
-    <string name="delaySummary">AFWall+ čaká daný počet sekúnd po štarte pred uplatňovaním pravidiel</string>
     <string name="delayDialog">Nastaviť oneskorenie v sekundách</string>
     <string name="pingDelayTitle">Ping-maximum čakania</string>
     <string name="notification_priority">Priorita notifikácie</string>

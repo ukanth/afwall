@@ -470,8 +470,6 @@
     <string name="label_zoomout">Уменьшить</string>
     <string name="exception_pref">Не удаётся выполнить действие из-за повреждённых настроек, пожалуйста, очистите данные приложения</string>
     <string name="ipdetect">AFWall+ обнаружил соединение IPv6. Пожалуйста, включите их в \"Настройки\"-\"Правила/соединение\" и примените повторно</string>
-    <string name="delayTitle">Настраиваемая задержка</string>
-    <string name="delaySummary">AFWall+ будет ждать заданное количество секунд после запуска перед применением правил</string>
     <string name="delayDialog">Укажите задержку в секундах</string>
     <string name="pingDelayTitle">Время ожидания пинга</string>
     <string name="notification_priority">Приоритет уведомлений</string>

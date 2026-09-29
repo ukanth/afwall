@@ -469,8 +469,6 @@
     <string name="label_zoomout">Uzaklaştır</string>
     <string name="exception_pref">Bozuk tercihler nedeniyle uygulama başlatılamıyor, lütfen uygulama verilerini temizleyin</string>
     <string name="ipdetect">AFWall+ IPv6 bağlantısı algılandı. Lütfen Tercihler-Kurallar/Bağlantı\'dan etkinleştirin ve yeniden uygulayın</string>
-    <string name="delayTitle">Özel Gecikme Saniyesi</string>
-    <string name="delaySummary">AFWall+, kuralları uygulamadan önce başlangıç sonrası belirli süre boyunca bekler</string>
     <string name="delayDialog">Gecikmeyi saniye cinsinden ayarla</string>
     <string name="pingDelayTitle">Ping zaman aşımı</string>
     <string name="notification_priority">Bildirim Önceliği</string>

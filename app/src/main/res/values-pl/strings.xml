@@ -469,8 +469,6 @@
     <string name="label_zoomout">Pomniejsz</string>
     <string name="exception_pref">Nie można uruchomić aktywności z powodu uszkodzonych ustawień. Proszę wyczyść dane aplikacji</string>
     <string name="ipdetect">AFWall + wykrył połączenie IPv6. Proszę włączyć wsparcie w Ustawienia-Reguły/Łączność i ponownie zastosować</string>
-    <string name="delayTitle">Własne opóźnienie w sekundach</string>
-    <string name="delaySummary">AFWall + zaczeka przez podany czas po starcie przed zastosowaniem reguł</string>
     <string name="delayDialog">Ustaw opóźnienie w sekundach</string>
     <string name="pingDelayTitle">Limit czasu Ping</string>
     <string name="notification_priority">Priorytet powiadomień</string>

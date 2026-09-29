@@ -469,8 +469,6 @@
     <string name="label_zoomout">Kicsinyítés</string>
     <string name="exception_pref">A tevékenység hibás preferencia miatt nem indítható el, kérjük törölje az alkalmazás adatait</string>
     <string name="ipdetect">Az AFWall+ IPv6 kapcsolatot észlelt. Kérjük engedélyezze a Preferenciák-Szabályok/Kapcsolat menüpontban, majd jelentkezzen be újra</string>
-    <string name="delayTitle">Egyéni késleltetési idő</string>
-    <string name="delaySummary">Az AFWall+ a megadott ideig vár induláskor, a szabályok alkalmazása előtt.</string>
     <string name="delayDialog">A késleltetés hossza másodpercben</string>
     <string name="pingDelayTitle">Ping időtúllépés</string>
     <string name="notification_priority">Értesítés priorítása</string>

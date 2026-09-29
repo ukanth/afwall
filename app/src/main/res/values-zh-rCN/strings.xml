@@ -470,8 +470,6 @@
     <string name="label_zoomout">缩小</string>
     <string name="exception_pref">由于首选项损坏，无法启动应用，请清除应用数据</string>
     <string name="ipdetect">AFWall+ 检测到 IPv6 连接。请从首选项 - 规则/连接中启用后重新应用</string>
-    <string name="delayTitle">自定义延迟秒数</string>
-    <string name="delaySummary">AFWall+ 将等待若干秒后应用规则</string>
     <string name="delayDialog">设置延迟（秒）</string>
     <string name="pingDelayTitle">ping 时间</string>
     <string name="notification_priority">通知优先级</string>

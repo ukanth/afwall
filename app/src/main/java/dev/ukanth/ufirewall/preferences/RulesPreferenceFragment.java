@@ -23,6 +23,7 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private Context ctx;
+    private final BootAdvancedPreferences bootAdvanced = new BootAdvancedPreferences(this);
 
 
     @Override
@@ -30,6 +31,7 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
         super.onCreate(savedInstanceState);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.rules_preferences);
+        bootAdvanced.bind();
 
         try {
             updateRuleStatus();
@@ -125,6 +127,7 @@ public class RulesPreferenceFragment extends PreferenceFragment implements
                                     if (isAdded()) {
                                         getPreferenceScreen().removeAll();
                                         addPreferencesFromResource(R.xml.rules_preferences);
+                                        bootAdvanced.bind();
                                     }
                                 });
                             }

@@ -469,8 +469,6 @@
     <string name="label_zoomout">Oddalji</string>
     <string name="exception_pref">Zaradi okvarjene nastavitve ne morem začeti z aktivnostjo. Prosimo izbrišite podatke aplikacije.</string>
     <string name="ipdetect">AFWall+ je zaznal povezavo preko protokola IPv6. Prosimo vklopite podporo za IPv&amp; na Nastavitve-Pravila/povezljivost in ponovno uveljavite pravila</string>
-    <string name="delayTitle">Zakasnitev pri uveljavljanju pravil</string>
-    <string name="delaySummary">AFWall+ bo počakal n-sekund po zagonu, preden bo uveljavil pravila</string>
     <string name="delayDialog">Nastavitve zamika v sekundah</string>
     <string name="pingDelayTitle">Časovna omejitev za ping</string>
     <string name="notification_priority">Prioriteta obvestila</string>

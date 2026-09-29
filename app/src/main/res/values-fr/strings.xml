@@ -469,8 +469,6 @@
     <string name="label_zoomout">Zoom arrière</string>
     <string name="exception_pref">Impossible de lancer l’application à cause de préférences corrompues, veuillez effacer les données de l’application</string>
     <string name="ipdetect">AFWall+ a détecté une connexion IPv6. Veuillez activer depuis Préférences-Règles/Connectivité et appliquer à nouveau</string>
-    <string name="delayTitle">Délai en secondes personnalisé</string>
-    <string name="delaySummary">AFWall+ attend pendant X secondes après le démarrage avant d\'appliquer les règles</string>
     <string name="delayDialog">Définir une durée en secondes</string>
     <string name="pingDelayTitle">Durée du ping</string>
     <string name="notification_priority">Priorité de la notification</string>

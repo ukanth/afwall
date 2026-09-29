@@ -469,8 +469,6 @@
     <string name="label_zoomout">Perkecil</string>
     <string name="exception_pref">Tidak dapat memulai activity karena preferensi korup, Silakan hapus data aplikasi</string>
     <string name="ipdetect">AFWall+ mendeteksi koneksi IPv6. Silakan aktifkan dari Preferensi-Aturan/Konektifitas dan terapkan kembali</string>
-    <string name="delayTitle">Kustom detik jeda</string>
-    <string name="delaySummary">AFWall+ menunggu selama sesuai waktu yang diatur setelah perangkat memulai sebelum menerapkan aturan</string>
     <string name="delayDialog">Atur jeda dalam detik</string>
     <string name="pingDelayTitle">Timeout ping</string>
     <string name="notification_priority">Prioritas Pemberitahuan</string>

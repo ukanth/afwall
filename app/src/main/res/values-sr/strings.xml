@@ -469,8 +469,6 @@
     <string name="label_zoomout">Умањи</string>
     <string name="exception_pref">Не могу да покренем радње због оштећених поставки. Обришите податке апликације</string>
     <string name="ipdetect">AFWall+ је открио IPv6 везу. Омогућите је у Подешавање>Правила/Повезаност и поново их примените</string>
-    <string name="delayTitle">Произвољна задршка</string>
-    <string name="delaySummary">AFWall+ чека задати број секунди пре него што почне са применом правила</string>
     <string name="delayDialog">одлагање у секундама</string>
     <string name="pingDelayTitle">Истек пинга</string>
     <string name="notification_priority">Приоритет обавештења</string>

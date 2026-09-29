@@ -68,6 +68,36 @@
             android:summaryOff="@string/direct_rules_visibility_summary"
             android:summaryOn="@string/direct_rules_visibility_summary"
             android:title="@string/direct_rules_visibility_title" />
+        <CheckBoxPreference
+            android:key="enableInbound"
+            android:summary="@string/enableInboundSummary"
+            android:title="@string/enableInboundTitle" />
+        <CheckBoxPreference
+            android:key="supportDualApps"
+            android:summary="@string/dualAppsDesc"
+            android:title="@string/dualAppsTitle" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="bootCategory"
+        android:title="@string/boot_prefs_title">
+        <CheckBoxPreference
+            android:key="fixLeak"
+            android:summary="@string/fixleakSummary"
+            android:title="@string/fixleakTitle" />
+        <ListPreference
+            android:dependency="fixLeak"
+            android:key="initPath"
+            android:summary="%s"
+            android:title="@string/init_d" />
+        <dev.ukanth.ufirewall.preferences.SeekBarPreference
+            android:defaultValue="0"
+            android:key="customDelay"
+            android:max="30"
+            android:summary="@string/addStartupDelaySummary"
+            android:title="@string/addStartupDelayTitle"
+            app:min="0"
+            app:suffix=" s" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/ui_chains_title">
@@ -130,5 +160,12 @@
             android:summaryOn="@string/forward_chain_summary_on"
             android:title="@string/forward_chain_v6" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/advanced_prefs_title">
+        <CheckBoxPreference
+            android:key="multiUser"
+            android:summary="@string/multi_user_summary"
+            android:title="@string/multi_user_title" />
     </PreferenceCategory>
 </PreferenceScreen>

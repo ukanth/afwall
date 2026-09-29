@@ -470,8 +470,6 @@ iptables.\nייתכן כי +AFWall לא יפעל כצפוי בשל מגבלה ז
     <string name="label_zoomout">Zoom Out</string>
     <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
     <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
-    <string name="delayTitle">Custom Seconds Delay</string>
-    <string name="delaySummary">AFWall+ ממתין מספר שניות זה אחרי עליית המכשיר לפני החלת חוקים</string>
     <string name="delayDialog">הגדר זמן המתנה בשניות</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">עדיפות התראה</string>

@@ -469,8 +469,6 @@
     <string name="label_zoomout">Alejar</string>
     <string name="exception_pref">No se pudo iniciar debido a un dato corrupto en las preferencias, Por favor elimina los datos de la aplicación</string>
     <string name="ipdetect">AFWall+ ha detectado una conexión IPv6. Por favor actívela desde Preferencias > Reglas/Conectividad y vuelva a aplicar</string>
-    <string name="delayTitle">Retraso en segundos personalizado</string>
-    <string name="delaySummary">Al iniciar, AFWall+ esperará los segundos especificados antes de aplicar las reglas</string>
     <string name="delayDialog">Establecer retraso en segundos</string>
     <string name="pingDelayTitle">Tiempo de espera de ping</string>
     <string name="notification_priority">Prioridad de notificación</string>

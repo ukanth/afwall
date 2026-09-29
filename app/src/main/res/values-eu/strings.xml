@@ -469,8 +469,6 @@
     <string name="label_zoomout">Txikiagotu zooma</string>
     <string name="exception_pref">Ezin izan da jarduera hasi hondatutako hobespenak direla eta, garbitu aplikazioaren datuak</string>
     <string name="ipdetect">AFWall+ aplikazioak IPv6 konexio bat antzeman du. Gaitu hemen Hobespen-arauak/konektibitatea, eta berriro aplikatu</string>
-    <string name="delayTitle">Atzerapen segundo kopuru aukeratua</string>
-    <string name="delaySummary">AFWall+ aplikazioak emandako segundo kopurua itxarongo du arauak aplikatu aurretik</string>
     <string name="delayDialog">Ezarri atzerapena segundotan</string>
     <string name="pingDelayTitle">Ping-aren denbora-muga</string>
     <string name="notification_priority">Jakinarazpenen lehentasuna</string>

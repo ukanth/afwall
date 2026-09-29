@@ -6,7 +6,8 @@
     android:background="?attr/itemBackground"
 
     android:duplicateParentState="false"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/rule_toolbar"

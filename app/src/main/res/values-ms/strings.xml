@@ -469,8 +469,6 @@
     <string name="label_zoomout">Zum keluar</string>
     <string name="exception_pref">Tidak dapat memulakan aktiviti ini kerana rujukan yang rosak, Sila kosongkan data aplikasi</string>
     <string name="ipdetect">AFWall+ Sambungan IPv6 dikesan. Sila aktifkan daripada Preference-Rules/Connectivity dan Reapply</string>
-    <string name="delayTitle">Kustom Tangguh Saat</string>
-    <string name="delaySummary">AFWall+ menunggu untuk saat yang diterima selepas permulaan sebelum mengaktifkan arahan</string>
     <string name="delayDialog">Tetapkan tangguhan kiraan saat</string>
     <string name="pingDelayTitle">Masa tamat Ping</string>
     <string name="notification_priority">Keutamaan Notifikasi</string>

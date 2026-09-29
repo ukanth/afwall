@@ -469,8 +469,6 @@
     <string name="label_zoomout">විශාලනය කරන්න</string>
     <string name="exception_pref">දූෂිත මනාපය හේතුවෙන් ක්‍රියාකාරකම ආරම්භ කළ නොහැක, කරුණාකර යෙදුම් දත්ත හිස් කරන්න</string>
     <string name="ipdetect">AFWall+ IPv6 සම්බන්ධතාවය හඳුනා ගන්නා ලදී. කරුණාකර මනාප-රීති/සම්බන්ධතාවයෙන් සබල කර නැවත අයදුම් කරන්න</string>
-    <string name="delayTitle">අභිරුචි තත්පර ප්‍රමාදය</string>
-    <string name="delaySummary">AFWall+ රීති යෙදීමට පෙර ආරම්භයෙන් පසු ලබා දී ඇති තත්පර සඳහා රැඳී සිටියි</string>
     <string name="delayDialog">ප්‍රමාදය තත්පර වලින් සකසන්න</string>
     <string name="pingDelayTitle">පිං කල් ඉකුත්වීම</string>
     <string name="notification_priority">දැනුම්දීමේ ප්‍රමුඛතාවය</string>

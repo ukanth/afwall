@@ -282,15 +282,19 @@
 
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Experimental</string>
+    <string name="boot_prefs_title">Boot</string>
+    <string name="advanced_prefs_title">Advanced</string>
+    <string name="fixleak_unsupported">Not available: no boot script directory found (needs Magisk, KernelSU, APatch, init.d or su.d).</string>
+    <string name="off">Off</string>
 
     <!-- Startup -->
     <string name="startup_service">Applying rules. Please wait.</string>
 
-    <string name="addStartupDelayTitle">Startup Delay</string>
-    <string name="addStartupDelaySummary">AFWall+ will wait for \'n\' seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
+    <string name="addStartupDelayTitle">Re-apply rules after boot</string>
+    <string name="addStartupDelaySummary">Apply the rules again this many seconds after boot, for devices where the network comes up late and the boot rules don\'t stick. Off by default.</string>
 
     <string name="fixleakTitle">Fix startup data leak</string>
-    <string name="fixleakSummary">Prevent data leaks during system startup. Your ROM must have init.d or su.d (superSU) support. HTC devices must be configured for S-OFF.</string>
+    <string name="fixleakSummary">Block all traffic from early boot until AFWall+ has applied its rules. Needs a root solution that runs boot scripts (Magisk, KernelSU, APatch; or init.d / su.d).</string>
     <!--
     <string name="alternateStartTitle">Fix device start rules</string>
     <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
@@ -591,8 +595,6 @@
     <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
     <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
 
-    <string name="delayTitle">Custom Seconds Delay</string>
-    <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
     <string name="delayDialog">Set delay in seconds</string>
 
     <string name="pingDelayTitle">Ping timeout</string>
@@ -622,7 +624,7 @@
     <string name="quick_apply_title">Show Quick Apply</string>
     <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 
-    <string name="init_d">Startup directory path for script</string>
+    <string name="init_d">Boot script directory</string>
     <string name="mount_initd_error">Unable to mount the directory</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
     <string name="runNotification_summary">Notification will be shown when applying rules</string>

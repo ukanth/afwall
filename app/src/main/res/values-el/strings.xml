@@ -472,8 +472,6 @@
 Παρακαλούμε ενεργοποιήστε από
 προτίμηση-κανόνες / συνδεσιμότητα
 και εφαρμόστε ξανά</string>
-    <string name="delayTitle">Προσαρμοσμένη καθυστέρηση δευτερολέπτων</string>
-    <string name="delaySummary">AFWall + περιμένει για Χ δευτερόλεπτα μετά την εκκίνηση πριν από την εφαρμογή των κανόνων</string>
     <string name="delayDialog">Ορισμός καθυστέρησης σε δευτερόλεπτα</string>
     <string name="pingDelayTitle">Χρονικό όριο Ping</string>
     <string name="notification_priority">Προτεραιότητα ειδοποιήσεων</string>

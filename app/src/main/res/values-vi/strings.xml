@@ -469,8 +469,6 @@
     <string name="label_zoomout">Thu nhỏ</string>
     <string name="exception_pref">Không thể chạy hoạt động do tuỳ chỉnh gặp lỗi. Hãy xoá hết dữ liệu ứng dụng</string>
     <string name="ipdetect">AFWall+ phát hiện kết nối IPv6. Hãy bật hỗ trợ trong Tuỳ chỉnh-Quy tắc/Kết nối và áp dụng lại</string>
-    <string name="delayTitle">Đặt số giây chờ</string>
-    <string name="delaySummary">AFWall+ đợi số giây này khi khởi động trước khi áp dụng quy tắc</string>
     <string name="delayDialog">Đặt thời gian chờ bằng giây</string>
     <string name="pingDelayTitle">Thời gian chờ ping</string>
     <string name="notification_priority">Mức ưu tiên thông báo</string>

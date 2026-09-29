@@ -469,8 +469,6 @@
     <string name="label_zoomout">Verkleinern</string>
     <string name="exception_pref">Aktivität kann aufgrund fehlerhafter Einstellungen nicht gestartet werden. Bitte Anwendungsdaten löschen.</string>
     <string name="ipdetect">AFWall+ hat eine IPv6-Verbindung erkannt. Bitte unter Einstellungen-Regel/Verbindung IPv6-Unterstützung aktivieren und erneut anwenden</string>
-    <string name="delayTitle">Startverzögerung (in Sekunden)</string>
-    <string name="delaySummary">AFWall+ wartet für die angegebene Zeit nach dem Gerätestart, bevor die Regeln angewendet werden</string>
     <string name="delayDialog">Startverzögerung (in Sekunden) festlegen</string>
     <string name="pingDelayTitle">Ping-Zeitüberschreitung</string>
     <string name="notification_priority">Benachrichtigungspriorität</string>

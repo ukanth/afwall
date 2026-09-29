@@ -469,8 +469,6 @@
     <string name="label_zoomout">Зменшити</string>
     <string name="exception_pref">Не вдалося розпочати діяльність через пошкоджену опцiю, будь ласка зніміть застосування даних</string>
     <string name="ipdetect">AFWall + виявив IPv6 з\'єднання. Будь ласка, увімкніть Опцii-Правила/Підключення і відновiть</string>
-    <string name="delayTitle">Ручка затримка в секундах</string>
-    <string name="delaySummary">AFWall + чекає, враховуючи наданi секунди після запуску, перед застосуванням правила</string>
     <string name="delayDialog">Установити тривалість у секундах</string>
     <string name="pingDelayTitle">Пінг очікування</string>
     <string name="notification_priority">Пріоритет повідомлення</string>

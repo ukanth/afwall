@@ -472,8 +472,6 @@
     <string name="label_zoomout">Uitzoomen</string>
     <string name="exception_pref">Kan de activiteit niet starten vanwege de corrupte voorkeur, verwijder de applicatie gegevens</string>
     <string name="ipdetect">AFWall+ heeft IPv6 verbinding gedetecteerd. Schakel in van Voorkeursregels/Connectie en pas opnieuw toe</string>
-    <string name="delayTitle">Aangepaste vertraging</string>
-    <string name="delaySummary">AFWall+ wacht voor enkele seconden na het opstarten voor het toepassen van regels</string>
     <string name="delayDialog">Vertraging in seconden</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">Notificatie prioriteit</string>

@@ -469,8 +469,6 @@
     <string name="label_zoomout">Zoom ud</string>
     <string name="exception_pref">Stand til at starte aktivitet på grund af beskadigede præference, venligst rydde application data</string>
     <string name="ipdetect">AFWall + opdaget IPv6-forbindelse. Venligst aktiver fra præference-regler/Connectivity og genanvende</string>
-    <string name="delayTitle">Brugerdefinerede sekunder forsinkelse</string>
-    <string name="delaySummary">AFWall + venter givet sekunder efter start før du anvender regler</string>
     <string name="delayDialog">Sæt forsinkelse i sekunder</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">Anmeldelse prioritet</string>

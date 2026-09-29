@@ -469,8 +469,6 @@
     <string name="label_zoomout">缩小</string>
     <string name="exception_pref">因為偏好設定毀損而無法啟動，請清除本程式資料</string>
     <string name="ipdetect">AFWall+ 檢測到 IPv6 連接。請從偏好設定 - 規則/連線中啟用後重新應用程式</string>
-    <string name="delayTitle">自訂延遲秒數</string>
-    <string name="delaySummary">AFWall+ 將等待幾秒來套用規則</string>
     <string name="delayDialog">設定延遲秒數</string>
     <string name="pingDelayTitle">Ping 超時</string>
     <string name="notification_priority">通知訊息的優先度</string>

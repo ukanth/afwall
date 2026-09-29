@@ -469,8 +469,6 @@
     <string name="label_zoomout">Smanji</string>
     <string name="exception_pref">Nije moguće pokrenuti aktivnost zbog pogreške u postavkama, izbrišite podatke aplikacije</string>
     <string name="ipdetect">AFWall+ je otkrio IPv6 vezu. U odjeljku Postavke-Pravila/Povezivanje omogućite IPv6 podršku i ponovo primijenite izmjene</string>
-    <string name="delayTitle">Prilagođena odgoda (u sekundama)</string>
-    <string name="delaySummary">AFWall+ čeka određeno vrijeme nakon pokretanja uređaja prije primjene pravila</string>
     <string name="delayDialog">Postavi odgodu u sekundama</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">Prioritet obavijesti</string>

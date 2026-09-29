@@ -469,8 +469,6 @@
     <string name="label_zoomout">Forminsk</string>
     <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
     <string name="ipdetect">AFWall+ oppdaget IPv6-forbindelse. Aktiver fra Innstillinger-Regler/Tilkobling og ta i bruk på nytt</string>
-    <string name="delayTitle">Tilpasset sekundforsinkelse</string>
-    <string name="delaySummary">AFWall+ waits for given seconds after startup before applying rules</string>
     <string name="delayDialog">Angi forsinkelse i sekunder</string>
     <string name="pingDelayTitle">Ping-tidsavbrudd</string>
     <string name="notification_priority">Varslingsprioritet</string>

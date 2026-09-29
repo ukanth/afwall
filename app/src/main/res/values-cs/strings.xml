@@ -470,8 +470,6 @@
     <string name="label_zoomout">Oddálit</string>
     <string name="exception_pref">Není možné spustit aktivitu z důvodu poškozené preference. Prosím vymažte data aplikace</string>
     <string name="ipdetect">AFWall+ zjistil připojení IPv6. Prosím zapněte ho pomocí Nastavení-Pravidla/Připojení a opětovně aplikujte</string>
-    <string name="delayTitle">Vlastní zpoždění v sekundách</string>
-    <string name="delaySummary">AFWall+ počká zadaný počet sekund po startu před aplikováním pravidel</string>
     <string name="delayDialog">Nastavit dobu prodlení v sekundách</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">Priorita oznámení</string>

@@ -133,7 +133,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     //private static final String LOG_DMESG = "logDmesg";
     private static final String SORT_BY = "sort";
     private static final String LAST_STORED_PROFILE = "storedProfile";
-    private static final String STARTUP_DELAY = "addDelayStart";
+    private static final String STARTUP_DELAY = "addStartupDelay";
+    private static final String STARTUP_DELAY_LEGACY = "addDelayStart";
     private static final String SYSTEM_APP_COLOR = "sysColor";
 
     private static final String PRIMARY_COLOR = "primaryColor";
@@ -218,7 +219,27 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean supportDual() {
-        return gPrefs.getBoolean(DUAL_APPS, false);
+        return gPrefs.getBoolean(DUAL_APPS, hasOtherProfiles());
+    }
+
+    private static Boolean hasOtherProfiles;
+
+    /**
+     * Default of "dual apps support": on when the device has a work profile / clone profile, so
+     * those apps are listed without having to find the setting. Only applies until the user sets it.
+     */
+    private static boolean hasOtherProfiles() {
+        if (hasOtherProfiles == null) {
+            boolean found = false;
+            try {
+                android.os.UserManager um = (android.os.UserManager) ctx.getSystemService(Context.USER_SERVICE);
+                found = um != null && um.getUserProfiles().size() > 1;
+            } catch (Exception e) {
+                Log.w(TAG, "Unable to list user profiles: " + e.getMessage());
+            }
+            hasOtherProfiles = found;
+        }
+        return hasOtherProfiles;
     }
 
     public static boolean supportDual(boolean val) {
@@ -900,7 +921,13 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     public static boolean startupDelay() {
-        return gPrefs.getBoolean(STARTUP_DELAY, false);
+        // the setting was saved as "addStartupDelay" but read from "addDelayStart", so it never
+        // took effect; honour both
+        return gPrefs.getBoolean(STARTUP_DELAY, false) || gPrefs.getBoolean(STARTUP_DELAY_LEGACY, false);
+    }
+
+    public static void startupDelay(boolean val) {
+        gPrefs.edit().putBoolean(STARTUP_DELAY, val).remove(STARTUP_DELAY_LEGACY).commit();
     }
 
     public static boolean isBootProcessActive() {

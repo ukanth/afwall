@@ -469,8 +469,6 @@
     <string name="label_zoomout">জুম আউট</string>
     <string name="exception_pref">ক্রিয়াকলাপের জন্য বিকৃত অগ্রাধিকার শুরু করতে অক্ষম, অনুগ্রহ করে পরিষ্কার প্রয়োগণ উপাত্ত</string>
     <string name="ipdetect">AFWall + IPv6 সংযোগ শনাক্ত করা হয়েছে। দয়া করে অগ্রাধিকার-আইন/সংযোগ ও হয় আবার স্প্রে করুন</string>
-    <string name="delayTitle">কাস্টম সেকেন্ড দেরি</string>
-    <string name="delaySummary">এফওয়াল + নিয়ম প্রয়োগ করার আগে স্টার্টআপের পরে দেওয়া সেকেন্ডের জন্য অপেক্ষা করে</string>
     <string name="delayDialog">সেকেন্ডের মধ্যে বিলম্ব সেট করুন</string>
     <string name="pingDelayTitle">পিং টাইমআউট</string>
     <string name="notification_priority">বিজ্ঞপ্তি অগ্রাধিকার</string>

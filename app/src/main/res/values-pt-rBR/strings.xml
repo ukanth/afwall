@@ -469,8 +469,6 @@
     <string name="label_zoomout">Zoom -</string>
     <string name="exception_pref">Não é possível iniciar a atividade devido a preferências corrompidas, Limpe os dados do aplicativo</string>
     <string name="ipdetect">AFWall+ conexão IPv6 detectada. Por favor, habilite em Preferências-Regras/Conectividade e reaplique</string>
-    <string name="delayTitle">Atraso personalizado em segundos</string>
-    <string name="delaySummary">AFWall + aguarda segundos após a inicialização antes de aplicar as regras</string>
     <string name="delayDialog">Definir o atraso em segundos</string>
     <string name="pingDelayTitle">Tempo de espera de ping</string>
     <string name="notification_priority">Prioridade de notificação</string>

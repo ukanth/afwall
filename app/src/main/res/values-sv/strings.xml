@@ -469,8 +469,6 @@
     <string name="label_zoomout">Zooma Ut</string>
     <string name="exception_pref">Det går inte att starta på grund av skadade inställningar, appens data behöver rensas</string>
     <string name="ipdetect">AFWall+ har upptäckt en IPv6-förbindelse. Vänligen aktivera IPv6 från Inställningar-Regler/Anslutningar</string>
-    <string name="delayTitle">Anpassad fördröjning i sekunder</string>
-    <string name="delaySummary">AFWall+ väntar angivet antal sekunder efter start innan regler appliceras</string>
     <string name="delayDialog">Ange längden i sekunder</string>
     <string name="pingDelayTitle">Ping timeout</string>
     <string name="notification_priority">Prioritet för avisering</string>

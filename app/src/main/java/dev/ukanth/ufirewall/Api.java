@@ -714,13 +714,14 @@ public final class Api {
                 }
             }
 
-            //add 1052 for LAN
+            // add 1052 for LAN; "afwall<userId>" under multi-user, so take the prefix of this chain
+            String chainPrefix = chain.contains("-") ? chain.substring(0, chain.indexOf('-')) : chain;
             if(G.enableLAN() && G.hasOwnerModule()) {
-                cmds.add("-A " + "afwall-wifi-lan" + " -m owner --uid-owner 1052 -j RETURN");
+                cmds.add("-A " + chainPrefix + "-wifi-lan" + " -m owner --uid-owner 1052 -j RETURN");
             }
 
             if (G.hasOwnerModule()) {
-                cmds.add("-A " + "afwall-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
+                cmds.add("-A " + chainPrefix + "-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
             }
         }
     }
@@ -4858,42 +4859,73 @@ public final class Api {
 
     public static void checkAndCopyFixLeak(final Context context, final String fileName) {
         if (G.initPath() != null && G.fixLeak()) {
-            final String srcPath = new File(ctx.getDir("bin", 0), fileName)
-                    .getAbsolutePath();
-
-            new Thread(() -> {
-                String path = G.initPath();
-                String dest = getFixLeakPath(fileName);
-                if (path != null && dest != null) {
-                    // Refresh our copy from the APK: bundled scripts are otherwise only re-extracted
-                    // when the version code changes.
-                    if (!installBinary(ctx, R.raw.afwallstart, fileName)) {
-                        Log.w(TAG, "Unable to refresh the fix leak script");
-                        return;
-                    }
-                    // Replace the installed script when it is missing or outdated (older versions did
-                    // nothing on devices with file-based encryption). The init dir is usually
-                    // root-only, so compare as root.
-                    if (com.topjohnwu.superuser.Shell.cmd("cmp -s '" + srcPath + "' '" + dest + "'").exec().isSuccess()) {
-                        return;
-                    }
-                    Log.i(TAG, "Installing fix leak script to " + dest);
-                    File f = new File(path);
-                    if (mountDir(context, getFixLeakPath(fileName), "RW")) {
-                        //make sure it's executable
-                        new RootCommand()
-                                .setReopenShell(true)
-                                .setLogging(true)
-                                .run(ctx, "chmod 755 " + f.getAbsolutePath());
-                        RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName),
-                                true, false);
-                        // init only runs executable scripts; synchronous, before remounting read-only
-                        com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + dest + "'").exec();
-                        mountDir(context, getFixLeakPath(fileName), "RO");
-                    }
-                }
-            }).start();
+            new Thread(() -> installFixLeakScript(context, fileName)).start();
         }
+    }
+
+    /**
+     * Install (or update) the fix leak script in the configured startup directory. Blocking: call
+     * it off the main thread.
+     *
+     * @return true if the installed script is up to date
+     */
+    public static boolean installFixLeakScript(final Context context, final String fileName) {
+        String path = G.initPath();
+        String dest = getFixLeakPath(fileName);
+        if (path == null || dest == null) {
+            return false;
+        }
+        final String srcPath = new File(ctx.getDir("bin", 0), fileName).getAbsolutePath();
+        // Refresh our copy from the APK: bundled scripts are otherwise only re-extracted
+        // when the version code changes.
+        if (!installBinary(ctx, R.raw.afwallstart, fileName)) {
+            Log.w(TAG, "Unable to refresh the fix leak script");
+            return false;
+        }
+        // Replace the installed script when it is missing or outdated (older versions did
+        // nothing on devices with file-based encryption). The init dir is usually
+        // root-only, so compare as root.
+        if (com.topjohnwu.superuser.Shell.cmd("cmp -s '" + srcPath + "' '" + dest + "'").exec().isSuccess()) {
+            return true;
+        }
+        Log.i(TAG, "Installing fix leak script to " + dest);
+        File f = new File(path);
+        if (!mountDir(context, dest, "RW")) {
+            Log.w(TAG, "Unable to mount " + path + " read-write");
+            return false;
+        }
+        //make sure it's executable
+        com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + f.getAbsolutePath() + "'").exec();
+        RootTools.copyFile(srcPath, (f.getAbsolutePath() + "/" + fileName), true, false);
+        // init only runs executable scripts; synchronous, before remounting read-only
+        com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + dest + "'").exec();
+        mountDir(context, dest, "RO");
+        return com.topjohnwu.superuser.Shell.cmd("cmp -s '" + srcPath + "' '" + dest + "'").exec().isSuccess();
+    }
+
+    /**
+     * Remove the fix leak script from the configured startup directory. Blocking.
+     *
+     * @return true if it is not installed anymore
+     */
+    public static boolean removeFixLeakScript(final Context context, final String fileName) {
+        return removeFixLeakScriptAt(context, getFixLeakPath(fileName));
+    }
+
+    /**
+     * @param dest full path of the installed script (e.g. in a previously used directory)
+     */
+    public static boolean removeFixLeakScriptAt(final Context context, final String dest) {
+        if (dest == null || !RootTools.exists(dest)) {
+            return true;
+        }
+        if (!mountDir(context, dest, "RW")) {
+            Log.w(TAG, "Unable to mount " + G.initPath() + " read-write");
+            return false;
+        }
+        boolean removed = com.topjohnwu.superuser.Shell.cmd("rm -f '" + dest + "'").exec().isSuccess();
+        mountDir(context, dest, "RO");
+        return removed;
     }
 
     public static Context updateBaseContextLocale(Context context) {

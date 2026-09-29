@@ -469,8 +469,6 @@
     <string name="label_zoomout">축소</string>
     <string name="exception_pref">손상된 설정때문에 액티비티를 실행할 수 없습니다. 애플리케이션 데이터를 지운 뒤 다시 시도하십시오</string>
     <string name="ipdetect">AFWall+ 이 IPv6 연결을 감지했습니다. IPv6 연결 설정을 활성화한 뒤 다시 적용하십시오</string>
-    <string name="delayTitle">사용자 정의 시간 단위 지연</string>
-    <string name="delaySummary">AFWall+ 이 활성화된 뒤, 규칙을 적용하기 전에 주어진 시간만큼 기다립니다.</string>
     <string name="delayDialog">초 단위 대기 시간 설정</string>
     <string name="pingDelayTitle">핑 타임 아웃</string>
     <string name="notification_priority">알림 우선 순위</string>

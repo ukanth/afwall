@@ -24,6 +24,7 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
     private int mMin;
     private int mValue;
     private String mSuffix;
+    private String mZeroText;
     private TextView mValueText;
     private SeekBar mSeekBar;
 
@@ -154,9 +155,22 @@ public class SeekBarPreference extends Preference implements SeekBar.OnSeekBarCh
 
     private void updateValueText() {
         if (mValueText != null) {
-            String suffix = mSuffix != null ? " " + mSuffix : "";
+            if (mValue == 0 && mZeroText != null) {
+                mValueText.setText(mZeroText);
+                return;
+            }
+            // suffixes are written with or without a leading space (" s"): show exactly one
+            String suffix = mSuffix != null && !mSuffix.trim().isEmpty() ? " " + mSuffix.trim() : "";
             mValueText.setText(String.valueOf(mValue) + suffix);
         }
+    }
+
+    /**
+     * @param zeroText shown instead of "0" (e.g. "Off" when 0 turns the setting off); null for "0"
+     */
+    public void setZeroText(String zeroText) {
+        mZeroText = zeroText;
+        updateValueText();
     }
 
     public void setMax(int max) {

@@ -25,10 +25,6 @@
         android:icon="@drawable/ic_menu_secure"
         android:title="@string/sec_prefs_title" />
     <header
-        android:fragment="dev.ukanth.ufirewall.preferences.ExpPreferenceFragment"
-        android:icon="@drawable/ic_menu_exp"
-        android:title="@string/exp_prefs_title" />
-    <header
         android:fragment="dev.ukanth.ufirewall.preferences.MultiProfilePreferenceFragment"
         android:icon="@drawable/ic_menu_profile"
         android:title="@string/mp_prefs_title" />
