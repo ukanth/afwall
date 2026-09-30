@@ -28,6 +28,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.profiles.ProfileAdapter;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
+import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -115,6 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
                     ProfileData data = ProfileHelper.getProfileByName(profileName);
                     if (data != null && ProfileHelper.deleteProfileByName(profileName)
                             && G.clearSharedPreferences(getApplicationContext(), data.getIdentifier())) {
+                        AppRuleHelper.deleteRulesForProfile(data.getIdentifier());
                         profilesList.remove(aInfo.position);
                         profileAdapter.notifyDataSetChanged();
                     }
@@ -146,6 +148,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                 SharedPreferences fromShared = getSharedPreferences(data.getIdentifier(), Context.MODE_PRIVATE);
                                                 SharedPreferences.Editor toShared = getSharedPreferences(identifier, Context.MODE_PRIVATE).edit();
                                                 Api.copySharedPreferences(fromShared,toShared);
+                                                AppRuleHelper.copyRulesToProfile(data.getIdentifier(), identifier);
                                                 profilesList.add(data1);
                                                 profileAdapter.notifyDataSetChanged();
                                             } else {

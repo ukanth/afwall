@@ -24,6 +24,7 @@ import dev.ukanth.ufirewall.MainActivity;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.customrules.CustomRule;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
+import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ThemeHelper;
 
 public class AppRulesActivity extends AppCompatActivity {
@@ -63,6 +64,13 @@ public class AppRulesActivity extends AppCompatActivity {
             label = packageName != null ? packageName : String.valueOf(uid);
         }
 
+        if (!AppRuleHelper.supportsUid(uid)) {
+            // kernel, tethering, NTP, ...: no UID iptables can match
+            Toast.makeText(this, R.string.direct_rules_not_supported, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
         TextView appTitle = findViewById(R.id.app_rules_app);
         appTitle.setText(label + " [" + uid + "]");
 
@@ -99,6 +107,11 @@ public class AppRulesActivity extends AppCompatActivity {
 
         if (!destinationValue.isEmpty() && !AppRuleHelper.isValidDestination(destinationValue)) {
             Toast.makeText(this, R.string.direct_rules_invalid_destination, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (AppRuleHelper.isIpv6Destination(destinationValue) && !G.enableIPv6()) {
+            Toast.makeText(this, R.string.direct_rules_ipv6_disabled, Toast.LENGTH_LONG).show();
             return;
         }
 

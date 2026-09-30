@@ -20,6 +20,7 @@ public final class AppRuleHelper {
     private static final String DEFAULT_PROFILE = "AFWallPrefs";
     private static final Pattern IPV4_PATTERN = Pattern.compile(
             "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:[0-9]|[1-2][0-9]|3[0-2]))?$");
+    private static final Pattern IPV6_CHARS = Pattern.compile("^[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*$");
     private static final Pattern PORT_PATTERN = Pattern.compile(
             "^(?:[1-9][0-9]{0,4})(?::(?:[1-9][0-9]{0,4}))?$");
 
@@ -95,12 +96,46 @@ public final class AppRuleHelper {
         return new ParsedRule(profile, uid, destination, protocol, port);
     }
 
+    /**
+     * @return true if direct rules can be made for {@code uid}: an app/system UID or "any app".
+     * The other special entries (kernel, tethering, NTP, ...) have no UID iptables can match, a
+     * rule for them would break the whole rule load.
+     */
+    public static boolean supportsUid(int uid) {
+        return uid >= 0 || uid == Api.SPECIAL_UID_ANY;
+    }
+
+    /**
+     * The rule as stored with the direct rule (shown in the rule list, and applied by versions
+     * before 4.2.0); the rules that are applied are built by {@link #buildRule}.
+     */
     public static String buildAllowRule(int uid, String destinationValue, String protocolValue, String portValue) {
+        return buildRule("afwall", uid, destinationValue, protocolValue, portValue);
+    }
+
+    /**
+     * @param chain main chain of the user ("afwall", or "afwall&lt;userId&gt;" in multi-user mode)
+     * @return the rule for the IPv4 or IPv6 table, or null if the rule doesn't apply to it (its
+     * destination is of the other family) or can't be made
+     */
+    public static String buildRule(ParsedRule parsed, String chain, boolean ipv6) {
+        if (parsed == null || !supportsUid(parsed.uid)) {
+            return null;
+        }
+        String destination = normalize(parsed.destination);
+        if (!destination.isEmpty() && isIpv6Destination(destination) != ipv6) {
+            return null;
+        }
+        return buildRule(chain, parsed.uid, destination, parsed.protocol, parsed.port);
+    }
+
+    private static String buildRule(String chain, int uid, String destinationValue, String protocolValue,
+                                    String portValue) {
         String destination = normalize(destinationValue);
         String protocol = normalize(protocolValue).toLowerCase(Locale.US);
         String port = normalize(portValue);
 
-        StringBuilder rule = new StringBuilder("-A afwall");
+        StringBuilder rule = new StringBuilder("-A ").append(chain);
         if (uid != Api.SPECIAL_UID_ANY) {
             rule.append(" -m owner --uid-owner ").append(uid);
         }
@@ -141,8 +176,42 @@ public final class AppRuleHelper {
         return name.toString();
     }
 
+    /**
+     * @return true for an IPv4 or IPv6 address or CIDR range
+     */
     public static boolean isValidDestination(String value) {
-        return IPV4_PATTERN.matcher(normalize(value)).matches();
+        String v = normalize(value);
+        return IPV4_PATTERN.matcher(v).matches() || isValidIpv6(v);
+    }
+
+    public static boolean isIpv6Destination(String value) {
+        return normalize(value).contains(":");
+    }
+
+    private static boolean isValidIpv6(String value) {
+        String address = value;
+        int slash = value.indexOf('/');
+        if (slash >= 0) {
+            address = value.substring(0, slash);
+            try {
+                int prefix = Integer.parseInt(value.substring(slash + 1));
+                if (prefix < 0 || prefix > 128) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        if (!IPV6_CHARS.matcher(address).matches()) {
+            return false;
+        }
+        try {
+            // a literal with ':' is parsed as IPv6, never looked up (IPv4-mapped addresses come
+            // back as IPv4 objects, ip6tables takes them as IPv6)
+            return java.net.InetAddress.getByName(address) != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static boolean isValidPortRange(String value) {
@@ -287,6 +356,71 @@ public final class AppRuleHelper {
         return isLegacyRuleName(name)
                 ? parts.length > 0 && uidStr.equals(parts[0])
                 : parts.length > 1 && uidStr.equals(parts[1]);
+    }
+
+    /**
+     * Delete the direct rules of a deleted profile, so a new profile with the same name doesn't
+     * get them.
+     */
+    public static int deleteRulesForProfile(String profile) {
+        String id = normalize(profile);
+        if (id.isEmpty() || DEFAULT_PROFILE.equals(id)) {
+            return 0; // the default profile can't be deleted
+        }
+        int deleted = 0;
+        try {
+            for (CustomRule rule : SQLite.select().from(CustomRule.class).queryList()) {
+                ParsedRule parsed = parseRuleName(rule.getName());
+                if (parsed != null && parsed.profile.equals(id)) {
+                    rule.delete();
+                    deleted++;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Unable to delete direct rules of profile " + id, e);
+        }
+        return deleted;
+    }
+
+    /**
+     * Copy the direct rules of a profile to a cloned one.
+     */
+    public static int copyRulesToProfile(String fromProfile, String toProfile) {
+        String from = profileId(fromProfile);
+        String to = profileId(toProfile);
+        int copied = 0;
+        if (from.equals(to)) {
+            return 0;
+        }
+        try {
+            for (CustomRule rule : SQLite.select().from(CustomRule.class).queryList()) {
+                ParsedRule parsed = parseRuleName(rule.getName());
+                if (parsed == null || !parsed.profile.equals(from)) {
+                    continue;
+                }
+                String name = buildAllowRuleName(to, parsed.uid, parsed.destination, parsed.protocol, parsed.port);
+                CustomRule copy = SQLite.select().from(CustomRule.class)
+                        .where(CustomRule_Table.name.eq(name)).querySingle();
+                if (copy == null) {
+                    copy = new CustomRule(name, rule.getRule());
+                }
+                copy.setRule(rule.getRule());
+                copy.setActive(rule.isActive());
+                copy.save();
+                copied++;
+            }
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Unable to copy direct rules from " + from + " to " + to, e);
+        }
+        return copied;
+    }
+
+    /**
+     * The default profile has an empty identifier in some places; its rules use "AFWallPrefs".
+     */
+    private static String profileId(String profile) {
+        String id = normalize(profile);
+        return id.isEmpty() ? DEFAULT_PROFILE : id;
     }
 
     public static void setRulesActiveForUid(int uid, boolean active) {

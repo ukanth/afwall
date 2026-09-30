@@ -321,6 +321,12 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             isRefreshRequired = true;
         }
 
+        if (key.equals("enableCustomRules")) {
+            // the direct rules are applied (or not) with the next full apply
+            dev.ukanth.ufirewall.MainActivity.requireFullApply();
+            Api.setRulesUpToDate(false);
+        }
+
         if (key.equals("ipt_path") || key.equals("dns_value")) {
             rxEvent.publish(new RulesEvent("", ctx));
         }

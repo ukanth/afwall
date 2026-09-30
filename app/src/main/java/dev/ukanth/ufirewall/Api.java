@@ -954,12 +954,21 @@ public final class Api {
             }
         }
 
-        if (includeDatabaseRules && PREF_CUSTOMSCRIPT.equals(prefName) && !ipv6) {
-            addDatabaseCustomRules(cmds);
+        if (includeDatabaseRules && PREF_CUSTOMSCRIPT.equals(prefName)) {
+            addDatabaseCustomRules(cmds, ipv6);
         }
     }
 
-    private static void addDatabaseCustomRules(List<String> cmds) {
+    /**
+     * The direct (per-app) rules of the current profile. Built from the rule itself for the main
+     * chain of this user and the table's address family: IPv6 only with IPv6 support on, and a
+     * rule with a destination only in the table of its family.
+     */
+    private static void addDatabaseCustomRules(List<String> cmds, boolean ipv6) {
+        if (!G.enableCustomRules() || (ipv6 && !G.enableIPv6())) {
+            return;
+        }
+        String chain = getThreadSafeChainName();
         try {
             List<CustomRule> customRules = SQLite.select()
                     .from(CustomRule.class)
@@ -970,7 +979,7 @@ public final class Api {
                 if (!AppRuleHelper.belongsToCurrentProfile(customRule)) {
                     continue;
                 }
-                String rule = customRule.getRule();
+                String rule = AppRuleHelper.buildRule(AppRuleHelper.parseRuleName(customRule.getName()), chain, ipv6);
                 if (rule != null && rule.matches(".*\\S.*")) {
                     String sanitizedRule = sanitizeRule(rule.trim());
                     if (sanitizedRule != null && !sanitizedRule.isEmpty()) {

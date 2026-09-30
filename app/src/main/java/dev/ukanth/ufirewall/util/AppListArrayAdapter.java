@@ -280,7 +280,8 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             openFirewallLogs(holder);
         });
         if (holder.actionDirectRules != null) {
-            holder.actionDirectRules.setVisibility(G.enableCustomRules() ? View.VISIBLE : View.GONE);
+            holder.actionDirectRules.setVisibility(G.enableCustomRules()
+                    && AppRuleHelper.supportsUid(holder.app.uid) ? View.VISIBLE : View.GONE);
             holder.actionDirectRules.setOnClickListener(v -> {
                 Log.d(TAG, "Direct rules clicked for UID: " + holder.app.uid);
                 openDirectRules(holder);

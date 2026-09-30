@@ -308,7 +308,7 @@ public final class BackupHelper {
     private static boolean importDirectRule(JSONObject o, Map<String, String> profileIds, DeviceUidMapper mapper) {
         String profile = profileIds.get(o.optString("profile", Api.DEFAULT_PREFS_NAME));
         Integer uid = BackupCodec.decodeUid(o.optJSONObject("target"), mapper);
-        if (profile == null || uid == null) {
+        if (profile == null || uid == null || !AppRuleHelper.supportsUid(uid)) {
             return false;
         }
         // the backup file is untrusted: rebuild the rule from validated fields
