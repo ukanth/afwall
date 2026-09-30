@@ -137,6 +137,7 @@ import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.service.RootShellService;
 import dev.ukanth.ufirewall.customrules.CustomRule;
 import dev.ukanth.ufirewall.customrules.CustomRule_Table;
+import dev.ukanth.ufirewall.util.ApkInfo;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.BackupHelper;
 import dev.ukanth.ufirewall.util.G;
@@ -247,12 +248,10 @@ public final class Api {
     private static List<Integer> listOfUids = new ArrayList<>();
 
 
-    private static Map<Integer, ApplicationInfo> uidToApplicationInfoMap = null;
 
 
     // "package:<name> uid:<uid>"; without --user the uids of every user follow, comma-separated
     // ("uid:10152,1010152,1110152"): take the first one (the main user's)
-    private static final Pattern dual_pattern = Pattern.compile("package:(\\S+) uid:(\\d+)", Pattern.MULTILINE);
 
     /**
      * @brief Special user/group IDs that aren't associated with
@@ -2457,6 +2456,7 @@ public final class Api {
             if(G.supportDual()) {
                 packagesForUser = getPackagesForUser(listOfUids);
                 profileMarkers = getUserProfileMarkers(listOfUids, profileTypes);
+                lastProfileMarkers = profileMarkers;
             }
 
             for (int i = 0; i < installed.size(); i++) {
@@ -2555,7 +2555,7 @@ public final class Api {
             // Headless system apps (CaptivePortalLogin, eSIM/euicc, sync adapters, ...) are invisible
             // to PackageManager without QUERY_ALL_PACKAGES, so they were missing from the list while
             // their traffic was blocked (#1476, #1490, #1499). Find them with one root call.
-            addPackagesHiddenFromPackageManager(installed, syncMap, selected_wifi, selected_3g,
+            addPackagesHiddenFromPackageManager(pkgmanager, installed, syncMap, selected_wifi, selected_3g,
                     selected_roam, selected_vpn, selected_tether, selected_lan, selected_tor);
 
             if (G.supportDual()) {
@@ -2741,11 +2741,12 @@ public final class Api {
 
     /**
      * Add the main user's packages that PackageManager doesn't show us (package visibility), as
-     * listed by root "pm list packages -U". They can't be queried through PackageManager, so they
-     * are shown by package name as system apps. Like the visible apps, the ones without INTERNET
+     * listed by root "pm list packages -f -U". They can't be queried through PackageManager; their
+     * label and icon are read from their APK (else they are shown by package name as system apps). Like the visible apps, the ones without INTERNET
      * are left out unless "show all apps" is enabled.
      */
-    private static void addPackagesHiddenFromPackageManager(List<ApplicationInfo> visible,
+    private static void addPackagesHiddenFromPackageManager(PackageManager pkgmanager,
+                                                            List<ApplicationInfo> visible,
                                                             SparseArray<PackageInfoData> syncMap,
                                                             List<Integer> selectedWifi, List<Integer> selected3g,
                                                             List<Integer> selectedRoam, List<Integer> selectedVpn,
@@ -2757,7 +2758,7 @@ public final class Api {
         }
         List<String> out;
         try {
-            Shell.Result result = Shell.cmd("pm list packages -U").exec();
+            Shell.Result result = Shell.cmd("pm list packages -f -U").exec();
             if (!result.isSuccess()) {
                 return;
             }
@@ -2768,22 +2769,27 @@ public final class Api {
         }
         // null = unknown (then nothing is filtered out)
         Set<String> withInternet = showAllApps() ? null : packagesHoldingInternet();
+        // updated system apps (WebView, ...) have their APK in /data too: ask which are third-party
+        Set<String> thirdParty = new HashSet<>();
+        try {
+            for (String line : Shell.cmd("pm list packages -3").exec().getOut()) {
+                if (line.startsWith("package:")) {
+                    thirdParty.add(line.substring("package:".length()).trim());
+                }
+            }
+        } catch (Exception ignored) {
+        }
         int added = 0;
         for (String line : out) {
-            Matcher m = dual_pattern.matcher(line);
-            if (!m.find()) {
+            ApkInfo.Line parsed = ApkInfo.parse(line);
+            if (parsed == null) {
                 continue;
             }
-            String pkg = m.group(1).trim();
+            String pkg = parsed.packageName;
             if (withInternet != null && !withInternet.contains(pkg)) {
                 continue;
             }
-            int uid;
-            try {
-                uid = Integer.parseInt(m.group(2).trim());
-            } catch (NumberFormatException e) {
-                continue;
-            }
+            int uid = parsed.uid;
             // only app UIDs; shared system UIDs (1000, 1073, ...) are listed as special entries
             if (visiblePackages.contains(pkg) || uid % 100000 < android.os.Process.FIRST_APPLICATION_UID) {
                 continue;
@@ -2801,6 +2807,20 @@ public final class Api {
             app.names = new ArrayList<>();
             app.names.add(pkg);
             app.appType = 0; // system
+            ApplicationInfo apk = ApkInfo.load(pkgmanager, parsed.apkPath, uid);
+            if (apk != null) {
+                app.appinfo = apk;
+                String label = getApplicationLabel(pkgmanager, apk, pkg);
+                if (label != null && !label.trim().isEmpty()) {
+                    app.names.set(0, label);
+                }
+                if (thirdParty.contains(pkg)) {
+                    apk.flags &= ~ApplicationInfo.FLAG_SYSTEM;
+                    app.appType = 1;
+                } else {
+                    apk.flags |= ApplicationInfo.FLAG_SYSTEM;
+                }
+            }
             app.selected_wifi = Collections.binarySearch(selectedWifi, uid) >= 0;
             app.selected_3g = Collections.binarySearch(selected3g, uid) >= 0;
             app.selected_roam = G.enableRoam() && Collections.binarySearch(selectedRoam, uid) >= 0;
@@ -2848,20 +2868,26 @@ public final class Api {
         return pkgs != null && pkgs.containsKey(appUid);
     }
 
+    /**
+     * APK of the packages of other users (work profile, Private Space, ...), from
+     * {@link #getPackagesForUser}: the label and icon of an app PackageManager doesn't show us.
+     */
+    private static final Map<String, String> apkPaths = new java.util.concurrent.ConcurrentHashMap<>();
+
     public static HashMap<Integer, String> getPackagesForUser(List<Integer> userProfile) {
         HashMap<Integer, String> listApps = new HashMap<>();
         for (Integer integer : userProfile) {
             try {
-                Shell.Result result = Shell.cmd("pm list packages -U --user " + integer).exec();
+                Shell.Result result = Shell.cmd("pm list packages -f -U --user " + integer).exec();
                 List<String> out = result.getOut();
-                Matcher matcher;
                 int userPackageCount = 0;
                 for (String item : out) {
-                    matcher = dual_pattern.matcher(item);
-                    if (matcher.find() && matcher.groupCount() > 0) {
-                        String packageName = matcher.group(1);
-                        String packageId = matcher.group(2);
-                        listApps.put(Integer.parseInt(packageId), packageName);
+                    ApkInfo.Line parsed = ApkInfo.parse(item);
+                    if (parsed != null) {
+                        listApps.put(parsed.uid, parsed.packageName);
+                        if (parsed.apkPath != null) {
+                            apkPaths.put(parsed.packageName, parsed.apkPath);
+                        }
                         userPackageCount++;
                     }
                 }
@@ -2936,6 +2962,10 @@ public final class Api {
             apinfo.uid = uid;
             return apinfo;
         } catch (Exception ignored) {
+            ApplicationInfo apk = ApkInfo.load(pkgmanager, apkPaths.get(packageName), uid);
+            if (apk != null) {
+                return apk;
+            }
             ApplicationInfo apinfo = new ApplicationInfo();
             apinfo.packageName = packageName;
             apinfo.uid = uid;
@@ -3002,6 +3032,29 @@ public final class Api {
             Log.w(TAG, "Unable to list user types: " + e.getMessage());
         }
         return types;
+    }
+
+    // markers of the last app list: "(W)" work profile, "(P)" Private Space, "(M)" other users
+    private static volatile Map<Integer, String> lastProfileMarkers = new HashMap<>();
+    private static volatile boolean profileMarkersLookedUp;
+
+    /**
+     * @return the marker of the user of {@code uid} as the app list shows it ("(W)", "(P)", "(M)")
+     */
+    public static String profileMarker(int uid) {
+        int userId = uid / 100000;
+        String marker = lastProfileMarkers.get(userId);
+        if (marker == null && userId > 0 && !profileMarkersLookedUp
+                && Looper.myLooper() != Looper.getMainLooper()) {
+            // dual apps off: the list didn't look up the profiles (root; not on the main thread)
+            profileMarkersLookedUp = true;
+            try {
+                lastProfileMarkers = getUserProfileMarkers(getListOfUids(), getProfileTypes());
+                marker = lastProfileMarkers.get(userId);
+            } catch (Exception ignored) {
+            }
+        }
+        return marker != null ? marker : "(M)";
     }
 
     private static HashMap<Integer, String> getUserProfileMarkers(List<Integer> userProfile,
@@ -3675,55 +3728,6 @@ public final class Api {
             }
         } catch (NameNotFoundException e) {
             return null;
-        }
-    }
-
-
-    public static Drawable getApplicationIcon(Context context, int appUid) {
-        if (uidToApplicationInfoMap == null) {
-            PackageManager packageManager = context.getPackageManager();
-            List<ApplicationInfo> installedApplications = new ArrayList<>(packageManager.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES));
-
-            // On Android 11+, supplement with shell-based discovery
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                Set<String> visiblePackages = new HashSet<>();
-                for (ApplicationInfo ai : installedApplications) {
-                    visiblePackages.add(ai.packageName);
-                }
-                try {
-                    Shell.Result result = Shell.cmd("pm list packages").exec();
-                    List<String> out = result.getOut();
-                    for (String line : out) {
-                        if (line.startsWith("package:")) {
-                            String pkg = line.substring(8).trim();
-                            if (!visiblePackages.contains(pkg)) {
-                                try {
-                                    ApplicationInfo ai = packageManager.getApplicationInfo(pkg, PackageManager.GET_UNINSTALLED_PACKAGES);
-                                    installedApplications.add(ai);
-                                } catch (NameNotFoundException ignored) {
-                                }
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.w(TAG, "Shell-based icon lookup supplement failed: " + e.getMessage());
-                }
-            }
-
-            uidToApplicationInfoMap = new HashMap<>();
-            for (ApplicationInfo applicationInfo : installedApplications) {
-                if (!uidToApplicationInfoMap.containsKey(applicationInfo.uid)) {
-                    uidToApplicationInfoMap.put(applicationInfo.uid, applicationInfo);
-                }
-            }
-        }
-
-        ApplicationInfo applicationInfo = uidToApplicationInfoMap.get(appUid);
-        if (applicationInfo != null) {
-            PackageManager packageManager = context.getPackageManager();
-            return applicationInfo.loadIcon(packageManager);        // The application icon.
-        } else {
-            return context.getDrawable(R.drawable.ic_unknown);      // The default icon.
         }
     }
 

@@ -303,6 +303,16 @@ public class LogInfo {
                                         break;
                                     }
                                 }
+                                // an app of a work profile / Private Space not in the list (dual apps
+                                // off): the label of the same app of the main user and the profile marker
+                                if ((appName == null || appName.length() == 0) && uid >= 100000) {
+                                    for (PackageInfoData app : apps) {
+                                        if (app.uid == uid % 100000) {
+                                            appName = app.names.get(0) + " " + Api.profileMarker(uid);
+                                            break;
+                                        }
+                                    }
+                                }
                                 // Android package visibility can hide packages from PackageManager.
                                 // Fall back to shell-backed UID resolution before showing "Deleted App".
                                 if (appName == null || appName.length() == 0) {

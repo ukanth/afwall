@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,17 +177,11 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
 
         if (!G.disableIcons()) {
             if (usesDefaultAndroidIcon(holder.app)) {
-                holder.icon.setImageDrawable(ThemeHelper.defaultAndroidIcon(context));
+                holder.icon.setImageDrawable(specialIcon(holder.app));
             } else {
                 holder.icon.setImageDrawable(holder.app.cached_icon);
                 if (!holder.app.icon_loaded && info != null) {
-                    // this icon has not been loaded yet - load it on a
-                    // separated thread
-                    try {
-                        new LoadIconTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, holder.app,
-                                context.getPackageManager(), convertView);
-                    } catch (Exception r) {
-                    }
+                    loadIcon(holder.app, convertView);
                 }
             }
 
@@ -305,6 +297,48 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
             Log.e(TAG, "Error updating notification icon", e);
             holder.actionToggleLog.setImageResource(R.drawable.ic_notifications_on_black_24dp);
         }
+    }
+
+    /**
+     * Icon of an entry without an app icon: its own for the special entries (kernel, root, ...),
+     * one for Android services without an app, else the default one.
+     */
+    private Drawable specialIcon(Api.PackageInfoData app) {
+        Drawable icon = null;
+        if (app.pkgName.startsWith("dev.afwall.special.")) {
+            icon = AppIcons.special(context, app.uid);
+            if (icon == null && app.uid > 0 && app.uid < android.os.Process.FIRST_APPLICATION_UID) {
+                icon = AppIcons.systemService(context);
+            }
+        }
+        return icon != null ? icon : ThemeHelper.defaultAndroidIcon(context);
+    }
+
+    // apps whose icon is being loaded, so a row bound again meanwhile doesn't load it twice
+    private final Set<Api.PackageInfoData> iconsLoading =
+            java.util.Collections.newSetFromMap(new java.util.concurrent.ConcurrentHashMap<>());
+
+    private void loadIcon(Api.PackageInfoData app, View row) {
+        if (!iconsLoading.add(app)) {
+            return;
+        }
+        final PackageManager pm = context.getPackageManager();
+        AppIcons.load(() -> {
+            try {
+                // work profile / Private Space apps get the profile badge
+                app.cached_icon = AppIcons.badge(pm, pm.getApplicationIcon(app.appinfo), app.uid);
+            } catch (Exception e) {
+                app.cached_icon = ThemeHelper.defaultAndroidIcon(context);
+            }
+            app.icon_loaded = true;
+        }, () -> {
+            iconsLoading.remove(app);
+            Object tag = row.getTag();
+            // the row may show another app by now
+            if (tag instanceof AppStateHolder && ((AppStateHolder) tag).app == app) {
+                ((AppStateHolder) tag).icon.setImageDrawable(app.cached_icon);
+            }
+        });
     }
 
     private boolean usesDefaultAndroidIcon(Api.PackageInfoData app) {
@@ -696,46 +730,6 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
         private TextView lastActivity;
         private TextView lastBlockedDestination;
         private TextView dataUsage;
-    }
-
-    /**
-     * Asynchronous task used to load icons in a background thread.
-     */
-    private static class LoadIconTask extends AsyncTask<Object, Void, View> {
-        @Override
-        protected View doInBackground(Object... params) {
-            try {
-                final PackageInfoData app = (PackageInfoData) params[0];
-                final PackageManager pkgMgr = (PackageManager) params[1];
-                final View viewToUpdate = (View) params[2];
-                if (!app.icon_loaded) {
-                    Drawable d = new ScaleDrawable(pkgMgr.getApplicationIcon(app.appinfo), 0, 32, 32).getDrawable();
-                    d.setBounds(0, 0, 32, 32);
-                    app.cached_icon = d;
-                    app.icon_loaded = true;
-                }
-                // Return the view to update at "onPostExecute"
-                // Note that we cannot be sure that this view still references
-                // "app"
-                return viewToUpdate;
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading icon", e);
-                return null;
-            }
-        }
-
-        protected void onPostExecute(View viewToUpdate) {
-            try {
-                // This is executed in the UI thread, so it is safe to use
-                // viewToUpdate.getTag()
-                // and modify the UI
-                final AppStateHolder entryToUpdate = (AppStateHolder) viewToUpdate.getTag();
-                entryToUpdate.icon.setImageDrawable(entryToUpdate.app.cached_icon);
-            } catch (Exception e) {
-                Log.e(TAG, "Error showing icon", e);
-            }
-        }
-
     }
 
     /**

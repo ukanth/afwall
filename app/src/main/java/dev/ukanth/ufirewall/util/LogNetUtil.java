@@ -7,14 +7,9 @@ import androidx.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.topjohnwu.superuser.Shell;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -35,8 +30,6 @@ public class LogNetUtil {
         MaterialDialog progress;
         Context context;
         String output_result = "";
-
-        private static final String PING_CMD = "%s ping -w 1 -W %d %s";
 
         public NetTask(Context context) {
             this.context = context;
@@ -68,37 +61,6 @@ public class LogNetUtil {
             start_time = System.currentTimeMillis();
             try {
                 switch (params[0].type) {
-                    case PING:
-                        // Ping
-                        try {
-                            String shell_result = "";
-                            String command = "";
-                            try {
-                                // This command needs permission to allow
-                                // AFWall+ itself to has access to network
-                                // to work probably
-                                command = String.format(PING_CMD, "", G.logPingTimeout(), params[0].address);
-                                Log.d(TAG, "Execute CMD: " + command);
-                                Process process = Runtime.getRuntime().exec(command);
-                                process.waitFor();
-                                Log.d(TAG, "CMD exit code: " + process.exitValue());
-                                // check if ping command does not encounter any errors
-                                if (process.exitValue() == 0) {
-                                    //The ping was succeeded.
-                                    shell_result = parse(process);
-                                } else {
-                                    shell_result = su_busyboox_ping(params[0].address);
-                                }
-                            } catch (Exception ping_cmd_ex) {
-                                Log.e(TAG, "Exception(00): " + ping_cmd_ex.getMessage());
-                                shell_result = su_busyboox_ping(params[0].address);
-                            }
-                            return shell_result;
-                        } catch (Exception eex) {
-                            Log.e(TAG, "Exception(01): " + eex.getMessage());
-                            // final choice is to use Android API
-                            return normal_ping(params[0].address);
-                        }
                     case RESOLVE:
                         // Resolve
                         try {
@@ -156,67 +118,9 @@ public class LogNetUtil {
                         }
                     }).show();
         }
-
-        private String normal_ping(String ip) {
-            String result = "";
-            try {
-                if (InetAddress.getByAddress(ip.getBytes()).isReachable(G.logPingTimeout() * 1000)) { // isReachable expect timeout in millisecond
-                    result = String.format(context.getString(R.string.reachable_timeout), finish_time());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Exception(04): " + e.getMessage());
-                result = String.format("Currently IP(%s) is not Reachable, timeout: %d ms", ip, finish_time());
-            }
-            return result;
-        }
-
-        private String su_busyboox_ping(String ip) {
-            // ping with Busybox as root (libsu main shell; stderr is merged into the output),
-            // This will need permission in AFWall+
-            // "0:(root) Apps running as root"
-            String result = "";
-            String command = String.format(PING_CMD, Api.getBusyBoxPath(context, true), G.logPingTimeout(), ip);
-            Log.d(TAG, "Execute CMD: " + command);
-            result = parse(Shell.cmd(command).exec().getOut());
-            if (result.isEmpty()) {
-
-                return context.getString(R.string.network_connection_not_available);
-            }
-            return result;
-        }
-
-        private String parse(List<String> output) {
-            StringBuilder resultBuilder = new StringBuilder();
-            for (String line : output) {
-                resultBuilder.append(line).append(" ");
-            }
-            String result = resultBuilder.toString();
-            if (result.isEmpty()) {
-                return context.getString(R.string.output_is_empty);
-            }
-            return result;
-        }
-
-        private String parse(Process process) {
-            try {
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(process.getInputStream()));
-                // Grab the results
-                StringBuilder log = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    log.append(line).append("\n");
-                }
-                return log.toString();
-            } catch (IOException e) {
-                Log.e(TAG, "Exception(05): " + e.getMessage());
-            }
-            return context.getString(R.string.output_is_empty);
-        }
     }
 
     public enum JobType {
-        PING,
         RESOLVE
     }
 

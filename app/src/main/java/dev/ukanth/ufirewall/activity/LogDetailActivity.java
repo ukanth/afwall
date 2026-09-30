@@ -68,6 +68,7 @@ import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.FirewallActions;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.LogNetUtil;
 import dev.ukanth.ufirewall.util.ThemeHelper;
 
@@ -97,6 +98,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     private TextView timePeriod;
     private TextView mostBlockedDestination;
     private TextView loadingMoreIndicator;
+    private View summaryHeader;
+    private boolean loadMoreListenerAdded;
 
     protected static final int MENU_EXPORT_LOG = 100;
 
@@ -133,6 +136,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
         recyclerView = findViewById(R.id.detailrecyclerview);
         emptyView = findViewById(R.id.emptydetail_view);
+        summaryHeader = findViewById(R.id.summary_header);
         
         // Initialize summary views
         totalBlocks = findViewById(R.id.total_blocks);
@@ -159,8 +163,6 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             //menu.add(0, v.getId(), 0, R.string.add_ip_rule);
             menu.add(0, v.getId(), 1, R.string.show_destination_address);
             menu.add(0, v.getId(), 2, R.string.show_source_address);
-            menu.add(0, v.getId(), 3, R.string.ping_destination);
-            menu.add(0, v.getId(), 4, R.string.ping_source);
             menu.add(0, v.getId(), 5, R.string.resolve_destination);
             menu.add(0, v.getId(), 6, R.string.resolve_source);
             // Only show Copy Domain if a hostname was resolved
@@ -168,8 +170,6 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             if (hostname != null && !hostname.trim().isEmpty() && !hostname.equals(current_selected_logData.getDst())) {
                 menu.add(0, v.getId(), 9, R.string.copy_domain);
             }
-            menu.add(0, v.getId(), 10, "Block this destination permanently");
-            menu.add(0, v.getId(), 11, "Whitelist this destination");
             // the app's own rule, also for system UIDs without a package (-100: no UID known)
             if (uid != -100) {
                 menu.add(0, v.getId(), 12, R.string.log_allow_app);
@@ -235,19 +235,6 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                         .show();
                 break;
 
-            case 3: // Ping Destination
-                new LogNetUtil.NetTask(this).execute(
-                        new LogNetUtil.NetParam(LogNetUtil.JobType.PING, current_selected_logData.getDst())
-                );
-
-                break;
-
-            case 4: // Ping Source
-                new LogNetUtil.NetTask(this).execute(
-                        new LogNetUtil.NetParam(LogNetUtil.JobType.PING, current_selected_logData.getSrc())
-                );
-                break;
-
             case 5: // Resolve Destination
                 new LogNetUtil.NetTask(this).execute(
                         new LogNetUtil.NetParam(LogNetUtil.JobType.RESOLVE, current_selected_logData.getDst())
@@ -261,9 +248,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 break;
             case 7:
                 G.updateLogNotification(uid, false);
+                Api.toast(LogDetailActivity.this, getString(R.string.log_notification_on));
                 break;
             case 8:
                 G.updateLogNotification(uid, true);
+                // like the notification's "Mute" action
+                Notifications.forgetBlocked(getApplicationContext(), uid);
+                Api.toast(LogDetailActivity.this, getString(R.string.log_notification_off));
                 break;
             case 9: // Copy Domain
                 String domain = current_selected_logData.getHostname();
@@ -273,12 +264,6 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 } else {
                     Api.toast(LogDetailActivity.this, getString(R.string.no_domain_resolved));
                 }
-                break;
-            case 10: // Block destination permanently
-                showBlockDestinationDialog();
-                break;
-            case 11: // Whitelist destination
-                showWhitelistDestinationDialog();
                 break;
             case 12: // Allow the app on the connection types in use
             case 13: // Block it
@@ -362,7 +347,6 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 
                 if (logDataList != null && logDataList.size() > 0) {
                     Collections.sort(logDataList, new DateComparator());
-                    recyclerViewAdapter.updateData(logDataList);
                     return true;
                 } else {
                     return false;
@@ -402,8 +386,11 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             mSwipeLayout.setRefreshing(false);
 
             if (logPresent != null && logPresent) {
+                // the adapter's data only changes on the main thread
+                recyclerViewAdapter.updateData(logDataList);
                 recyclerView.setVisibility(View.VISIBLE);
                 mSwipeLayout.setVisibility(View.VISIBLE);
+                summaryHeader.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
                 recyclerViewAdapter.notifyDataSetChanged();
                 
@@ -420,6 +407,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             } else {
                 mSwipeLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.GONE);
+                summaryHeader.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
         }
@@ -492,43 +480,11 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             if (logDataList.get(0).getAppName() != null) {
                 appName = logDataList.get(0).getAppName();
             }
-            String title = appName + " (" + logDataList.size() + " blocked)";
+            // all of the app's entries, not the first page
+            int total = fullLogDataList != null ? fullLogDataList.size() : logDataList.size();
+            String title = appName + " (" + total + " blocked)";
             setTitle(title);
         }
-    }
-    
-    private void showBlockDestinationDialog() {
-        if (current_selected_logData == null) return;
-        
-        new MaterialDialog.Builder(this)
-            .title("Block Destination")
-            .content("Add a permanent rule to block all connections to " + 
-                    current_selected_logData.getDst() + ":" + current_selected_logData.getDpt() + "?")
-            .positiveText("Block")
-            .negativeText("Cancel")
-            .onPositive((dialog, which) -> {
-                // Here you would integrate with AFWall's custom rule system
-                // This is a placeholder for the actual implementation
-                Api.toast(this, "Feature requires integration with custom rules system");
-            })
-            .show();
-    }
-    
-    private void showWhitelistDestinationDialog() {
-        if (current_selected_logData == null) return;
-        
-        new MaterialDialog.Builder(this)
-            .title("Whitelist Destination")
-            .content("Add a permanent rule to allow all connections to " + 
-                    current_selected_logData.getDst() + ":" + current_selected_logData.getDpt() + "?")
-            .positiveText("Allow")
-            .negativeText("Cancel")
-            .onPositive((dialog, which) -> {
-                // Here you would integrate with AFWall's custom rule system
-                // This is a placeholder for the actual implementation
-                Api.toast(this, "Feature requires integration with custom rules system");
-            })
-            .show();
     }
     
     private void updateSummaryStatistics() {
@@ -584,6 +540,10 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
     }
     
     private void setupLoadMoreFunctionality() {
+        if (loadMoreListenerAdded) {
+            return; // a refresh would add another one
+        }
+        loadMoreListenerAdded = true;
         // Add scroll listener to load more data when user reaches bottom
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -628,12 +588,10 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     Collections.sort(newData, new DateComparator());
                     
                     runOnUiThread(() -> {
-                        // Add new data to existing list
-                        logDataList.addAll(newData);
-                        recyclerViewAdapter.notifyItemRangeInserted(
-                            logDataList.size() - newData.size(), 
-                            newData.size()
-                        );
+                        // the adapter keeps its own copy of the rows
+                        int start = recyclerViewAdapter.getItemCount();
+                        recyclerViewAdapter.addData(newData);
+                        recyclerViewAdapter.notifyItemRangeInserted(start, newData.size());
                         loadingMoreIndicator.setVisibility(View.GONE);
                         isLoading = false;
                     });

@@ -115,7 +115,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     //private static final String BLOCK_IPV6 = "blockIPv6";
     private static final String ENABLE_INBOUND = "enableInbound";
     private static final String ENABLE_LOG_SERVICE = "enableLogService";
-    private static final String LOG_PING_TIMEOUT = "logPingTime";
     private static final String ENABLE_ADMIN = "enableAdmin";
     private static final String DUAL_APPS = "supportDualApps";
     private static final String ENABLE_DEVICE_CHECK = "enableDeviceCheck";
@@ -561,10 +560,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
-    public static int logPingTimeout() {
-        return readInt(LOG_PING_TIMEOUT, 10);
-    }
-
     /**
      * Read an int preference that may also be stored as a string: the setting screen stores an int,
      * but older versions and old backup imports wrote a string, and getInt() would throw on that.
@@ -582,11 +577,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         }
         return defaultValue;
     }
-
-    /*public static void logPingTimeout(int logPingTimeout) {
-        gPrefs.edit().remove(LOG_PING_TIMEOUT);
-        gPrefs.edit().putString(LOG_PING_TIMEOUT, logPingTimeout+"");
-    }*/
 
     public static boolean enableAdmin() {
         return gPrefs.getBoolean(ENABLE_ADMIN, false);

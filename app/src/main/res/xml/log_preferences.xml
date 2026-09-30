@@ -56,15 +56,6 @@
             android:key="toast_pos"
             android:title="@string/position"></ListPreference> -->
 
-        <dev.ukanth.ufirewall.preferences.SeekBarPreference
-            android:dependency="enableLogService"
-            android:defaultValue="10"
-            android:max="60"
-            android:key="logPingTime"
-            android:title="@string/pingDelayTitle"
-            app:min="5"
-            app:suffix=" s" />
-
         <!--<Preference
             android:key="block_filter"
             android:title="@string/filters_apps_title"></Preference> -->

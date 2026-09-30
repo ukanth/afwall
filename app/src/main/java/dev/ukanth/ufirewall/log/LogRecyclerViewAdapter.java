@@ -25,6 +25,7 @@ import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.AppIcons;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -62,12 +63,8 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
     public void onBindViewHolder(ViewHolder holder, int position) {
         data = logData.get(position);
         holder.bind(logData.get(position),recyclerItemClickListener);
-        try {
-            Drawable applicationIcon = Api.getApplicationIcon(context, data.getUid());
-            holder.icon.setBackground(applicationIcon);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
+        // loaded off the main thread, work profile apps badged
+        AppIcons.showAsBackground(context, data.getUid(), holder.icon);
 
         try {
             //if(data.getTimestamp() != null && !data.getTimestamp().isEmpty()) {

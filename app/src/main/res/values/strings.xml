@@ -32,6 +32,9 @@
     <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
     <string name="log_allow_app">Allow this app</string>
     <string name="log_block_app">Block this app</string>
+    <string name="log_notification_off">Notifications for this app\'s blocked connections turned off</string>
+    <string name="log_notification_on">Notifications for this app\'s blocked connections turned on</string>
+    <string name="log_loading_more">Loading more entries…</string>
     <string name="system_uid_item">System service</string>
     <string name="kernel_item">(kernel) - kernel VPNs (WireGuard, IPsec)</string>
     <string name="android_system">Android System</string>
@@ -423,7 +426,7 @@
     <string name="tether">USB Bluetooth Tether</string>
     <string name="tor">Tor</string>
     <string name="data">Data</string>
-    <string name="legend_data">Let AFWAll+ control mobile data (2G,3G,EDGE,LTE/4G) permissions</string>
+    <string name="legend_data">Let AFWall+ control mobile data (2G, 3G, 4G/LTE, 5G) permissions</string>
 
     <string name="pkg_all">All</string>
     <string name="pkg_core">Core</string>
@@ -765,4 +768,67 @@
     <string name="direct_rules_removed">Direct rule removed.</string>
     <string name="direct_rules_remove">Remove</string>
     <string name="direct_rules_log_missing_data">Selected log item does not include enough app and destination data.</string>
+    <!-- Help screen -->
+    <string name="help_network_types">Network Types</string>
+    <string name="help_wifi">Wi-Fi</string>
+    <string name="help_mobile_data">Mobile Data</string>
+    <string name="help_lan">LAN</string>
+    <string name="help_roaming">Roaming</string>
+    <string name="help_vpn">VPN</string>
+    <string name="help_tethering">Tethering</string>
+    <string name="help_tor" translatable="false">Tor</string>
+    <string name="help_actions">Actions</string>
+    <string name="help_allow">Allow</string>
+    <string name="help_deny">Deny</string>
+    <string name="help_invert">Invert</string>
+    <string name="help_clear">Clear</string>
+    <string name="help_app_full_name" translatable="false">Android Firewall+</string>
+    <string name="help_tagline">Advanced iptables firewall for Android</string>
+    <string name="help_key_features">Key Features</string>
+    <string name="help_feature_network">Network Control</string>
+    <string name="help_feature_network_desc">Restrict which apps can access data networks</string>
+    <string name="help_feature_data">Data Savings</string>
+    <string name="help_feature_data_desc">Perfect for limited data plans and battery savings</string>
+    <string name="help_feature_privacy">Privacy Protection</string>
+    <string name="help_feature_privacy_desc">Enhanced privacy by controlling app network access</string>
+    <string name="help_about_title">About AFWall+</string>
+    <string name="help_about_text">AFWall+ (aka Android Firewall+) is a front-end application for the powerful iptables Linux firewall. It allows you to restrict which applications are permitted to access data networks. This is the perfect solution if you have a limited data plan, want to extend battery life, or want to improve your privacy.</string>
+    <string name="help_links">Useful Links</string>
+    <string name="help_link_wiki">Wiki &amp; FAQ</string>
+    <string name="help_link_source">Source Code</string>
+    <string name="help_link_issues">Report Issues</string>
+    <string name="help_developers">Developers</string>
+    <string name="help_developer_1" translatable="false">Umakanthan Chandran</string>
+    <string name="help_developer_active">Active</string>
+    <string name="help_developer_2" translatable="false">Kevin Cernekee</string>
+    <string name="help_special_thanks">Special Thanks</string>
+    <string name="help_thanks_list">• Pragma (Networklog)\n• Rodrigo Rosauro (DroidWall)\n• PdtS, werewolfdev, Material Design Icons (Icons)\n• CHEF-KOCH (AFWall+ Wiki)\n• All translators and contributors</string>
+    <string name="help_license_title">License &amp; Libraries</string>
+    <string name="help_license_text">AFWall+ is licensed under GNU General Public License v3.0</string>
+    <string name="help_app_list">App list</string>
+    <string name="help_column_icons">Column icons</string>
+    <string name="help_column_icons_desc">Tap a network icon above the list to check, uncheck or invert that column</string>
+    <string name="help_column_actions">Column actions</string>
+    <string name="help_column_actions_desc">The gear above the list inverts, clones or clears columns</string>
+    <string name="help_clone">Clone</string>
+    <string name="help_clone_desc">Copy the selection of one column to another</string>
+    <string name="help_app_actions">App actions</string>
+    <string name="help_app_actions_desc">Tap an app\'s icon to show its actions</string>
+    <string name="help_action_notify">Notifications</string>
+    <string name="help_action_notify_desc">Notify about the app\'s blocked connections, or not</string>
+    <string name="help_action_open">App settings</string>
+    <string name="help_action_open_desc">Open Android\'s settings of the app</string>
+    <string name="help_action_log">Log</string>
+    <string name="help_action_log_desc">The app\'s blocked connections</string>
+    <string name="help_action_rules">Direct rules</string>
+    <string name="help_action_rules_desc">Let the app reach specific addresses or ports</string>
+    <string name="help_special_entries">Special entries</string>
+    <string name="help_special_entries_desc">(kernel), (root), (dns), … are Android services without an app</string>
+    <string name="help_profiles">Profiles and users</string>
+    <string name="help_profiles_desc">(W) work profile, (P) Private Space, (M) other users; work profile apps have a briefcase badge</string>
+    <string name="help_colors">Colors</string>
+    <string name="help_colors_desc">User apps and system apps have different name colors (Preferences &gt; Themes)</string>
+    <string name="help_status">Firewall status</string>
+    <string name="help_status_desc">The shield next to the title shows whether the firewall is on</string>
+    <string name="help_libraries">Key libraries: iptables (GPLv2), BusyBox (GPLv2), libsu (Apache 2.0), material-dialogs (MIT), DBFlow (MIT), RxJava (Apache 2.0), dnsjava (BSD), PrettyTime (Apache 2.0)</string>
 </resources>

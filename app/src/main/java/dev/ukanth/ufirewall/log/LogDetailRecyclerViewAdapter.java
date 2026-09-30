@@ -47,6 +47,13 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         logData.addAll(logDataList);
     }
 
+    /**
+     * Append a page of rows (main thread; notify the insert afterwards).
+     */
+    public void addData(List<LogData> more) {
+        logData.addAll(more);
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View mView = LayoutInflater.from(parent.getContext()).inflate(R.layout.logdetail_recycle_item, parent, false);

@@ -30,7 +30,6 @@ public class LogPreferenceFragment extends PreferenceFragment {
         // Load the preferences from an XML resource
         try {
             //fix for the mess
-            //G.logPingTimeout(G.logPingTimeout());
             addPreferencesFromResource(R.xml.log_preferences);
           //  populateLogMessage(findPreference("logDmesg"));
            // populateAppList(findPreference("block_filter"));
