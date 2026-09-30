@@ -9,8 +9,8 @@ android {
         applicationId "dev.ukanth.ufirewall"
         minSdkVersion 23
         targetSdk 36
-        versionCode 20260801
-        versionName "4.1.0"
+        versionCode 20260927
+        versionName "4.2.0"
         buildConfigField 'boolean', 'DONATE', 'false'
         vectorDrawables.useSupportLibrary = true
         ndk {
@@ -66,10 +66,8 @@ dependencies {
     def libsuVersion = '6.0.0'
     def dbFlowVersion = '4.2.4'
 
+    // the only root library: rule scripts, one-off root commands and the log watcher
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
-    implementation "com.github.topjohnwu.libsu:service:${libsuVersion}"
-    implementation "com.github.topjohnwu.libsu:nio:${libsuVersion}"
-    implementation "eu.chainfire:libsuperuser:1.1.0"
     implementation "com.github.ukanth:android-lockpattern:8.0.4"
     implementation "com.afollestad.material-dialogs:core:0.9.6.0"
     implementation "androidx.appcompat:appcompat:1.6.1"
@@ -92,4 +90,6 @@ dependencies {
     implementation "dnsjava:dnsjava:3.6.5"
 
     testImplementation "junit:junit:4.13.2"
+    // real org.json for unit tests (the Android one is only stubs there)
+    testImplementation "org.json:json:20240303"
 }

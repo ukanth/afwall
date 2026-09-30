@@ -33,6 +33,7 @@ import dev.ukanth.ufirewall.R;
 public class UidResolver {
     
     private static final String TAG = "AFWall";
+    private static final int PER_USER_RANGE = 100000;
     
     // System UID database - well-known Android system UIDs
     private static final SparseArray<String> SYSTEM_UIDS = new SparseArray<>();
@@ -202,8 +203,21 @@ public class UidResolver {
             return result;
         }
         
-        // Cache unknown result with shorter TTL
         String unknown = ctx.getString(R.string.unknown_item);
+
+        // Method 5: app of another user (work profile, Private Space, clone): the same app id
+        // as in the main user, which the methods above can't see
+        if (uid >= PER_USER_RANGE) {
+            String base = resolveUid(ctx, uid % PER_USER_RANGE);
+            if (!unknown.equals(base)) {
+                result = base + " (user " + (uid / PER_USER_RANGE) + ")";
+                cacheResult(uid, result, ResolutionMethod.PACKAGE_MANAGER);
+                Log.d(TAG, "UID " + uid + " resolved via app id: " + result);
+                return result;
+            }
+        }
+
+        // Cache unknown result with shorter TTL
         UID_CACHE.put(uid, new CacheEntry(unknown, ResolutionMethod.UNKNOWN));
         Log.w(TAG, "UID " + uid + " could not be resolved by any method");
         return unknown;

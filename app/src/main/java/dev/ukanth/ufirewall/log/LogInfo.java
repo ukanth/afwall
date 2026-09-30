@@ -201,7 +201,9 @@ public class LogInfo {
 
                 if (((start = result.indexOf("UID=")) != -1)
                         && ((end = result.indexOf(" ", start)) != -1)) {
-                    strUid = Integer.parseInt(result.substring(start + 4, end));
+                    // nflog prints the UID unsigned: 4294967295 (-1) means no owner, like no UID
+                    long parsedUid = Long.parseLong(result.substring(start + 4, end));
+                    strUid = parsedUid >= 0 && parsedUid < Integer.MAX_VALUE ? (int) parsedUid : null;
                     if (strUid != null) {
                         uid = strUid;
                         logInfo.uid = strUid;
