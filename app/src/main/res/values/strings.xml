@@ -30,7 +30,10 @@
     <string name="error_netfilter">Could not find support for iptables targets and chains.\nAFWall+ might not work as expected due to this limitation.</string>
     <string name="error_common">Error: </string>
     <string name="all_item">(Any app) - Same as selecting all apps - !!WARNING!! </string>
-    <string name="kernel_item">(kernel) - Linux kernel</string>
+    <string name="log_allow_app">Allow this app</string>
+    <string name="log_block_app">Block this app</string>
+    <string name="system_uid_item">System service</string>
+    <string name="kernel_item">(kernel) - kernel VPNs (WireGuard, IPsec)</string>
     <string name="android_system">Android System</string>
     <string name="unknown_item">Unknown</string>
     <string name="tethering_item">(tethering) - DHCP+DNS services</string>

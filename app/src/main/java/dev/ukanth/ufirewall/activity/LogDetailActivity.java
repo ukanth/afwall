@@ -66,6 +66,7 @@ import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
 import dev.ukanth.ufirewall.util.DateComparator;
+import dev.ukanth.ufirewall.util.FirewallActions;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.LogNetUtil;
 import dev.ukanth.ufirewall.util.ThemeHelper;
@@ -169,6 +170,11 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
             }
             menu.add(0, v.getId(), 10, "Block this destination permanently");
             menu.add(0, v.getId(), 11, "Whitelist this destination");
+            // the app's own rule, also for system UIDs without a package (-100: no UID known)
+            if (uid != -100) {
+                menu.add(0, v.getId(), 12, R.string.log_allow_app);
+                menu.add(0, v.getId(), 13, R.string.log_block_app);
+            }
             LogPreference logPreference = SQLite.select()
                     .from(LogPreference.class)
                     .where(LogPreference_Table.uid.eq(uid)).querySingle();
@@ -273,6 +279,13 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                 break;
             case 11: // Whitelist destination
                 showWhitelistDestinationDialog();
+                break;
+            case 12: // Allow the app on the connection types in use
+            case 13: // Block it
+                boolean allow = item.getOrder() == 12;
+                FirewallActions.setAppAccess(getApplicationContext(), uid, allow);
+                Api.toast(LogDetailActivity.this, getString(allow ? R.string.notif_app_allowed : R.string.notif_app_blocked,
+                        Api.getSpecialAppName(uid)));
                 break;
 
         }

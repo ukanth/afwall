@@ -13,7 +13,6 @@ import com.topjohnwu.superuser.Shell;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +21,6 @@ public class UidCorrelator {
     
     // Cache active connections for correlation
     private static final Map<String, ConnectionInfo> activeConnections = new ConcurrentHashMap<>();
-    private static final Map<String, Integer> recentConnections = new ConcurrentHashMap<>();
     private static long lastRefresh = 0;
     private static final long REFRESH_INTERVAL = 5000; // 5 seconds
     private static final long CORRELATION_WINDOW = 10000; // 10 seconds
@@ -63,51 +61,38 @@ public class UidCorrelator {
      * @param logTimestamp Timestamp of the log entry
      * @return UID if found, -100 if still unknown
      */
-    public static int correlateUid(String srcIp, String dstIp, int dstPort, 
+    public static int correlateUid(String srcIp, String dstIp, int dstPort,
                                   int srcPort, String protocol, long logTimestamp) {
-        
+        if (protocol == null || srcPort <= 0) {
+            return -100;
+        }
         refreshConnectionCache();
-        
-        if (activeConnections.isEmpty()) {
-            Log.w(TAG, "No active connections in cache - /proc/net parsing may have failed");
+
+        // Only an exact match: the log's source port is the socket's local port, which identifies
+        // it. Matching on the remote address alone attributed blocks to whichever app talked to
+        // the same server. No match (typically a closing packet of a socket that is already
+        // gone) stays unknown: shown as the kernel entry, not as a guessed app.
+        String proto = protocol.toUpperCase(java.util.Locale.US);
+        ConnectionInfo conn = activeConnections.get(tupleKey(proto, srcPort, dstIp, dstPort));
+        if (conn == null && "UDP".equals(proto)) {
+            // unconnected UDP socket: only its local port is known
+            conn = activeConnections.get(localKey(proto, srcPort));
         }
-        
-        // Try exact match first (outbound connection)
-        String connectionKey = protocol.toUpperCase() + ":" + dstIp + ":" + dstPort;
-        ConnectionInfo conn = activeConnections.get(connectionKey);
-        
-        // Also try reverse lookup (for return traffic where src/dst are swapped)
-        if (conn == null) {
-            String reverseKey = protocol.toUpperCase() + ":" + srcIp + ":" + srcPort;
-            conn = activeConnections.get(reverseKey);
-        }
-        
         if (conn != null && isWithinTimeWindow(conn.timestamp, logTimestamp)) {
-            Log.d(TAG, "Found exact match for " + connectionKey + " -> UID " + conn.uid);
+            Log.d(TAG, "Found exact match for " + proto + ":" + srcPort + "->" + dstIp + ":" + dstPort + " -> UID " + conn.uid);
             return conn.uid;
         }
-        
-        // Try recent connections cache
-        Integer recentUid = recentConnections.get(connectionKey);
-        if (recentUid != null) {
-            Log.d(TAG, "Found recent connection for " + connectionKey + " -> UID " + recentUid);
-            return recentUid;
-        }
-        
-        // Fallback: scan all connections for partial matches
-        for (ConnectionInfo connection : activeConnections.values()) {
-            if (isPartialMatch(connection, srcIp, dstIp, dstPort, srcPort, protocol, logTimestamp)) {
-                Log.d(TAG, "Found partial match -> UID " + connection.uid);
-                // Cache for future lookups
-                recentConnections.put(connectionKey, connection.uid);
-                return connection.uid;
-            }
-        }
-        
-        Log.d(TAG, "No correlation found for " + connectionKey);
         return -100; // Still unknown
     }
-    
+
+    private static String tupleKey(String proto, int localPort, String remoteIp, int remotePort) {
+        return proto + ":" + localPort + ":" + remoteIp + ":" + remotePort;
+    }
+
+    private static String localKey(String proto, int localPort) {
+        return proto + ":" + localPort;
+    }
+
     /**
      * Refresh the connection cache by parsing /proc/net files
      */
@@ -120,7 +105,6 @@ public class UidCorrelator {
         try {
             // Clear old data
             activeConnections.clear();
-            cleanupOldRecentConnections(now);
             
             // Parse TCP connections
             parseNetworkConnections("/proc/net/tcp", "TCP");
@@ -168,10 +152,10 @@ public class UidCorrelator {
                 
                 ConnectionInfo conn = parseConnectionLine(line, protocol);
                 if (conn != null && conn.uid > 0) {
-                    activeConnections.put(conn.getConnectionKey(), conn);
-                    // Also cache by local port for better matching
-                    String localKey = protocol + ":" + conn.localAddress + ":" + conn.localPort;
-                    activeConnections.put(localKey, conn);
+                    activeConnections.put(tupleKey(protocol, conn.localPort, conn.remoteAddress, conn.remotePort), conn);
+                    if ("UDP".equals(protocol) && conn.remotePort == 0) {
+                        activeConnections.put(localKey(protocol, conn.localPort), conn);
+                    }
                 }
             }
             
@@ -254,44 +238,8 @@ public class UidCorrelator {
         return hexIp;
     }
     
-    /**
-     * Check if connection matches the netfilter log entry
-     */
-    private static boolean isPartialMatch(ConnectionInfo conn, String srcIp, String dstIp, 
-                                        int dstPort, int srcPort, String protocol, long logTime) {
-        
-        // Protocol must match
-        if (!conn.protocol.equalsIgnoreCase(protocol)) {
-            return false;
-        }
-        
-        // Time window check
-        if (!isWithinTimeWindow(conn.timestamp, logTime)) {
-            return false;
-        }
-        
-        // Check if this is an outbound connection matching the log
-        boolean outboundMatch = conn.remoteAddress.equals(dstIp) && 
-                               conn.remotePort == dstPort;
-        
-        // Check if local port matches (if available)
-        boolean portMatch = srcPort == 0 || conn.localPort == srcPort;
-        
-        return outboundMatch && portMatch;
-    }
-    
     private static boolean isWithinTimeWindow(long connTime, long logTime) {
         return Math.abs(connTime - logTime) <= CORRELATION_WINDOW;
     }
     
-    private static void cleanupOldRecentConnections(long now) {
-        // Remove entries older than correlation window
-        Iterator<Map.Entry<String, Integer>> iterator = recentConnections.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            if (now - lastRefresh > CORRELATION_WINDOW) {
-                iterator.remove();
-            }
-        }
-    }
 }

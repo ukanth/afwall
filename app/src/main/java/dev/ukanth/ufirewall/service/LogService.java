@@ -76,6 +76,7 @@ import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.Notifications;
+import dev.ukanth.ufirewall.util.SystemUids;
 
 public class LogService extends Service {
 
@@ -803,6 +804,8 @@ public class LogService extends Service {
 
             LogEvent event = new LogEvent(LogInfo.parseLogs(line, context, "{AFL}", 0), context);
             if(event.logInfo != null) {
+                // a blocked system UID without an entry in the app list gets one
+                SystemUids.seenInLog(context, event.logInfo.uid, event.logInfo.appName);
                 // Filter multicast/broadcast traffic to reduce log noise
                 // IPv4 Multicast: 224.0.0.0/4 (224.0.0.0 - 239.255.255.255)
                 // Broadcast: 255.255.255.255
@@ -856,7 +859,9 @@ public class LogService extends Service {
     }
 
     private void showNotification(LogInfo logInfo) {
-        if (G.enableLogService() && G.notifyBlocked() && logInfo.uid != -100 && G.canShow(logInfo.uid)) {
+        // no notifications for packets without an app (kernel entry, formerly "unknown"), as before
+        if (G.enableLogService() && G.notifyBlocked() && logInfo.uid != -100
+                && logInfo.uid != Api.SPECIAL_UID_KERNEL && G.canShow(logInfo.uid)) {
             // collected and rate limited (see Notifications.blocked)
             Notifications.blocked(ctx, logInfo);
         }

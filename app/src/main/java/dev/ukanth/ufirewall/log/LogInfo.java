@@ -275,8 +275,10 @@ public class LogInfo {
                         Log.d(Api.TAG, "Enhanced correlation resolved UID " + correlatedUid + 
                               " for connection to " + logInfo.dst + ":" + logInfo.dpt);
                     } else {
-                        // Still unknown after correlation attempt
-                        appName = ctx.getString(R.string.unknown_item);
+                        // No owning socket: the traffic the kernel entry of the app list controls
+                        // (closing packets of closed sockets, kernel VPNs, ...). Logged as that
+                        // entry, so it can be understood, muted and allowed/blocked like an app.
+                        uid = Api.SPECIAL_UID_KERNEL;
                         logInfo.uid = uid;
                     }
                 }

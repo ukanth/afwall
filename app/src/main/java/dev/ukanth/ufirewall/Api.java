@@ -146,6 +146,7 @@ import dev.ukanth.ufirewall.util.JsonHelper;
 import dev.ukanth.ufirewall.util.NetworkChangeDebouncer;
 import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.RootFiles;
+import dev.ukanth.ufirewall.util.SystemUids;
 import dev.ukanth.ufirewall.util.UidListParser;
 import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.widget.StatusWidget;
@@ -650,6 +651,45 @@ public final class Api {
         }
     }
 
+    // null until probed; the owner "--socket-exists" and conntrack matches depend on the kernel
+    private static volatile Boolean ownerlessRuleSupported;
+
+    /**
+     * @return true if the kernel supports the rule for socket-less packets of established
+     * connections (tested once per app run in a scratch chain, IPv4 and IPv6)
+     */
+    static boolean ownerlessEstablishedSupported() {
+        Boolean supported = ownerlessRuleSupported;
+        if (supported != null) {
+            return supported;
+        }
+        boolean ok = probeOwnerlessRule(false) && (!G.enableIPv6() || probeOwnerlessRule(true));
+        ownerlessRuleSupported = ok;
+        Log.i(TAG, "Rule for closing packets of allowed connections: " + (ok ? "supported" : "not supported by this kernel"));
+        return ok;
+    }
+
+    private static boolean probeOwnerlessRule(boolean ipv6) {
+        try {
+            Context c = G.getContext();
+            String bin = getBinaryPath(c, ipv6);
+            if (bin == null) {
+                return false;
+            }
+            String chain = "afwall-probe";
+            Shell.Result result = Shell.cmd(
+                    bin + " -N " + chain + " 2>/dev/null",
+                    bin + " -A " + chain + " -m owner ! --socket-exists -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN"
+                            + " && echo AFWALL_PROBE_OK",
+                    bin + " -F " + chain + " 2>/dev/null",
+                    bin + " -X " + chain + " 2>/dev/null").exec();
+            return result.getOut().contains("AFWALL_PROBE_OK");
+        } catch (Exception e) {
+            Log.w(TAG, "Unable to test iptables support: " + e.getMessage());
+            return false;
+        }
+    }
+
     private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
         String action = whitelist ? " -j RETURN" : " -j " + chain + "-reject";
 
@@ -690,6 +730,15 @@ public final class Api {
                 cmds.add("-A " + chain + " -p tcp --dport 853" + " -j ACCEPT");
                 // disabling HTTPS over DNS
                 //cmds.add("-A " + chain + " -p tcp --dport 443" + " -j ACCEPT");
+            }
+
+            if (ownerlessEstablishedSupported()) {
+                // Packets without a socket that belong to a connection already allowed: the
+                // closing ACK/FIN/RST sent after the app closed its socket. Unless the kernel entry
+                // was allowed these were rejected (and logged as "unknown"), leaving the peer to
+                // retransmit. New connections without a socket (kernel VPNs such as WireGuard,
+                // IPsec) still follow the kernel entry: they are not ESTABLISHED yet.
+                cmds.add("-A " + chain + " -m owner ! --socket-exists -m conntrack --ctstate ESTABLISHED,RELATED -j RETURN");
             }
 
             boolean kernel_checked = uids.contains(SPECIAL_UID_KERNEL);
@@ -2291,6 +2340,12 @@ public final class Api {
             // return cached instance
             return applications;
         }
+        // system UIDs that use the network get entries (root; rate limited)
+        if (android.os.Looper.myLooper() == android.os.Looper.getMainLooper()) {
+            new Thread(() -> SystemUids.discover(ctx), "AFWall-SystemUids").start();
+        } else {
+            SystemUids.discover(ctx);
+        }
 
         SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 
@@ -2597,7 +2652,26 @@ public final class Api {
         return found;
     }*/
 
+    /**
+     * @return the special entries plus the system UIDs found to use the network (see SystemUids)
+     */
     public static List<PackageInfoData> getSpecialData() {
+        List<PackageInfoData> specialData = getFixedSpecialData();
+        for (Map.Entry<Integer, String> e : SystemUids.known().entrySet()) {
+            specialData.add(new PackageInfoData(e.getKey(),
+                    "(" + e.getValue() + ") - " + ctx.getString(R.string.system_uid_item),
+                    SYSTEM_UID_PKG_PREFIX + e.getKey()));
+        }
+        return specialData;
+    }
+
+    // package name of a discovered system UID's entry; the UID is the same on devices of a vendor
+    public static final String SYSTEM_UID_PKG_PREFIX = "dev.afwall.special.uid";
+
+    /**
+     * @return the fixed special entries (any, kernel, tethering, NTP, mDNS, system accounts)
+     */
+    public static List<PackageInfoData> getFixedSpecialData() {
         List<PackageInfoData> specialData = new ArrayList<>();
         specialData.add(new PackageInfoData(SPECIAL_UID_ANY, ctx.getString(R.string.all_item), "dev.afwall.special.any"));
         specialData.add(new PackageInfoData(SPECIAL_UID_KERNEL, ctx.getString(R.string.kernel_item), "dev.afwall.special.kernel"));
@@ -4152,6 +4226,13 @@ public final class Api {
      * @return null if it doesn't exist on this device
      */
     private static Integer resolveV1RuleUid(String key, BackupHelper.DeviceUidMapper mapper) {
+        if (key.startsWith(SYSTEM_UID_PKG_PREFIX)) {
+            try {
+                return Integer.parseInt(key.substring(SYSTEM_UID_PKG_PREFIX.length()));
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
         if (key.startsWith("dev.afwall.special")) {
             return mapper.specialUid(key);
         }
