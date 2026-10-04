@@ -195,6 +195,10 @@
     <string name="import_rules_missing">Rules file is missing!</string>
     <string name="exportConfirm">Export rules to storage?</string>
     <string name="export_logs_fail">Export to storage failed!</string>
+    <plurals name="backups_moved_to_downloads">
+        <item quantity="one">%d old backup copied to Download/AFWall</item>
+        <item quantity="other">%d old backups copied to Download/AFWall</item>
+    </plurals>
     <string name="export_to_sd">Export to storage</string>
 
     <!-- Logging -->

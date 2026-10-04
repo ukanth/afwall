@@ -57,7 +57,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
@@ -68,7 +67,6 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 import android.widget.Toast;
-import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -88,13 +86,10 @@ import org.json.JSONTokener;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -140,6 +135,7 @@ import dev.ukanth.ufirewall.customrules.CustomRule_Table;
 import dev.ukanth.ufirewall.util.ApkInfo;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.BackupHelper;
+import dev.ukanth.ufirewall.util.BackupStorage;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
 import dev.ukanth.ufirewall.util.IptablesVersion;
@@ -3823,102 +3819,43 @@ public final class Api {
     }
 
     public static void exportRulesToFileConfirm(final Context ctx) {
-        String fileName = "afwall-backup-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-        if (exportRules(ctx, fileName)) {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fileName);
-        } else {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
-        }
+        exportToDownloads(ctx, false);
     }
 
     public static void exportAllPreferencesToFileConfirm(final Context ctx) {
-        String fileName = "afwall-backup-all-" + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-        if (exportAll(ctx, fileName)) {
-            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fileName);
+        exportToDownloads(ctx, true);
+    }
+
+    /**
+     * Writes a backup to Download/AFWall/, the same place on every Android version.
+     */
+    private static void exportToDownloads(Context ctx, boolean exportAll) {
+        String fileName = "afwall-backup" + (exportAll ? "-all" : "") + "-"
+                + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date()) + ".json";
+        String saved = null;
+        try {
+            JSONObject exportObject = exportAll ? buildFullExport(ctx) : buildRulesExport(ctx);
+            saved = BackupStorage.save(ctx, fileName, BackupStorage.MIME_JSON, exportObject.toString());
+        } catch (Exception e) {
+            Log.e(TAG, "Error building export " + fileName, e);
+        }
+        if (saved != null) {
+            Api.toast(ctx, ctx.getString(R.string.export_rules_success) + saved, Toast.LENGTH_LONG);
         } else {
             Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
         }
     }
 
-    public static void exportRulesToFileWithPicker(final Context ctx) {
-        showExportFileDialog(ctx, false);
-    }
-
-    public static void exportAllPreferencesToFileWithPicker(final Context ctx) {
-        showExportFileDialog(ctx, true);
-    }
-
-    private static void showExportFileDialog(final Context ctx, final boolean exportAll) {
-        try {
-            File defaultPath;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                if (extDir != null) {
-                    extDir.mkdirs();
-                    defaultPath = extDir;
-                } else {
-                    defaultPath = new File(ctx.getExternalFilesDir(null), "/");
-                }
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                defaultPath = new File(ctx.getExternalFilesDir(null), "/");
-            } else {
-                defaultPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-                defaultPath.mkdirs();
-            }
-
-            dev.ukanth.ufirewall.util.FileDialog fileDialog = new dev.ukanth.ufirewall.util.FileDialog((Activity) ctx, defaultPath, true);
-            fileDialog.setSelectDirectoryOption(true);
-            fileDialog.addDirectoryListener(directory -> {
-                String fileName = "afwall-backup" + (exportAll ? "-all" : "") + "-" + 
-                    new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + ".json";
-                File fullPath = new File(directory, fileName);
-                
-                boolean success;
-                if (exportAll) {
-                    success = exportAllToFile(ctx, fullPath);
-                } else {
-                    success = exportRulesToFile(ctx, fullPath);
-                }
-                
-                if (success) {
-                    Api.toast(ctx, ctx.getString(R.string.export_rules_success) + " " + fullPath.getAbsolutePath());
-                } else {
-                    Api.toast(ctx, ctx.getString(R.string.export_rules_fail));
-                }
-            });
-            fileDialog.showDialog();
-        } catch (Exception e) {
-            // Fallback to original method if file dialog fails
-            if (exportAll) {
-                exportAllPreferencesToFileConfirm(ctx);
-            } else {
-                exportRulesToFileConfirm(ctx);
-            }
-        }
-    }
-
-    private static boolean exportRulesToFile(Context ctx, File file) {
-        boolean res = false;
-        try (FileOutputStream fOut = new FileOutputStream(file);
-             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
-
-            JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-            JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
-            JSONObject exportObject = new JSONObject();
-            exportObject.put("rules", jArray);
-            String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-            exportObject.put("mode", mode);
-            // portable rules; older versions ignore this key and read "rules"
-            exportObject.put(BackupHelper.V2_KEY, BackupHelper.exportRules(ctx, PREFS_NAME));
-
-            myOutWriter.write(exportObject.toString());
-            myOutWriter.flush(); // Ensure data is written
-            res = true;
-            Log.i(TAG, "Successfully exported rules to: " + file.getAbsolutePath());
-        } catch (Exception e) {
-            Log.e(TAG, "Error exporting rules to file: " + file.getAbsolutePath(), e);
-        }
-        return res;
+    private static JSONObject buildRulesExport(Context ctx) throws JSONException {
+        JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
+        JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
+        JSONObject exportObject = new JSONObject();
+        exportObject.put("rules", jArray);
+        String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
+        exportObject.put("mode", mode);
+        // portable rules; older versions ignore this key and read "rules"
+        exportObject.put(BackupHelper.V2_KEY, BackupHelper.exportRules(ctx, PREFS_NAME));
+        return exportObject;
     }
 
     /**
@@ -3977,22 +3914,6 @@ public final class Api {
         return exportObject;
     }
 
-    private static boolean exportAllToFile(Context ctx, File file) {
-        boolean res = false;
-        try (FileOutputStream fOut = new FileOutputStream(file);
-             OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
-
-            JSONObject exportObject = buildFullExport(ctx);
-            myOutWriter.write(exportObject.toString());
-            myOutWriter.flush(); // Ensure data is written
-            res = true;
-            Log.i(TAG, "Successfully exported all preferences to: " + file.getAbsolutePath());
-        } catch (Exception e) {
-            Log.e(TAG, "Error exporting all preferences to file: " + file.getAbsolutePath(), e);
-        }
-        return res;
-    }
-
     private static void updateExportPackage(Map<String, JSONObject> exportMap, String packageName, boolean isChecked, int identifier) throws JSONException {
         if (!isChecked) {
             return;
@@ -4038,38 +3959,6 @@ public final class Api {
     }
 
 
-    public static boolean exportAll(Context ctx, final String fileName) {
-        boolean res = false;
-        try {
-            File file;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Android 11+ (API 30+): Use scoped storage
-                file = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Android 10 (API 29): Use app-specific directory
-                file = new File(ctx.getExternalFilesDir(null), fileName);
-            } else {
-                // Android 9 and below: Use legacy external storage
-                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "afwall");
-                dir.mkdirs();
-                file = new File(dir, fileName);
-            }
-
-            try (FileOutputStream fOut = new FileOutputStream(file);
-                 OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut)) {
-
-                myOutWriter.append(buildFullExport(ctx).toString());
-                res = true;
-            }
-
-        } catch (Exception e) {
-            Log.d(TAG, e.getLocalizedMessage(), e);
-        }
-
-        return res;
-    }
-
-
     private static Map<String, JSONObject> getRulesForProfile(Context ctx, String profile) throws JSONException {
         Map<String, JSONObject> exportMap = new HashMap<>();
         SharedPreferences prefs = ctx.getSharedPreferences(profile, Context.MODE_PRIVATE);
@@ -4083,116 +3972,15 @@ public final class Api {
         return exportMap;
     }
 
-    public static boolean exportRules(Context ctx, final String fileName) {
-        boolean res = false;
-
-            File file;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Android 11+ (API 30+): Use scoped storage
-                file = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Android 10 (API 29): Use app-specific directory
-                file = new File(ctx.getExternalFilesDir(null), fileName);
-            } else {
-                // Android 9 and below: Use legacy external storage
-                File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/afwall/");
-                dir.mkdirs();
-                file = new File(dir, fileName);
-            }
-
-            try {
-
-                FileOutputStream fOut = new FileOutputStream(file);
-                OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-
-                //default Profile - current one
-                JSONObject obj = new JSONObject(getCurrentRulesAsMap(ctx));
-                JSONArray jArray = new JSONArray("[" + obj.toString() + "]");
-
-                JSONObject exportObject = new JSONObject();
-                exportObject.put("rules", jArray);
-
-                String mode = G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST);
-                exportObject.put("mode", mode);
-                // portable rules; older versions ignore this key and read "rules"
-                exportObject.put(BackupHelper.V2_KEY, BackupHelper.exportRules(ctx, PREFS_NAME));
-
-                myOutWriter.append(exportObject.toString());
-                res = true;
-                myOutWriter.close();
-                fOut.close();
-
-
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            } catch (JSONException e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            } catch (IOException e) {
-                Log.e(TAG, e.getLocalizedMessage());
-            }
-
-        return res;
-    }
-
-
-    private static boolean  importRulesRoot(Context ctx, File file, StringBuilder msg) {
-        boolean returnVal = false;
-        BufferedReader br = null;
+    private static boolean importRules(Context ctx, String data, StringBuilder msg) {
         try {
-            // Use shell-safe quoting to prevent path injection
-            String safePath = "'" + file.getAbsolutePath().replace("'", "'\\''" ) + "'";
-            com.topjohnwu.superuser.Shell.Result result  = com.topjohnwu.superuser.Shell.cmd("cat " + safePath).exec();
-            List<String> out = result.getOut();
-            String data = TextUtils.join("", out);
             importRulesData(ctx, data, msg);
-            returnVal = true;
-        } catch (java.util.concurrent.RejectedExecutionException e) {
-            Log.w(TAG, "Import rules file read rejected: " + e.getMessage());
+            return true;
         } catch (JSONException e) {
-            Log.e(TAG, "JSON parsing error during import: " + e.getLocalizedMessage());
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to import rules from file: " + e.getLocalizedMessage());
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    Log.e(TAG, e.getLocalizedMessage());
-                }
-            }
+            Log.e(TAG, "Unable to import rules: " + e.getLocalizedMessage());
+            return false;
         }
-        return returnVal;
     }
-    private static boolean importRules(Context ctx, File file, StringBuilder msg) {
-        boolean returnVal = false;
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            StringBuilder text = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-            }
-            String data = text.toString();
-            if (data.trim().isEmpty()) {
-                msg.append("Import file contains no data");
-                return false;
-            }
-            
-            importRulesData(ctx, data, msg);
-            returnVal = true;
-        } catch (FileNotFoundException e) {
-            if (e.getMessage().contains("EACCES")) {
-                return importRulesRoot(ctx, file, msg);
-            } else {
-                msg.append(ctx.getString(R.string.import_rules_missing));
-            }
-        } catch (IOException | JSONException e) {
-            Log.e(TAG, e.getLocalizedMessage());
-        }
-
-        return returnVal;
-    }
-
 
     /**
      * Import a "rules only" backup into the current profile. Handles every format: the oldest
@@ -4351,21 +4139,10 @@ public final class Api {
             Log.w(TAG, "Skipping profile " + key + " on import: " + e.getMessage());
         }
     }
-    private static boolean importAll(Context ctx, File file, StringBuilder msg) {
+    private static boolean importAll(Context ctx, String data, StringBuilder msg) {
         boolean returnVal = false;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            StringBuilder text = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-            }
-            String data = text.toString();
-            if (data.trim().isEmpty()) {
-                msg.append("Import file contains no data");
-                return false;
-            }
-            
+        try {
             JSONObject object = new JSONObject(data);
 
             // backups from this version on: the complete, portable section
@@ -4406,45 +4183,28 @@ public final class Api {
                 updateRulesFromJson(ctx, defaultRules, PREFS_NAME);
             }
             returnVal = true;
-        } catch (FileNotFoundException e) {
-            msg.append(ctx.getString(R.string.import_rules_missing));
         } catch (Exception e) {
-            Log.e(TAG, "Unable to import " + file, e);
+            Log.e(TAG, "Unable to import full backup", e);
         }
 
         return returnVal;
     }
 
-    public static boolean loadSharedPreferencesFromFile(Context ctx, StringBuilder builder, String fileName, boolean loadAll) {
-        boolean res = false;
-        File file = new File(fileName);
-        if (file.exists()) {
-            // Basic file validation
-            if (file.length() == 0) {
-                builder.append("Import file is empty");
-                Log.w(TAG, "Import file is empty: " + fileName);
-                return false;
-            }
-            if (file.length() > 50 * 1024 * 1024) { // 50MB limit
-                builder.append("Import file is too large (>50MB)");
-                Log.w(TAG, "Import file is too large: " + fileName + " (" + file.length() + " bytes)");
-                return false;
-            }
-            
-            Log.i(TAG, "Importing from file: " + fileName + " (loadAll: " + loadAll + ")");
-            if (loadAll) {
-                res = importAll(ctx, file, builder);
-            } else {
-                res = importRules(ctx, file, builder);
-            }
-            if (res) {
-                // settings such as multi-profile or the active profile's file may have changed
-                G.reloadPrefs();
-                applications = null;
-            }
-        } else {
-            builder.append("Import file does not exist: " + fileName);
-            Log.w(TAG, "Import file does not exist: " + fileName);
+    /**
+     * Imports a backup read from a file the user picked: "rules only" or, with loadAll, the full
+     * backup. Every format written by earlier versions is accepted.
+     */
+    public static boolean importBackup(Context ctx, StringBuilder builder, String data, boolean loadAll) {
+        if (data == null || data.trim().isEmpty()) {
+            builder.append("Import file contains no data");
+            return false;
+        }
+        Log.i(TAG, "Importing backup (loadAll: " + loadAll + ")");
+        boolean res = loadAll ? importAll(ctx, data, builder) : importRules(ctx, data, builder);
+        if (res) {
+            // settings such as multi-profile or the active profile's file may have changed
+            G.reloadPrefs();
+            applications = null;
         }
         return res;
     }

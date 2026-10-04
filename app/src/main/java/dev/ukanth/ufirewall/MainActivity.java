@@ -44,10 +44,11 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -72,7 +73,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -86,7 +91,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.topjohnwu.superuser.Shell;
 
-import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,7 +114,7 @@ import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
-import dev.ukanth.ufirewall.util.FileDialog;
+import dev.ukanth.ufirewall.util.BackupStorage;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
@@ -128,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int SHOW_LOGS_ACTIVITY = 1203;
     private static final int VERIFY_CHECK = 10000;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 2;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_STORAGE_ASSET = 3;
     private static final int PERMISSION_BLUETOOTH = 4;
 
@@ -171,6 +175,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private static final int DEFAULT_VIEW_LIMIT = 4;
     private View view;
 
+    private static final String STATE_PENDING_IMPORT_ALL = "pendingImportAll";
+    // which import the file picker was opened for; survives the activity being recreated
+    private boolean pendingImportAll;
+    private boolean backupMigrationRunning;
+    private final ActivityResultLauncher<Intent> importFileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), this::onImportFilePicked);
+
     public boolean isDirty() {
         return dirty;
     }
@@ -186,6 +197,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            pendingImportAll = savedInstanceState.getBoolean(STATE_PENDING_IMPORT_ALL);
+        }
 
         initTheme();
         G.registerPrivateLink();
@@ -250,6 +264,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initTextWatcher();
         registerThemeIntent();
         registerUIRefresh();
+        // move old backups out of Android/data before an uninstall can delete them
+        migrateOldBackups(null);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_PENDING_IMPORT_ALL, pendingImportAll);
     }
 
     private void checkPermissions() {
@@ -1210,9 +1232,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             search(item);
             return true;
         } else if (selectedItem == R.id.menu_export) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Do some stuff
-                showExportDialog();
+            if (!BackupStorage.needsStoragePermission()) {
+                migrateOldBackups(this::showExportDialog);
             } else {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -1221,107 +1242,51 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
                 } else {
-                    showExportDialog();
+                    migrateOldBackups(this::showExportDialog);
                 }
             }
             return true;
         } else if (selectedItem == R.id.menu_import) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                // Copy old data and show import dialog when complete
-                copyOldExportedData();
-            } else {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    // permissions have not been granted.
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_READ_STORAGE);
-
-                } else {
-                    showImportDialog();
-                }
-            }
+            // the system file picker needs no storage permission
+            migrateOldBackups(this::showImportDialog);
             return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
     }
 
-    private void copyOldExportedData() {
-        if (!G.hasCopyOld()) {
-            copyOldExportedDataAsync(() -> {
-                // On completion, show import dialog
-                runOnUiThread(() -> {
-                    showImportDialog();
-                });
-            });
-        } else {
-            // Already copied, show dialog immediately
-            showImportDialog();
-        }
-    }
-
-    private void copyOldExportedDataAsync(Runnable onComplete) {
-        // Show progress dialog
-        MaterialDialog progressDialog = null;
-        try {
-            progressDialog = new MaterialDialog.Builder(this)
-                    .title("Migrating Files")
-                    .content("Copying backup files to new location...")
-                    .progress(true, 0)
-                    .cancelable(false)
-                    .show();
-        } catch (Exception e) {
-            Log.w(TAG, "Could not show progress dialog due to MaterialDialog compatibility issue", e);
-            // Fallback: Show toast notification
-            Api.toast(this, "Migrating backup files to new location...");
-        }
-        
-        final MaterialDialog finalProgressDialog = progressDialog;
-        
-        // Run file copy operation in background thread
-        new Thread(() -> {
-            try {
-                //using root to copy existing data to current directory on A11+
-                String existingDir = Environment.getExternalStorageDirectory() + "//afwall//";
-                File targetFile = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R 
-                    ? ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) 
-                    : ctx.getExternalFilesDir(null);
-                String targetDir = (targetFile != null ? targetFile.getAbsolutePath() : ctx.getExternalFilesDir(null).getAbsolutePath()) + "/";
-                String command = "cp -R " + existingDir + " " + targetDir;
-                Log.i(TAG, "Invoking migration script " + command);
-                
-                com.topjohnwu.superuser.Shell.Result result = com.topjohnwu.superuser.Shell.cmd(command).exec();
-                
-                if (result.getCode() == 0) {
-                    Log.i(TAG, "Migration script completed successfully");
-                    G.hasCopyOldExports(true);
-                } else {
-                    Log.w(TAG, "Migration script failed with code: " + result.getCode());
-                    Log.w(TAG, "Migration output: " + result.getOut());
-                }
-                
-            } catch (java.util.concurrent.RejectedExecutionException e) {
-                Log.w(TAG, "File migration rejected: " + e.getMessage());
-            } catch (Exception e) {
-                // Check if the cause is an InterruptedIOException
-                if (e.getCause() instanceof java.io.InterruptedIOException) {
-                    Log.w(TAG, "File migration interrupted: " + e.getCause().getMessage());
-                } else {
-                    Log.e(TAG, "Error during file migration", e);
-                }
-            } finally {
-                // Dismiss progress dialog and run completion callback on UI thread
-                runOnUiThread(() -> {
-                    if (finalProgressDialog != null && finalProgressDialog.isShowing()) {
-                        finalProgressDialog.dismiss();
-                    }
-                    if (onComplete != null) {
-                        onComplete.run();
-                    }
-                });
+    /**
+     * One time: copies backups from the folders earlier versions used to Download/AFWall/, so they
+     * show up in the import picker and survive an uninstall. Runs again until every file copied.
+     */
+    private void migrateOldBackups(@Nullable Runnable then) {
+        boolean permitted = !BackupStorage.needsStoragePermission()
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+        if (G.hasMovedBackupsToDownloads() || !permitted || backupMigrationRunning) {
+            if (then != null) {
+                then.run();
             }
-        }).start();
+            return;
+        }
+        backupMigrationRunning = true;
+        final Context appContext = getApplicationContext();
+        new Thread(() -> {
+            int copied = BackupStorage.migrateLegacyBackups(appContext);
+            if (copied >= 0) {
+                G.hasMovedBackupsToDownloads(true);
+            }
+            runOnUiThread(() -> {
+                backupMigrationRunning = false;
+                if (copied > 0) {
+                    Api.toast(appContext, getResources().getQuantityString(
+                            R.plurals.backups_moved_to_downloads, copied, copied), Toast.LENGTH_LONG);
+                }
+                if (then != null && !isFinishing()) {
+                    then.run();
+                }
+            });
+        }, "afwall-backup-migration").start();
     }
 
     private void search(MenuItem item) {
@@ -1363,90 +1328,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                     switch (which) {
                         case 0:
-                            //Intent intent = new Intent(MainActivity.this, FileChooserActivity.class);
-                            //startActivityForResult(intent, FILE_CHOOSER_LOCAL);
-                            File mPath = null;
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                                if (extDir != null) {
-                                    extDir.mkdirs();
-                                    mPath = extDir;
-                                } else {
-                                    mPath = new File(ctx.getExternalFilesDir(null), "/");
-                                }
-                            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                mPath = new File(ctx.getExternalFilesDir(null) + "/");
-                            } else {
-                                mPath = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                            }
-                            FileDialog fileDialog = new FileDialog(MainActivity.this, mPath, true);
-
-                            //fileDialog.setFlag(true);
-                            //fileDialog.setFileEndsWith(new String[] {"backup", "afwall-backup"}, "all");
-                            fileDialog.addFileListener(file -> {
-
-                                String fileSelected = file.toString();
-                                StringBuilder builder = new StringBuilder();
-                                if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, false)) {
-                                    Api.applications = null;
-                                    // imported rules take effect on the next apply; prompt for it
-                                    setDirty(true);
-                                    showOrLoadApplications();
-                                    // skipped-apps note first: the long path gets truncated
-                                    Api.toast(MainActivity.this, (builder.length() > 0 ? builder + "\n" : "")
-                                            + getString(R.string.import_rules_success) + fileSelected);
-                                } else {
-                                    if (builder.toString().equals("")) {
-                                        Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                    } else {
-                                        Api.toast(MainActivity.this, builder.toString());
-                                    }
-                                }
-                            });
-                            fileDialog.showDialog();
+                            pickImportFile(false);
                             break;
                         case 1:
-
                             if (G.isDoKey(getApplicationContext()) || isDonate()) {
-
-                                File mPath2 = null;
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                                    File extDir = ctx.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
-                                    if (extDir != null) {
-                                        extDir.mkdirs();
-                                        mPath2 = extDir;
-                                    } else {
-                                        mPath2 = new File(ctx.getExternalFilesDir(null), "/");
-                                    }
-                                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    mPath2 = new File(ctx.getExternalFilesDir(null), "/");
-                                } else {
-                                    mPath2 = new File(Environment.getExternalStorageDirectory() + "//afwall//");
-                                }
-                                FileDialog fileDialog2 = new FileDialog(MainActivity.this, mPath2, false);
-                                fileDialog2.addFileListener(file -> {
-                                    String fileSelected = file.toString();
-                                    StringBuilder builder = new StringBuilder();
-                                    if (Api.loadSharedPreferencesFromFile(MainActivity.this, builder, fileSelected, true)) {
-                                        Api.applications = null;
-                                        // imported rules take effect on the next apply; prompt for it
-                                        setDirty(true);
-                                        showOrLoadApplications();
-                                        // skipped-apps note first: the long path gets truncated
-                                        Api.toast(MainActivity.this, (builder.length() > 0 ? builder + "\n" : "")
-                                                + getString(R.string.import_rules_success) + fileSelected);
-                                        Intent intent = getIntent();
-                                        finish();
-                                        startActivity(intent);
-                                    } else {
-                                        if (builder.toString().equals("")) {
-                                            Api.toast(MainActivity.this, getString(R.string.import_rules_fail));
-                                        } else {
-                                            Api.toast(MainActivity.this, builder.toString());
-                                        }
-                                    }
-                                });
-                                fileDialog2.showDialog();
+                                pickImportFile(true);
                             } else {
                                 Api.donateDialog(MainActivity.this, false);
                             }
@@ -1459,8 +1345,60 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 .show();
         } catch (Exception e) {
             Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
-            // Fallback: Show a simple toast message and try alternative approach
-            Api.toast(this, "Import dialog unavailable due to Android compatibility issue. Please use file manager to manually copy backup files to AFWall directory.");
+            pickImportFile(false);
+        }
+    }
+
+    private void pickImportFile(boolean importAll) {
+        pendingImportAll = importAll;
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                // file managers report .json as anything from application/json to octet-stream
+                .setType("*/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, BackupStorage.pickerInitialUri());
+        }
+        try {
+            importFileLauncher.launch(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "No file picker available", e);
+            Api.toast(this, getString(R.string.import_rules_fail));
+        }
+    }
+
+    private void onImportFilePicked(ActivityResult result) {
+        Uri uri = result.getData() != null ? result.getData().getData() : null;
+        if (result.getResultCode() != RESULT_OK || uri == null) {
+            return;
+        }
+        final boolean importAll = pendingImportAll;
+        String fileName = BackupStorage.displayName(this, uri);
+        StringBuilder builder = new StringBuilder();
+        boolean imported;
+        try {
+            imported = Api.importBackup(this, builder, BackupStorage.read(this, uri), importAll);
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to read " + uri, e);
+            builder.append(e.getMessage() != null ? e.getMessage() : getString(R.string.import_rules_fail));
+            imported = false;
+        }
+        if (imported) {
+            Api.applications = null;
+            // imported rules take effect on the next apply; prompt for it
+            setDirty(true);
+            showOrLoadApplications();
+            // skipped-apps note first: the file name gets truncated
+            Api.toast(this, (builder.length() > 0 ? builder + "\n" : "")
+                    + getString(R.string.import_rules_success) + fileName);
+            if (importAll) {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+        } else if (builder.length() == 0) {
+            Api.toast(this, getString(R.string.import_rules_fail));
+        } else {
+            Api.toast(this, builder.toString());
         }
     }
 
@@ -1475,11 +1413,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .itemsCallbackSingleChoice(-1, (dialog, view, which, text) -> {
                         switch (which) {
                             case 0:
-                                Api.exportRulesToFileWithPicker(MainActivity.this);
+                                Api.exportRulesToFileConfirm(MainActivity.this);
                                 break;
                             case 1:
                                 if (G.isDoKey(getApplicationContext()) || isDonate()) {
-                                    Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+                                    Api.exportAllPreferencesToFileConfirm(MainActivity.this);
                                 } else {
                                     showExportAllWarningDialog();
                                 }
@@ -1503,14 +1441,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .positiveText(R.string.exports)
                     .negativeText(R.string.Cancel)
                     .onPositive((dialog, which) -> {
-                        Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+                        Api.exportAllPreferencesToFileConfirm(MainActivity.this);
                     })
                     .show();
         } catch (Exception e) {
             Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
             // Fallback: Just show the export directly with a toast warning
             Api.toast(this, getString(R.string.export_all_warning));
-            Api.exportAllPreferencesToFileWithPicker(MainActivity.this);
+            Api.exportAllPreferencesToFileConfirm(MainActivity.this);
         }
     }
 
@@ -1534,7 +1472,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case MY_PERMISSIONS_REQUEST_WRITE_STORAGE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    showExportDialog();
+                    migrateOldBackups(this::showExportDialog);
                 } else {
                     Toast.makeText(this, R.string.permissiondenied_importexport, Toast.LENGTH_SHORT).show();
                 }
@@ -1547,16 +1485,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Api.assertBinaries(this, true);
                 } else {
                     Toast.makeText(this, R.string.permissiondenied_asset, Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-
-            case MY_PERMISSIONS_REQUEST_READ_STORAGE: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    showImportDialog();
-                } else {
-                    Toast.makeText(this, R.string.permissiondenied_importexport, Toast.LENGTH_SHORT).show();
                 }
                 return;
             }

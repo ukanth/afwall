@@ -27,9 +27,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -49,13 +47,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
@@ -65,6 +62,7 @@ import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
+import dev.ukanth.ufirewall.util.BackupStorage;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.util.FirewallActions;
 import dev.ukanth.ufirewall.util.G;
@@ -643,48 +641,25 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
         @Override
         public Boolean doInBackground(Void... args) {
-            FileOutputStream output = null;
-            boolean res = false;
+            StringBuilder builder = new StringBuilder();
+            builder.append("uid: " + uid);
 
-            try {
-                File file;
-                if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
-                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" );
-                    dir.mkdirs();
-                    file = new File(dir, logDumpFile);
-                } else{
-                    file = new File(ctx.getExternalFilesDir(null) + "/" + logDumpFile) ;
-                }
-                output = new FileOutputStream(file);
-                StringBuilder builder = new StringBuilder();
-                builder.append("uid: " + uid);
-
-                for(LogData data: logDataList) {
-                    builder.append("src:").append(data.getSrc()).append(",")
-                            .append("dst:").append(data.getDst()).append(",")
-                            .append("proto:").append(data.getProto()).append(",")
-                            .append("sport:").append(data.getSpt()).append(",")
-                            .append("dport:").append(data.getDpt());
-                    builder.append("\n");
-                }
-                output.write(builder.toString().getBytes());
-                filename = file.getAbsolutePath();
-                res = true;
-            } catch (FileNotFoundException e) {
-                Log.e(G.TAG,e.getMessage(),e);
-            } catch (IOException e) {
-                Log.e(G.TAG,e.getMessage(),e);
-            } finally {
-                try {
-                    if (output != null) {
-                        output.flush();
-                        output.close();
-                    }
-                } catch (IOException ex) {
-                    Log.e(G.TAG,ex.getMessage(),ex);
-                }
+            for(LogData data: logDataList) {
+                builder.append("src:").append(data.getSrc()).append(",")
+                        .append("dst:").append(data.getDst()).append(",")
+                        .append("proto:").append(data.getProto()).append(",")
+                        .append("sport:").append(data.getSpt()).append(",")
+                        .append("dport:").append(data.getDpt());
+                builder.append("\n");
             }
-            return res;
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date());
+            String saved = BackupStorage.save(ctx, logDumpFile.replace(".log", "") + "-" + timestamp + ".txt",
+                    BackupStorage.MIME_TEXT, builder.toString());
+            if (saved == null) {
+                return false;
+            }
+            filename = saved;
+            return true;
         }
 
         @Override
@@ -702,8 +677,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
 
         private void exportToSD() {
 
-            if(Build.VERSION.SDK_INT  >= Build.VERSION_CODES.Q ){
-                // Do some stuff
+            if (!BackupStorage.needsStoragePermission()) {
                 new Task(this).execute();
             } else {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)

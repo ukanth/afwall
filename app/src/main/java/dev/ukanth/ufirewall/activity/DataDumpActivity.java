@@ -29,9 +29,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.TypedValue;
@@ -49,10 +47,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,7 +55,7 @@ import java.util.Locale;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
-import dev.ukanth.ufirewall.util.FileDialog;
+import dev.ukanth.ufirewall.util.BackupStorage;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ThemeHelper;
 
@@ -394,60 +388,21 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         private final Context ctx;
         private final WeakReference<DataDumpActivity> activityReference;
         private final Handler handler = new Handler(Looper.getMainLooper());
-        private final File selectedDirectory;
 
         // only retain a weak reference to the activity
-        Task(DataDumpActivity context, File directory) {
+        Task(DataDumpActivity context) {
             this.ctx = context;
-            this.selectedDirectory = directory;
             activityReference = new WeakReference<>(context);
         }
 
         @Override
         public void run() {
-            FileOutputStream output = null;
-            boolean res = false;
-
-            try {
-                // Generate timestamped filename
-                String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date());
-                String baseFileName = sdDumpFile.replace(".log", "");
-                String timestampedFileName = baseFileName + "-" + timestamp + ".log";
-
-                File file;
-                if (selectedDirectory != null) {
-                    // Use user-selected directory
-                    if (!selectedDirectory.exists()) {
-                        selectedDirectory.mkdirs();
-                    }
-                    file = new File(selectedDirectory, timestampedFileName);
-                } else if(Build.VERSION.SDK_INT  < Build.VERSION_CODES.Q ){
-                    File dir = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" );
-                    dir.mkdirs();
-                    file = new File(dir, timestampedFileName);
-                } else{
-                    // Use Documents/AFWall directory for user-friendly access
-                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "AFWall");
-                    if (!dir.exists()) {
-                        dir.mkdirs();
-                    }
-                    file = new File(dir, timestampedFileName);
-                }
-                output = new FileOutputStream(file);
-                output.write(dataText.getBytes());
-                filename = file.getAbsolutePath();
-                res = true;
-            } catch (IOException e) {
-                Log.e(TAG,e.getMessage(),e);
-            } finally {
-                try {
-                    if (output != null) {
-                        output.flush();
-                        output.close();
-                    }
-                } catch (IOException ex) {
-                    Log.e(TAG,ex.getMessage(),ex);
-                }
+            String timestamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.US).format(new Date());
+            String timestampedFileName = sdDumpFile.replace(".log", "") + "-" + timestamp + ".txt";
+            String saved = BackupStorage.save(ctx, timestampedFileName, BackupStorage.MIME_TEXT, dataText);
+            boolean res = saved != null;
+            if (res) {
+                filename = saved;
             }
 
             final boolean result = res;
@@ -465,56 +420,17 @@ public abstract class DataDumpActivity extends AppCompatActivity {
     }
 
     private void exportToSD() {
-        try {
-            // Get default path for file dialog
-            File defaultPath;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                defaultPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "AFWall");
-            } else {
-                defaultPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/");
-            }
-            if (!defaultPath.exists()) {
-                defaultPath.mkdirs();
-            }
-
-            // Show directory picker dialog
-            FileDialog fileDialog = new FileDialog(this, defaultPath, true);
-            fileDialog.setSelectDirectoryOption(true);
-            fileDialog.addDirectoryListener(directory -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(new Task(DataDumpActivity.this, directory));
-                    executor.shutdown();
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                            != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(DataDumpActivity.this,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-                    } else {
-                        new Task(DataDumpActivity.this, directory).run();
-                    }
-                }
-            });
-            fileDialog.showDialog();
-        } catch (Exception e) {
-            // Fallback to default behavior if file dialog fails
-            Log.e(TAG, "FileDialog failed, using default path", e);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(new Task(this, null));
-                executor.shutdown();
-            } else {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(DataDumpActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
-                } else {
-                    new Task(this, null).run();
-                }
-            }
+        if (BackupStorage.needsStoragePermission()
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(DataDumpActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_STORAGE);
+            return;
         }
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Task(this));
+        executor.shutdown();
     }
 
     private void copy() {

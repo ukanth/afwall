@@ -171,7 +171,7 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String FINGERPRINT_ENABLED = "fingerprintEnabled";
     private static final String CUSTOM_DELAY_SECONDS = "customDelay";
     private static final String NOTIFICATION_PRIORITY = "notification_priority";
-    private static final String COPIED_OLD_EXPORTS = "copyOldExports";
+    private static final String MOVED_BACKUPS_TO_DOWNLOADS = "backupsMovedToDownloads";
 
     private static final String SHOW_ALL_APPS = "showAllApps";
 
@@ -258,12 +258,12 @@ public class G extends Application implements Application.ActivityLifecycleCallb
 
 
 
-    public static boolean hasCopyOld() {
-        return gPrefs.getBoolean(COPIED_OLD_EXPORTS, false);
+    public static boolean hasMovedBackupsToDownloads() {
+        return gPrefs.getBoolean(MOVED_BACKUPS_TO_DOWNLOADS, false);
     }
 
-    public static boolean hasCopyOldExports(boolean val) {
-        gPrefs.edit().putBoolean(COPIED_OLD_EXPORTS, val).commit();
+    public static boolean hasMovedBackupsToDownloads(boolean val) {
+        gPrefs.edit().putBoolean(MOVED_BACKUPS_TO_DOWNLOADS, val).apply();
         return val;
     }
 
