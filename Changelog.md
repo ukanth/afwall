@@ -1,6 +1,30 @@
 AFWall+ Changelog
 ==================
 
+AFWall+ v5.0.0-BETA
+
+    Added: Backups, log and rule exports are saved to Download/AFWall (visible in file managers, kept after uninstall); import uses the system file picker and old backups are copied over automatically
+    Added: System services without an app (UIDs below 10000) are listed once they use the network, so they can be allowed or blocked
+    Added: "Allow this app" / "Block this app" in the log details
+    Added: Security - Allow Tasker/Locale control setting to prevent unauthroized access.
+    Improved: Faster, atomic rule apply using iptables-restore, with automatic fallback
+    Improved: Root command engine rewritten - one root library (libsu), fewer root shells, more reliable apply
+    Improved: Direct rules also apply to IPv6
+    Improved: Backup/restore covers all profiles, custom rules and special apps and works across devices; older backups still import
+    Improved: Log - correct app attribution, fewer "Unknown" entries, explains why it is empty or not running, log targets re-checked on every start
+    Improved: Notifications - consistent status notification, new-app notifications with Allow/Block, rate-limited blocked notifications
+    Improved: Work profile / Private Space apps shown with name, icon and badge
+    Improved: Boot leak protection works with file-based encryption and finds the boot script directory itself
+    Improved: Custom script errors are reported instead of aborting the apply (#1493)
+    Improved: Preferences show the iptables binary actually in use
+    Changed: "Experimental" settings moved into Rules/Connectivity; "Migrate profiles" removed (now automatic)
+    Fixed: Missing system and Private Space apps (#1476, #1482, #1485, #1490, #1499)
+    Fixed: nflog on Android 16 (#1505, #1506) and iptables-restore wait option on older iptables (#1500)
+    Fixed: Device left offline at boot or after a failed apply
+    Fixed: Widget, quick settings tile and Tasker issues - other apps or the lock screen could turn the firewall off
+    Fixed: Crashes on Android 12+/15 background starts, after importing a backup and in the log details
+    Fixed: Rules of hidden apps deleted on apply; direct rules duplicated or applied to the wrong user
+
 AFWall+ v4.1.0
 
     Added: Custom rules at the application level - direct per-app allow/block rules
