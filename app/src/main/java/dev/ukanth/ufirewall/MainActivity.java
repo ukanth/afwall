@@ -392,32 +392,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    /**
+     * Reads which log targets the kernel supports. Done on every start, since a ROM or kernel
+     * update can add or remove one; a saved target that is gone is replaced so logging keeps
+     * working (or says why it can't).
+     */
     private void probeLogTarget() {
-        List<String> availableLogTargets = new ArrayList<>();
-        if (G.logTargets() == null) {
-            try {
-                new RootCommand()
-                        .setReopenShell(true)
-                        .setCallback(new RootCommand.Callback() {
-                            public void cbFunc(RootCommand state) {
-                                if (state.exitCode != 0) {
-                                    return;
-                                }
-                                for (String str : state.res.toString().split("\n")) {
-                                    if (str.equals("LOG") || str.equals("NFLOG")) {
-                                        availableLogTargets.add(str);
-                                    }
-                                }
-                                if (availableLogTargets.size() > 0) {
-                                    String joined = TextUtils.join(",", availableLogTargets);
-                                    G.logTargets(joined);
+        try {
+            new RootCommand()
+                    .setReopenShell(true)
+                    .setCallback(new RootCommand.Callback() {
+                        public void cbFunc(RootCommand state) {
+                            if (state.exitCode != 0) {
+                                return;
+                            }
+                            List<String> availableLogTargets = new ArrayList<>();
+                            for (String str : state.res.toString().split("\n")) {
+                                str = str.trim();
+                                if ((str.equals("LOG") || str.equals("NFLOG")) && !availableLogTargets.contains(str)) {
+                                    availableLogTargets.add(str);
                                 }
                             }
-                        }).setLogging(true)
-                        .run(ctx, "cat /proc/net/ip_tables_targets");
-            } catch (Exception e) {
-                Log.e(Api.TAG, "Exception in getting iptables log targets", e);
-            }
+                            String joined = TextUtils.join(",", availableLogTargets);
+                            if (!joined.equals(G.logTargets())) {
+                                Log.i(Api.TAG, "Log targets changed from " + G.logTargets() + " to " + joined);
+                                G.logTargets(joined);
+                            }
+                            String current = G.logTarget();
+                            if (current.isEmpty() && availableLogTargets.size() == 1) {
+                                // nothing to choose from: same as the log settings do
+                                G.logTarget(availableLogTargets.get(0));
+                            } else if (!current.isEmpty() && !availableLogTargets.contains(current)) {
+                                String replacement = availableLogTargets.isEmpty() ? "" : availableLogTargets.get(0);
+                                Log.w(Api.TAG, "Log target " + current + " is no longer supported, using '" + replacement + "'");
+                                G.logTarget(replacement);
+                            }
+                        }
+                    }).setLogging(true)
+                    .run(ctx, "cat /proc/net/ip_tables_targets");
+        } catch (Exception e) {
+            Log.e(Api.TAG, "Exception in getting iptables log targets", e);
         }
     }
 
@@ -1429,7 +1443,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .show();
         } catch (Exception e) {
             Log.e(TAG, "MaterialDialog failed, likely due to cursor tinting issue on newer Android versions", e);
-            Api.toast(this, "Export dialog unavailable due to Android compatibility issue. Please use Settings > Export to access export functionality.");
+            // same fallback as import: the basic option, without the dialog
+            Api.exportRulesToFileConfirm(this);
         }
     }
 

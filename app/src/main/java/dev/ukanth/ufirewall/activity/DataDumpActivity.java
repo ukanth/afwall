@@ -41,6 +41,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -416,6 +417,18 @@ public abstract class DataDumpActivity extends AppCompatActivity {
                     Api.toast(ctx, ctx.getString(R.string.export_logs_fail), Toast.LENGTH_LONG);
                 }
             });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_WRITE_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                exportToSD(); // finish what the user asked for
+            } else {
+                Api.toast(this, getString(R.string.permissiondenied_importexport));
+            }
         }
     }
 

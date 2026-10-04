@@ -280,6 +280,9 @@
     <string name="builtin_bb">Built-in BusyBox</string>
     <string name="system_ipt">System iptables</string>
     <string name="builtin_ipt">Built-in iptables</string>
+    <string name="ipt_in_use">%1$s\nIn use: %2$s</string>
+    <string name="ipt_system_missing">System iptables not found on this device; using the built-in one instead (%1$s)</string>
+    <string name="ipt_builtin_failed">%1$s\nThe built-in binary could not run on this device, so system iptables is used instead</string>
     <string name="auto">Auto</string>
 
     <!-- XPOSED -->
@@ -567,6 +570,9 @@
     <string name="log_empty_watcher_failed">Log monitoring could not start: %1$s\n\nTry the other log target (LOG / NFLOG) in Preferences → Log.</string>
     <string name="log_watcher_failed_title">Log monitoring could not start</string>
     <string name="log_watcher_failed_text">%1$s. Tap to choose another log target.</string>
+    <string name="log_no_target">No log target is selected</string>
+    <string name="log_nflog_unavailable">The NFLOG reader could not be set up on this device</string>
+    <string name="log_target_unsupported">Log target %1$s is not supported</string>
     <string name="loading_data_title">Loading…</string>
     <string name="loading_data">Retrieving log data</string>
 

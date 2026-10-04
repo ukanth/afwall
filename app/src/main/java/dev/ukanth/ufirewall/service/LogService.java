@@ -39,7 +39,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.provider.Settings;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -141,7 +140,7 @@ public class LogService extends Service {
     private static final long START_FAILURE_WINDOW_MS = 5_000;
     private static volatile String lastStartFailure;
     private volatile String lastWatcherOutput;
-    private boolean startFailureNotified;
+    private volatile boolean startFailureNotified;
 
     /** reason the log watcher could not start, or null if it is working / unknown */
     public static String getLastStartFailure() {
@@ -150,7 +149,14 @@ public class LogService extends Service {
 
     private void reportStartFailure(String command, int exitCode) {
         String output = lastWatcherOutput;
-        String reason = output != null ? output : command + " exited with code " + exitCode;
+        reportNotStarted(output != null ? output : command + " exited with code " + exitCode);
+    }
+
+    /**
+     * Logging is enabled but can't run: show why on the log screen and, once, as a notification
+     * that opens the log settings.
+     */
+    private void reportNotStarted(String reason) {
         lastStartFailure = reason;
         Log.e(TAG, "Log watcher could not start: " + reason);
         if (startFailureNotified) {
@@ -318,29 +324,25 @@ public class LogService extends Service {
             if (log != null) {
                 log = log.trim();
                 if(log.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Please select log target first", Toast.LENGTH_LONG).show();
+                    reportNotStarted(getString(R.string.log_no_target));
                     return;
                 }
                 String nextLogPath;
                 switch (log) {
                     case "LOG":
                         nextLogPath = getBestLogCommand();
-                        if (nextLogPath == null) {
-                            Log.e(TAG, "No suitable log reading method available");
-                            return;
-                        }
                         break;
                     case "NFLOG":
                         nextLogPath = Api.getEnhancedNflogCommand(getApplicationContext(), QUEUE_NUM);
                         if (nextLogPath == null) {
-                            Log.e(TAG, "NFLOG binary not available, cannot start logging service");
+                            reportNotStarted(getString(R.string.log_nflog_unavailable));
                             return;
                         }
                         break;
                     default:
-                        nextLogPath = null;
+                        reportNotStarted(getString(R.string.log_target_unsupported, log));
+                        return;
                 }
-                if (nextLogPath == null) return;
 
                 // Skip re-init if already watching the same path and shell is healthy.
                 if (isWatcherHealthy() && nextLogPath.equals(logPath)) {
@@ -349,6 +351,8 @@ public class LogService extends Service {
                 }
 
                 logPath = nextLogPath;
+                // a reason from an earlier attempt (e.g. no target chosen yet) no longer applies
+                lastStartFailure = null;
                 Log.i(TAG, "Starting Log Service: " + logPath + " for LogTarget: " + G.logTarget());
                 if (logProcessExecutor == null || logProcessExecutor.isShutdown() || logProcessExecutor.isTerminated()) {
                     logProcessExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -369,6 +373,12 @@ public class LogService extends Service {
 
                         // Process iptables/netfilter log entries
                         if(line.contains("{AFL}")) {
+                            if (startFailureNotified) {
+                                // logging works now: the earlier "could not start" is stale
+                                startFailureNotified = false;
+                                dev.ukanth.ufirewall.util.Notifications.cancel(getApplicationContext(),
+                                        Api.LOG_WATCHER_FAILED_NOTIFICATION_ID);
+                            }
                             lastStartFailure = null; // logging works
                             storeLogInfo(line, getApplicationContext());
                         } else if (!line.trim().isEmpty()) {

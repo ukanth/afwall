@@ -3428,6 +3428,10 @@ public final class Api {
         }
 
         G.appVersion(currentVer); // This indicates that the installation of the binaries for this version was successful.
+        if (!wasAlreadyInstalled) {
+            // new binaries: an earlier "built-in iptables can't run" no longer applies
+            G.setBuiltinIptablesFailed(false);
+        }
 
         return true;
         } // End synchronized block
