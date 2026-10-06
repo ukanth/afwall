@@ -81,6 +81,7 @@
     android:label="@string/app_name_donate" -->
     <application
         android:name=".util.G"
+        android:localeConfig="@xml/locales_config"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -107,7 +108,7 @@
         <!-- donate  android:label="@string/app_name_donate" -->
         <activity
             android:name=".MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"
             android:hardwareAccelerated="true"
             android:exported="true"
             android:label="@string/app_name">
@@ -126,7 +127,7 @@
             android:name=".preferences.PreferencesActivity"
             android:theme="@style/AppDarkTheme"
             android:exported="true"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"
             android:hardwareAccelerated="true">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -134,40 +135,40 @@
         </activity>
         <activity
             android:name=".activity.HelpActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|locale"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:hardwareAccelerated="true"></activity>
         <activity
             android:name=".activity.RulesActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"></activity>
         <activity
             android:name=".activity.ProfileActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"></activity>
         <activity
             android:name=".activity.AppDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         <activity
             android:name=".activity.LogActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"></activity>
         <activity
             android:name=".activity.OldLogActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"></activity>
         <activity
             android:name=".activity.LogDetailActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout"></activity>
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout"></activity>
         <activity
             android:name=".activity.DataDumpActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
         </activity>
         <activity
             android:name=".activity.AppRulesActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
@@ -198,7 +199,7 @@
             android:exported="false" />
         <activity
             android:name=".activity.CustomScriptActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|locale|screenLayout">
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard|screenLayout">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="dev.ukanth.ufirewall.MainActivity" />
@@ -395,6 +396,15 @@
             android:authorities="${applicationId}"
             android:exported="true" />-->
 
+        <!-- keeps the app language on Android 12 and older (AppLanguage); Android 13+ keeps it itself -->
+        <service
+            android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
+            android:enabled="false"
+            android:exported="false">
+            <meta-data
+                android:name="autoStoreLocales"
+                android:value="true" />
+        </service>
     </application>
 
 </manifest>

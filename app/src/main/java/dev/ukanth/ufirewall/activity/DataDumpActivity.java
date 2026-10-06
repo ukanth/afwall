@@ -319,7 +319,6 @@ public abstract class DataDumpActivity extends AppCompatActivity {
         setData("");
         populateData(this);
 
-        Api.updateLanguage(getApplicationContext(), G.locale());
     }
 
     @Override

@@ -43,6 +43,8 @@ public final class BackupHelper {
 
     private static final String TAG = Api.TAG;
     public static final String V2_KEY = "v2";
+    // direct rules that only versions with block / network rules can read correctly
+    private static final String DIRECT_RULES2_KEY = "directRules2";
 
     /**
      * Rule list preferences, indexed by the connection type code used in backups (same codes as
@@ -101,7 +103,10 @@ public final class BackupHelper {
         }
         v2.put("profiles", profiles);
 
+        // Block and network rules go in their own array: versions without them would import
+        // them from "directRules" as allow rules for all networks. They skip this array instead.
         JSONArray directRules = new JSONArray();
+        JSONArray directRules2 = new JSONArray();
         for (CustomRule rule : SQLite.select().from(CustomRule.class).queryList()) {
             AppRuleHelper.ParsedRule parsed = AppRuleHelper.parseRuleName(rule.getName());
             if (parsed == null) {
@@ -114,9 +119,16 @@ public final class BackupHelper {
             o.put("protocol", parsed.protocol);
             o.put("port", parsed.port);
             o.put("active", rule.isActive());
-            directRules.put(o);
+            if (parsed.isPlainAllow()) {
+                directRules.put(o);
+            } else {
+                o.put("action", parsed.action);
+                o.put("network", parsed.network);
+                directRules2.put(o);
+            }
         }
         v2.put("directRules", directRules);
+        v2.put(DIRECT_RULES2_KEY, directRules2);
 
         JSONArray logMutes = new JSONArray();
         for (LogPreference pref : SQLite.select().from(LogPreference.class).queryList()) {
@@ -239,11 +251,13 @@ public final class BackupHelper {
             writeRuleLists(prefs, p.optJSONArray("rules"), mapper, stats);
         }
 
-        JSONArray directRules = v2.optJSONArray("directRules");
-        for (int i = 0; directRules != null && i < directRules.length(); i++) {
-            JSONObject o = directRules.optJSONObject(i);
-            if (o != null && importDirectRule(o, profileIds, mapper)) {
-                stats.directRules++;
+        for (String key : new String[]{"directRules", DIRECT_RULES2_KEY}) {
+            JSONArray directRules = v2.optJSONArray(key);
+            for (int i = 0; directRules != null && i < directRules.length(); i++) {
+                JSONObject o = directRules.optJSONObject(i);
+                if (o != null && importDirectRule(o, profileIds, mapper)) {
+                    stats.directRules++;
+                }
             }
         }
 
@@ -315,16 +329,20 @@ public final class BackupHelper {
         String destination = o.optString("destination", "").trim();
         String port = o.optString("port", "").trim();
         String protocol = AppRuleHelper.normalizeProtocol(o.optString("protocol", "any"));
-        if ((!destination.isEmpty() && !AppRuleHelper.isValidDestination(destination))
+        String action = AppRuleHelper.normalizeAction(o.optString("action", AppRuleHelper.ACTION_ALLOW));
+        String network = AppRuleHelper.normalizeNetwork(o.optString("network", AppRuleHelper.NETWORK_ALL));
+        if (action == null || network == null
+                || (!destination.isEmpty() && !AppRuleHelper.isValidDestination(destination))
                 || (!port.isEmpty() && !AppRuleHelper.isValidPortRange(port))
                 || (!port.isEmpty() && "any".equals(protocol))) {
             return false;
         }
-        String rule = Api.validateCustomRuleForStorage(AppRuleHelper.buildAllowRule(uid, destination, protocol, port));
+        String rule = Api.validateCustomRuleForStorage(
+                AppRuleHelper.buildStoredRule(uid, action, network, destination, protocol, port));
         if (rule == null) {
             return false;
         }
-        String name = AppRuleHelper.buildAllowRuleName(profile, uid, destination, protocol, port);
+        String name = AppRuleHelper.buildRuleName(profile, uid, action, network, destination, protocol, port);
         CustomRule existing = SQLite.select().from(CustomRule.class)
                 .where(dev.ukanth.ufirewall.customrules.CustomRule_Table.name.eq(name)).querySingle();
         CustomRule customRule = existing != null ? existing : new CustomRule(name, rule);

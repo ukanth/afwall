@@ -42,6 +42,7 @@ import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.Api.PackageInfoData;
 import dev.ukanth.ufirewall.InterfaceTracker;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.AppLanguage;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.UidResolver;
 import dev.ukanth.ufirewall.util.UidCorrelator;
@@ -67,7 +68,7 @@ public class LogInfo {
 
     public static String pretty(Date date) {
         if (prettyTime == null) {
-            prettyTime = new PrettyTime(new Locale(G.locale()));
+            prettyTime = new PrettyTime(AppLanguage.locale());
             for (TimeUnit t : prettyTime.getUnits()) {
                 if (t instanceof JustNow) {
                     prettyTime.removeUnit(t);

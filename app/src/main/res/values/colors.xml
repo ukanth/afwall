@@ -54,4 +54,7 @@
 
 	<color name="primary_icon">#ffffffff</color>
     <color name="primary_icon_dark">#ff313131</color>
+    <!-- direct rule action chips (white text on both themes) -->
+    <color name="rule_allow">#2E7D32</color>
+    <color name="rule_block">#C62828</color>
 </resources>

@@ -114,4 +114,74 @@ public class AppRuleHelperTest {
         assertTrue(AppRuleHelper.isIpv6Destination("2001:db8::1"));
         assertFalse(AppRuleHelper.isIpv6Destination("1.2.3.4"));
     }
+
+    @Test
+    public void plainAllowRuleKeepsItsOldName() {
+        // existing rules (and versions without block / network rules) use this exact name
+        assertEquals("direct-rule:AFWallPrefs:10123: allow dst=1.2.3.4 proto=tcp dport=443",
+                AppRuleHelper.buildRuleName("AFWallPrefs", 10123, AppRuleHelper.ACTION_ALLOW,
+                        AppRuleHelper.NETWORK_ALL, "1.2.3.4", "tcp", "443"));
+        AppRuleHelper.ParsedRule r = AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:10123: allow dst=1.2.3.4");
+        assertEquals(AppRuleHelper.ACTION_ALLOW, r.action);
+        assertEquals(AppRuleHelper.NETWORK_ALL, r.network);
+        assertTrue(r.isPlainAllow());
+    }
+
+    @Test
+    public void blockAndNetworkRoundTrip() {
+        String name = AppRuleHelper.buildRuleName("AFWallPrefs", -10, AppRuleHelper.ACTION_BLOCK,
+                AppRuleHelper.NETWORK_WIFI, "203.0.113.50", "any", "");
+        assertEquals("direct-rule:AFWallPrefs:-10: block net=wifi dst=203.0.113.50", name);
+        AppRuleHelper.ParsedRule r = AppRuleHelper.parseRuleName(name);
+        assertTrue(r.isBlock());
+        assertEquals(AppRuleHelper.NETWORK_WIFI, r.network);
+        assertEquals("203.0.113.50", r.destination);
+        assertFalse(r.isPlainAllow());
+        assertFalse(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:1: allow net=mobile dport=1").isPlainAllow());
+    }
+
+    @Test
+    public void blockRuleJumpsToRejectChain() {
+        assertEquals("-A afwall10 -d 203.0.113.50 -j afwall10-reject",
+                AppRuleHelper.buildRule(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:-10: block dst=203.0.113.50"),
+                        "afwall10", false));
+        assertEquals("-A afwall -m owner --uid-owner 10123 -p udp --dport 443 -j afwall-reject",
+                AppRuleHelper.buildRule(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:10123: block proto=udp dport=443"),
+                        "afwall", true));
+    }
+
+    @Test
+    public void networkRuleGoesInItsChain() {
+        assertEquals("-A afwall-wifi -m owner --uid-owner 10123 -d 10.0.0.0/8 -j RETURN",
+                AppRuleHelper.buildRule(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:10123: allow net=wifi dst=10.0.0.0/8"),
+                        "afwall", false));
+        assertEquals("-A afwall-3g -p tcp --dport 25 -j afwall-reject",
+                AppRuleHelper.buildRule(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:-10: block net=mobile proto=tcp dport=25"),
+                        "afwall", false));
+        assertEquals("-A afwall-vpn -d 1.1.1.1 -j RETURN",
+                AppRuleHelper.buildRule(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:-10: allow net=vpn dst=1.1.1.1"),
+                        "afwall", false));
+    }
+
+    @Test
+    public void unknownNetworkIsNotApplied() {
+        // a rule from a newer version for a network this one doesn't know
+        assertNull(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:10123: allow net=satellite dst=1.2.3.4"));
+        assertNull(AppRuleHelper.normalizeNetwork("satellite"));
+        assertEquals(AppRuleHelper.NETWORK_ALL, AppRuleHelper.normalizeNetwork(""));
+        assertNull(AppRuleHelper.normalizeAction("drop"));
+        assertEquals(AppRuleHelper.ACTION_ALLOW, AppRuleHelper.normalizeAction(null));
+        assertEquals(AppRuleHelper.ACTION_BLOCK, AppRuleHelper.normalizeAction("BLOCK"));
+    }
+
+    @Test
+    public void appRulesBeforeGlobalRulesAndBlockBeforeAllow() {
+        int appBlock = AppRuleHelper.applyOrder(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:10123: block dst=1.2.3.4"));
+        int appAllow = AppRuleHelper.applyOrder(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:10123: allow dst=1.2.3.4"));
+        int anyBlock = AppRuleHelper.applyOrder(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:-10: block dst=1.2.3.4"));
+        int anyAllow = AppRuleHelper.applyOrder(AppRuleHelper.parseRuleName("direct-rule:AFWallPrefs:-10: allow dst=1.2.3.4"));
+        assertTrue(appBlock < appAllow);
+        assertTrue(appAllow < anyBlock);
+        assertTrue(anyBlock < anyAllow);
+    }
 }

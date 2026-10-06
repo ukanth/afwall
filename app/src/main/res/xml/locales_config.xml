@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- the languages offered in Android 13+ Settings › Apps › AFWall+ › Language; same as the
+     list in Preferences (arrays.xml supported_languages_code) -->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="ast-ES" />
+    <locale android:name="az" />
+    <locale android:name="id" />
+    <locale android:name="ms" />
+    <locale android:name="bs" />
+    <locale android:name="ca" />
+    <locale android:name="cs" />
+    <locale android:name="da" />
+    <locale android:name="de" />
+    <locale android:name="es" />
+    <locale android:name="eu" />
+    <locale android:name="fr" />
+    <locale android:name="hr" />
+    <locale android:name="it" />
+    <locale android:name="hu" />
+    <locale android:name="nl" />
+    <locale android:name="nb" />
+    <locale android:name="pl" />
+    <locale android:name="pt" />
+    <locale android:name="pt-BR" />
+    <locale android:name="ro" />
+    <locale android:name="sk" />
+    <locale android:name="sl" />
+    <locale android:name="sr-CS" />
+    <locale android:name="sv" />
+    <locale android:name="vi" />
+    <locale android:name="tr" />
+    <locale android:name="el" />
+    <locale android:name="bg" />
+    <locale android:name="ru" />
+    <locale android:name="sr" />
+    <locale android:name="uk" />
+    <locale android:name="he" />
+    <locale android:name="ar" />
+    <locale android:name="fa" />
+    <locale android:name="bn" />
+    <locale android:name="si" />
+    <locale android:name="ja" />
+    <locale android:name="zh-CN" />
+    <locale android:name="zh-TW" />
+    <locale android:name="ko" />
+</locale-config>

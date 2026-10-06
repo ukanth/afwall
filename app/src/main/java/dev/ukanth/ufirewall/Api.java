@@ -1028,9 +1028,11 @@ public final class Api {
     }
 
     /**
-     * The direct (per-app) rules of the current profile. Built from the rule itself for the main
-     * chain of this user and the table's address family: IPv6 only with IPv6 support on, and a
-     * rule with a destination only in the table of its family.
+     * The direct rules (per app, or global for "any app") of the current profile. Built from the
+     * rule itself for this user's main chain, or the Wi-Fi / mobile / VPN chain of a network rule,
+     * and the table's address family: IPv6 only with IPv6 support on, and a rule with a
+     * destination only in the table of its family. They are added before AFWall+'s own rules in
+     * each of these chains.
      */
     private static void addDatabaseCustomRules(List<String> cmds, boolean ipv6) {
         if (!G.enableCustomRules() || (ipv6 && !G.enableIPv6())) {
@@ -1043,11 +1045,17 @@ public final class Api {
                     .where(CustomRule_Table.active.eq(true))
                     .queryList();
 
+            List<AppRuleHelper.ParsedRule> parsedRules = new ArrayList<>();
             for (CustomRule customRule : customRules) {
-                if (!AppRuleHelper.belongsToCurrentProfile(customRule)) {
-                    continue;
+                AppRuleHelper.ParsedRule parsed = AppRuleHelper.parseRuleName(customRule.getName());
+                if (parsed != null && AppRuleHelper.belongsToCurrentProfile(customRule)) {
+                    parsedRules.add(parsed);
                 }
-                String rule = AppRuleHelper.buildRule(AppRuleHelper.parseRuleName(customRule.getName()), chain, ipv6);
+            }
+            // stable: rules of the same kind keep the order they were added in
+            Collections.sort(parsedRules, (a, b) -> AppRuleHelper.applyOrder(a) - AppRuleHelper.applyOrder(b));
+            for (AppRuleHelper.ParsedRule parsed : parsedRules) {
+                String rule = AppRuleHelper.buildRule(parsed, chain, ipv6);
                 if (rule != null && rule.matches(".*\\S.*")) {
                     String sanitizedRule = sanitizeRule(rule.trim());
                     if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
@@ -4396,35 +4404,6 @@ public final class Api {
         }
     }
 
-    public static void updateLanguage(Context context, String lang) {
-        if (lang.equals("sys")) {
-            Locale defaultLocale = Resources.getSystem().getConfiguration().locale;
-            Locale.setDefault(defaultLocale);
-            Resources res = context.getResources();
-            Configuration conf = res.getConfiguration();
-            conf.locale = defaultLocale;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                context.createConfigurationContext(conf);
-            } else {
-                context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
-            }
-        } else if (!"".equals(lang)) {
-            Locale locale = new Locale(lang);
-            if (lang.contains("_")) {
-                locale = new Locale(lang.split("_")[0], lang.split("_")[1]);
-            }
-            Locale.setDefault(locale);
-            Resources res = context.getResources();
-            Configuration conf = res.getConfiguration();
-            conf.locale = locale;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                context.createConfigurationContext(conf);
-            } else {
-                context.getResources().updateConfiguration(conf, context.getResources().getDisplayMetrics());
-            }
-        }
-    }
-
     public static void setUserOwner(Context context) {
         if (supportsMultipleUsers(context)) {
             try {
@@ -4759,38 +4738,6 @@ public final class Api {
         boolean removed = com.topjohnwu.superuser.Shell.cmd("rm -f '" + dest + "'").exec().isSuccess();
         mountDir(context, dest, "RO");
         return removed;
-    }
-
-    public static Context updateBaseContextLocale(Context context) {
-        String language = G.locale(); // Helper method to get saved language from SharedPreferences
-        Locale locale = new Locale(language);
-
-        if (language.equals("zh") || language.equals("zh_CN")) {
-            locale = Locale.SIMPLIFIED_CHINESE;
-        } else if (language.equals("zh_TW")) {
-            locale = Locale.TRADITIONAL_CHINESE;
-        }
-
-        Locale.setDefault(locale);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return updateResourcesLocale(context, locale);
-        }
-        return updateResourcesLocaleLegacy(context, locale);
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    private static Context updateResourcesLocale(Context context, Locale locale) {
-        Configuration configuration = context.getResources().getConfiguration();
-        configuration.setLocale(locale);
-        return context.createConfigurationContext(configuration);
-    }
-
-    private static Context updateResourcesLocaleLegacy(Context context, Locale locale) {
-        Resources resources = context.getResources();
-        Configuration configuration = resources.getConfiguration();
-        configuration.locale = locale;
-        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-        return context;
     }
 
     /**

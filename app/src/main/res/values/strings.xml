@@ -133,6 +133,10 @@
     <string name="custom_script_check_shutdown">Shutdown script</string>
     <string name="custom_script_save_anyway">Save anyway</string>
     <string name="custom_script_keep_editing">Keep editing</string>
+    <plurals name="custom_script_more_problems">
+        <item quantity="one">…and %d more line</item>
+        <item quantity="other">…and %d more lines</item>
+    </plurals>
     <plurals name="custom_script_warning_text">
         <item quantity="one">%1$d custom script line failed or was ignored; the other rules were applied. %2$s</item>
         <item quantity="other">%1$d custom script lines failed or were ignored; the other rules were applied. First: %2$s</item>
@@ -792,6 +796,35 @@
     <string name="direct_rules_added">Direct rule added.</string>
     <string name="direct_rules_removed">Direct rule removed.</string>
     <string name="direct_rules_remove">Remove</string>
+    <string name="direct_rules_action">Action</string>
+    <string name="direct_rules_allow">Allow</string>
+    <string name="direct_rules_block">Block</string>
+    <string name="direct_rules_network">Network</string>
+    <string name="direct_rules_network_all">All networks</string>
+    <string name="direct_rules_network_wifi">Wi-Fi only</string>
+    <string name="direct_rules_network_mobile">Mobile data only</string>
+    <string name="direct_rules_network_vpn">VPN only</string>
+    <string name="direct_rules_vpn_off">VPN control is off, no effect</string>
+    <string name="direct_rules_add_rule">Add rule</string>
+    <string name="direct_rules_exists">This rule already exists.</string>
+    <string name="direct_rules_family_v4">IPv4 address: the rule applies to IPv4 traffic only.</string>
+    <string name="direct_rules_family_v6">IPv6 address: the rule applies to IPv6 traffic only.</string>
+    <string name="direct_rules_any_address">any address</string>
+    <string name="direct_rules_any_protocol">any protocol</string>
+    <string name="direct_rules_port_value">port %s</string>
+    <string name="direct_rules_order_hint">Rules for one app are checked before global rules, and Block before Allow. Rules for all networks come before rules for one network.</string>
+    <string name="direct_rules_disabled_warning">Direct rules are turned off in Preferences. These rules are kept but not applied.</string>
+    <string name="direct_rules_script_link">Need more? Custom script ›</string>
+    <string name="language_system">System default</string>
+    <string name="global_rules">Global rules</string>
+    <string name="global_rules_subtitle">Rules for all apps</string>
+    <string name="global_rules_empty">No global rules yet.</string>
+    <string name="custom_script_snippets">Snippets</string>
+    <string name="snippet_global_rules">Allow or block an address or port → Global rules</string>
+    <string name="snippet_inbound">Block incoming connections to a port</string>
+    <string name="snippet_dns">Send DNS to your own server (IPv4)</string>
+    <string name="snippet_chain">Group rules in your own chain</string>
+    <string name="snippet_keep_block">Keep an address blocked while the firewall is off</string>
     <string name="direct_rules_log_missing_data">Selected log item does not include enough app and destination data.</string>
     <!-- Help screen -->
     <string name="help_network_types">Network Types</string>

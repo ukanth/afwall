@@ -98,8 +98,6 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // set language
-        Api.updateLanguage(getApplicationContext(), G.locale());
         initTheme();
         super.onCreate(savedInstanceState);
 
@@ -314,7 +312,7 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         if (key.equals("showUid") || key.equals("showPackageName") || key.equals("disableIcons") || key.equals("enableVPN")
                 || key.equals("enableTether")
                 || key.equals("enableLAN") || key.equals("enableRoam")
-                || key.equals("locale") || key.equals("showFilter")
+                || key.equals("showFilter")
                 || key.equals("enableCustomRules")
                 || isThemeColorKey(key)) {
             G.reloadProfile();
@@ -423,9 +421,5 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         super.onDestroy();
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(Api.updateBaseContextLocale(base));
-    }
 
 }

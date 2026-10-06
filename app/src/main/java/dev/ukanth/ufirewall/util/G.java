@@ -128,7 +128,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String PROTECTION_OPTION = "passSetting";
     private static final String BUSYBOX_PATH = "bb_path";
     private static final String TOAST_POS = "toast_pos";
-    private static final String LANGUAGE = "locale";
     //private static final String LOG_DMESG = "logDmesg";
     private static final String SORT_BY = "sort";
     private static final String LAST_STORED_PROFILE = "storedProfile";
@@ -691,14 +690,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return gPrefs.getString(TOAST_POS, "bottom");
     }
 
-    public static String locale() {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getString(LANGUAGE, "en");
-    }
-
-    public static String locale(String val) {
-        gPrefs.edit().putString(LANGUAGE, val).commit();
-        return val;
-    }
 
     /*public static String logDmsg() {
         return gPrefs.getString(LOG_DMESG, "OS");

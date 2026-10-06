@@ -2,107 +2,98 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
 
-    <string-array name="supported_languages">
-        <item>System</item>
+    <!-- each language in its own name; the codes are language tags (AppLanguage), keep them in
+         the same order and in sync with xml/locales_config.xml -->
+    <string-array name="supported_languages" translatable="false">
+        <item>@string/language_system</item>
         <item>English</item>
-        <item>Arabic</item>
-        <item>Asturian</item>
-        <item>Azerbaijani</item>
-
-        <item>Basque</item>
-        <item>Bengali</item>
-        <item>Bosnian</item>
-        <item>Bulgarian</item>
-
-        <item>Catalin</item>
-        <item>Czech</item>
-
-        <item>Dutch</item>
-        <item>French</item>
-        <item>German</item>
-        <item>Greek</item>
-
-        <item>Hungarian</item>
-        <item>Hebrew</item>
-        <item>Indonesian</item>
-        <item>Italian</item>
-        <item>Japanese</item>
-        <item>Korean</item>
-
-        <item>Malay</item>
-
-        <item>Polish</item>
-        <item>Portuguese</item>
-        <item>Portuguese(Brazilian)</item>
-        <item>Romanian</item>
-        <item>Russian</item>
-
-        <item>Serbian (Cyrillic)</item>
-        <item>Serbian</item>
-
-        <item>Simplified Chinese</item>
-        <item>Sinhala</item>
-
-        <item>Slovak</item>
-        <item>Slovenian</item>
-        <item>Spanish</item>
-        <item>Swedish</item>
-
-        <item>Traditional Chinese</item>
-        <item>Turkey</item>
-        <item>Ukrainian</item>
-
-
-
+        <item>Asturianu</item>
+        <item>Azərbaycan dili</item>
+        <item>Bahasa Indonesia</item>
+        <item>Bahasa Melayu</item>
+        <item>Bosanski</item>
+        <item>Català</item>
+        <item>Čeština</item>
+        <item>Dansk</item>
+        <item>Deutsch</item>
+        <item>Español</item>
+        <item>Euskara</item>
+        <item>Français</item>
+        <item>Hrvatski</item>
+        <item>Italiano</item>
+        <item>Magyar</item>
+        <item>Nederlands</item>
+        <item>Norsk bokmål</item>
+        <item>Polski</item>
+        <item>Português</item>
+        <item>Português (Brasil)</item>
+        <item>Română</item>
+        <item>Slovenčina</item>
+        <item>Slovenščina</item>
+        <item>Srpski (latinica)</item>
+        <item>Svenska</item>
+        <item>Tiếng Việt</item>
+        <item>Türkçe</item>
+        <item>Ελληνικά</item>
+        <item>Български</item>
+        <item>Русский</item>
+        <item>Српски</item>
+        <item>Українська</item>
+        <item>עברית</item>
+        <item>العربية</item>
+        <item>فارسی</item>
+        <item>বাংলা</item>
+        <item>සිංහල</item>
+        <item>日本語</item>
+        <item>简体中文</item>
+        <item>繁體中文</item>
+        <item>한국어</item>
     </string-array>
-    
-    <string-array name="supported_languages_code">
+
+    <string-array name="supported_languages_code" translatable="false">
         <item>sys</item>
         <item>en</item>
-
-        <item>ar</item>
-        <item>ast_ES</item>
+        <item>ast-ES</item>
         <item>az</item>
-
-        <item>eu</item>
-        <item>bn</item>
+        <item>id</item>
+        <item>ms</item>
         <item>bs</item>
-        <item>bg</item>
-
         <item>ca</item>
         <item>cs</item>
-
-        <item>nl</item>
-        <item>fr</item>
+        <item>da</item>
         <item>de</item>
-        <item>el</item>
-        <item>hu</item>
-        <item>he</item>
-        <item>in</item>
+        <item>es</item>
+        <item>eu</item>
+        <item>fr</item>
+        <item>hr</item>
         <item>it</item>
-        <item>ja</item>
-        <item>ko</item>
-
-        <item>ms</item>
-
+        <item>hu</item>
+        <item>nl</item>
+        <item>nb</item>
         <item>pl</item>
         <item>pt</item>
-        <item>pt_BR</item>
+        <item>pt-BR</item>
         <item>ro</item>
-        <item>ru</item>
-        <item>sr_CS</item>
-        <item>sr</item>
-        <item>zh_CN</item>
-
-        <item>si</item>
         <item>sk</item>
         <item>sl</item>
-        <item>es</item>
+        <item>sr-CS</item>
         <item>sv</item>
-        <item>zh_TW</item>
+        <item>vi</item>
         <item>tr</item>
+        <item>el</item>
+        <item>bg</item>
+        <item>ru</item>
+        <item>sr</item>
         <item>uk</item>
-
+        <item>he</item>
+        <item>ar</item>
+        <item>fa</item>
+        <item>bn</item>
+        <item>si</item>
+        <item>ja</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+        <item>ko</item>
     </string-array>
 
 

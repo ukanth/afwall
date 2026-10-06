@@ -73,6 +73,7 @@ import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogDatabase;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.service.FirewallService;
+import dev.ukanth.ufirewall.util.AppLanguage;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.SystemUids;
@@ -856,7 +857,7 @@ public class LogService extends Service {
 
     public static String pretty(Date date) {
         if (prettyTime == null) {
-            prettyTime = new PrettyTime(new Locale(G.locale()));
+            prettyTime = new PrettyTime(AppLanguage.locale());
             for (TimeUnit t : prettyTime.getUnits()) {
                 if (t instanceof JustNow) {
                     prettyTime.removeUnit(t);

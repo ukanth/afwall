@@ -82,6 +82,12 @@
                 app:showAsAction="always" />
 
             <item
+                android:id="@+id/menu_globalrules"
+                android:icon="@drawable/ic_custom_rules"
+                android:title="@string/global_rules"
+                app:showAsAction="always" />
+
+            <item
                 android:id="@+id/menu_setcustom"
                 android:icon="@drawable/ic_script"
                 android:title="@string/set_custom_script"

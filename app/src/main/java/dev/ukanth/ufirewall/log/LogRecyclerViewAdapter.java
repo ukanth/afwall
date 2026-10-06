@@ -26,6 +26,7 @@ import java.util.Locale;
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.util.AppIcons;
+import dev.ukanth.ufirewall.util.AppLanguage;
 import dev.ukanth.ufirewall.util.G;
 
 /**
@@ -84,7 +85,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
 
     public static String pretty(Date date) {
         if (prettyTime == null) {
-            prettyTime = new PrettyTime(new Locale(G.locale()));
+            prettyTime = new PrettyTime(AppLanguage.locale());
             for (TimeUnit t : prettyTime.getUnits()) {
                 if (t instanceof JustNow) {
                     prettyTime.removeUnit(t);

@@ -38,6 +38,44 @@
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/direct_rules_disabled_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/direct_rules_disabled_warning"
+                android:textColor="@color/rule_block"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="@string/direct_rules_action"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/direct_rule_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@+id/direct_rule_action_allow"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/direct_rule_action_allow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:text="@string/direct_rules_allow" />
+
+                <RadioButton
+                    android:id="@+id/direct_rule_action_block"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/direct_rules_block" />
+            </RadioGroup>
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
@@ -53,6 +91,13 @@
                 android:imeOptions="actionNext"
                 android:inputType="textNoSuggestions|textVisiblePassword"
                 android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/direct_rule_family"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:visibility="gone" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -96,12 +141,24 @@
                     android:text=":" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/direct_rules_network"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/direct_rule_network"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <Button
                 android:id="@+id/direct_rule_add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="@string/direct_rules_add" />
+                android:text="@string/direct_rules_add_rule" />
 
             <TextView
                 android:id="@+id/direct_rules_empty"
@@ -117,6 +174,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/direct_rules_order_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/direct_rules_order_hint"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/direct_rules_script_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:text="@string/direct_rules_script_link"
+                android:textColor="?attr/colorAccent"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

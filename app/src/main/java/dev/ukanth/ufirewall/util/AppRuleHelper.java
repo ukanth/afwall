@@ -17,6 +17,13 @@ import dev.ukanth.ufirewall.log.Log;
 public final class AppRuleHelper {
 
     private static final String RULE_PREFIX = "direct-rule:";
+    public static final String ACTION_ALLOW = "allow";
+    public static final String ACTION_BLOCK = "block";
+    // the network a rule is limited to; "all" is the main chain, the others the interface chains
+    public static final String NETWORK_ALL = "all";
+    public static final String NETWORK_WIFI = "wifi";
+    public static final String NETWORK_MOBILE = "mobile";
+    public static final String NETWORK_VPN = "vpn";
     private static final String DEFAULT_PROFILE = "AFWallPrefs";
     private static final Pattern IPV4_PATTERN = Pattern.compile(
             "^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:[0-9]|[1-2][0-9]|3[0-2]))?$");
@@ -44,21 +51,41 @@ public final class AppRuleHelper {
         public final String destination;
         public final String protocol;
         public final String port;
+        /** {@link #ACTION_ALLOW} or {@link #ACTION_BLOCK} */
+        public final String action;
+        /** {@link #NETWORK_ALL}, {@link #NETWORK_WIFI}, {@link #NETWORK_MOBILE} or {@link #NETWORK_VPN} */
+        public final String network;
 
-        ParsedRule(String profile, int uid, String destination, String protocol, String port) {
+        ParsedRule(String profile, int uid, String destination, String protocol, String port,
+                   String action, String network) {
             this.profile = profile;
             this.uid = uid;
             this.destination = destination;
             this.protocol = protocol;
             this.port = port;
+            this.action = action;
+            this.network = network;
+        }
+
+        public boolean isBlock() {
+            return ACTION_BLOCK.equals(action);
+        }
+
+        /**
+         * @return true if versions without block / network rules read this rule the same way
+         * (they ignore the words they don't know, so they would apply a block rule as allow)
+         */
+        public boolean isPlainAllow() {
+            return ACTION_ALLOW.equals(action) && NETWORK_ALL.equals(network);
         }
     }
 
     /**
-     * Parse "direct-rule:&lt;profile&gt;:&lt;uid&gt;: allow dst=.. proto=.. dport=.." (or the legacy
-     * form without the profile, which belongs to the default profile).
+     * Parse "direct-rule:&lt;profile&gt;:&lt;uid&gt;: allow|block [net=..] dst=.. proto=.. dport=.."
+     * (or the legacy form without the profile, which belongs to the default profile).
      *
-     * @return null if {@code name} is not a direct rule
+     * @return null if {@code name} is not a direct rule, or names a network this version doesn't
+     * know (better not applied than applied to the wrong traffic)
      */
     public static ParsedRule parseRuleName(String name) {
         if (name == null || !name.startsWith(RULE_PREFIX)) {
@@ -84,8 +111,17 @@ public final class AppRuleHelper {
         String destination = "";
         String protocol = "any";
         String port = "";
+        String action = ACTION_ALLOW;
+        String network = NETWORK_ALL;
         for (String token : name.substring(name.indexOf(':', uidStart) + 1).trim().split("\\s+")) {
-            if (token.startsWith("dst=")) {
+            if (ACTION_BLOCK.equals(token)) {
+                action = ACTION_BLOCK;
+            } else if (token.startsWith("net=")) {
+                network = token.substring(4);
+                if (chainSuffix(network) == null) {
+                    return null;
+                }
+            } else if (token.startsWith("dst=")) {
                 destination = token.substring(4);
             } else if (token.startsWith("proto=")) {
                 protocol = token.substring(6);
@@ -93,7 +129,25 @@ public final class AppRuleHelper {
                 port = token.substring(6);
             }
         }
-        return new ParsedRule(profile, uid, destination, protocol, port);
+        return new ParsedRule(profile, uid, destination, protocol, port, action, network);
+    }
+
+    /**
+     * @return the suffix of the chain a rule for {@code network} goes in, or null if unknown
+     */
+    static String chainSuffix(String network) {
+        switch (network) {
+            case NETWORK_ALL:
+                return "";
+            case NETWORK_WIFI:
+                return "-wifi";
+            case NETWORK_MOBILE:
+                return "-3g";
+            case NETWORK_VPN:
+                return "-vpn";
+            default:
+                return null;
+        }
     }
 
     /**
@@ -109,8 +163,9 @@ public final class AppRuleHelper {
      * The rule as stored with the direct rule (shown in the rule list, and applied by versions
      * before 4.2.0); the rules that are applied are built by {@link #buildRule}.
      */
-    public static String buildAllowRule(int uid, String destinationValue, String protocolValue, String portValue) {
-        return buildRule("afwall", uid, destinationValue, protocolValue, portValue);
+    public static String buildStoredRule(int uid, String action, String network, String destinationValue,
+                                         String protocolValue, String portValue) {
+        return buildRule("afwall", uid, action, network, destinationValue, protocolValue, portValue);
     }
 
     /**
@@ -126,16 +181,24 @@ public final class AppRuleHelper {
         if (!destination.isEmpty() && isIpv6Destination(destination) != ipv6) {
             return null;
         }
-        return buildRule(chain, parsed.uid, destination, parsed.protocol, parsed.port);
+        return buildRule(chain, parsed.uid, parsed.action, parsed.network, destination, parsed.protocol, parsed.port);
     }
 
-    private static String buildRule(String chain, int uid, String destinationValue, String protocolValue,
-                                    String portValue) {
+    /**
+     * Allow: leave AFWall+'s chains (RETURN). Block: the reject chain, which logs like any other
+     * blocked packet. A rule for one network goes at the top of that network's chain.
+     */
+    private static String buildRule(String chain, int uid, String action, String network, String destinationValue,
+                                    String protocolValue, String portValue) {
+        String suffix = chainSuffix(network);
+        if (suffix == null) {
+            return null;
+        }
         String destination = normalize(destinationValue);
         String protocol = normalize(protocolValue).toLowerCase(Locale.US);
         String port = normalize(portValue);
 
-        StringBuilder rule = new StringBuilder("-A ").append(chain);
+        StringBuilder rule = new StringBuilder("-A ").append(chain).append(suffix);
         if (uid != Api.SPECIAL_UID_ANY) {
             rule.append(" -m owner --uid-owner ").append(uid);
         }
@@ -148,22 +211,29 @@ public final class AppRuleHelper {
         if (!port.isEmpty()) {
             rule.append(" --dport ").append(port);
         }
-        rule.append(" -j RETURN");
+        rule.append(ACTION_BLOCK.equals(action) ? " -j " + chain + "-reject" : " -j RETURN");
         return rule.toString();
     }
 
-    public static String buildAllowRuleName(int uid, String destinationValue, String protocolValue, String portValue) {
-        return buildAllowRuleName(currentProfileName(), uid, destinationValue, protocolValue, portValue);
+    public static String buildRuleName(int uid, String action, String network, String destinationValue,
+                                       String protocolValue, String portValue) {
+        return buildRuleName(currentProfileName(), uid, action, network, destinationValue, protocolValue, portValue);
     }
 
-    public static String buildAllowRuleName(String profile, int uid, String destinationValue, String protocolValue,
-                                            String portValue) {
+    /**
+     * An allow rule for all networks gets the same name as before block / network rules existed.
+     */
+    public static String buildRuleName(String profile, int uid, String action, String network,
+                                       String destinationValue, String protocolValue, String portValue) {
         String destination = normalize(destinationValue);
         String protocol = normalize(protocolValue).toLowerCase(Locale.US);
         String port = normalize(portValue);
 
         StringBuilder name = new StringBuilder(rulePrefixForUid(profile, uid));
-        name.append(" allow");
+        name.append(' ').append(ACTION_BLOCK.equals(action) ? ACTION_BLOCK : ACTION_ALLOW);
+        if (network != null && !NETWORK_ALL.equals(network)) {
+            name.append(" net=").append(network);
+        }
         if (!destination.isEmpty()) {
             name.append(" dst=").append(destination);
         }
@@ -174,6 +244,33 @@ public final class AppRuleHelper {
             name.append(" dport=").append(port);
         }
         return name.toString();
+    }
+
+    /**
+     * Order in which direct rules are applied (each chain keeps this order): rules for one app
+     * before rules for all apps, so an app can be an exception to a global rule; and within each,
+     * block before allow.
+     */
+    public static int applyOrder(ParsedRule rule) {
+        return (rule.uid == Api.SPECIAL_UID_ANY ? 2 : 0) + (rule.isBlock() ? 0 : 1);
+    }
+
+    /** @return {@code value} if it is a known network, else null */
+    public static String normalizeNetwork(String value) {
+        String network = normalize(value).toLowerCase(Locale.US);
+        if (network.isEmpty()) {
+            return NETWORK_ALL;
+        }
+        return chainSuffix(network) != null ? network : null;
+    }
+
+    /** @return {@code value} if it is a known action ("allow" when empty), else null */
+    public static String normalizeAction(String value) {
+        String action = normalize(value).toLowerCase(Locale.US);
+        if (action.isEmpty() || ACTION_ALLOW.equals(action)) {
+            return ACTION_ALLOW;
+        }
+        return ACTION_BLOCK.equals(action) ? ACTION_BLOCK : null;
     }
 
     /**
@@ -398,7 +495,8 @@ public final class AppRuleHelper {
                 if (parsed == null || !parsed.profile.equals(from)) {
                     continue;
                 }
-                String name = buildAllowRuleName(to, parsed.uid, parsed.destination, parsed.protocol, parsed.port);
+                String name = buildRuleName(to, parsed.uid, parsed.action, parsed.network,
+                        parsed.destination, parsed.protocol, parsed.port);
                 CustomRule copy = SQLite.select().from(CustomRule.class)
                         .where(CustomRule_Table.name.eq(name)).querySingle();
                 if (copy == null) {

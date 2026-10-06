@@ -77,8 +77,10 @@
                         android:layout_marginBottom="12dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/customscript_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:hint="@string/enter_custom_script_hint"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusTopStart="4dp"
@@ -99,6 +101,15 @@
                             <requestFocus />
                         </com.google.android.material.textfield.TextInputEditText>
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/customscript_problems"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/rule_block"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -153,8 +164,10 @@
                         android:layout_marginBottom="12dp" />
 
                     <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/customscript2_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
                         android:hint="@string/enter_shutdown_script_hint"
                         app:boxBackgroundMode="outline"
                         app:boxCornerRadiusTopStart="4dp"
@@ -173,6 +186,15 @@
                             android:textAppearance="?android:attr/textAppearanceSmall"
                             android:minLines="8" />
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/customscript2_problems"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/rule_block"
+                        android:textSize="12sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

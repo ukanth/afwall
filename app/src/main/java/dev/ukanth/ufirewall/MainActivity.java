@@ -101,6 +101,7 @@ import java.util.List;
 import java.util.Set;
 
 import dev.ukanth.ufirewall.Api.PackageInfoData;
+import dev.ukanth.ufirewall.activity.AppRulesActivity;
 import dev.ukanth.ufirewall.activity.CustomScriptActivity;
 import dev.ukanth.ufirewall.activity.HelpActivity;
 import dev.ukanth.ufirewall.activity.LogActivity;
@@ -115,6 +116,7 @@ import dev.ukanth.ufirewall.service.LogService;
 import dev.ukanth.ufirewall.service.RootCommand;
 import dev.ukanth.ufirewall.util.AppListArrayAdapter;
 import dev.ukanth.ufirewall.util.BackupStorage;
+import dev.ukanth.ufirewall.util.AppLanguage;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.PackageComparator;
 import dev.ukanth.ufirewall.util.SecurityUtil;
@@ -197,6 +199,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // the language chosen with an older version (may recreate this screen once)
+        AppLanguage.migrate(G.gPrefs);
         if (savedInstanceState != null) {
             pendingImportAll = savedInstanceState.getBoolean(STATE_PENDING_IMPORT_ALL);
         }
@@ -740,8 +744,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         G.reloadPrefs();
         checkPreferences();
-        //language
-        Api.updateLanguage(getApplicationContext(), G.locale());
 
         if (this.listview == null) {
             this.listview = this.findViewById(R.id.listview);
@@ -1107,8 +1109,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //language
-        Api.updateLanguage(getApplicationContext(), G.locale());
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.menu_bar, menu);
 
@@ -1154,8 +1154,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
-        //language
-        Api.updateLanguage(getApplicationContext(), G.locale());
         if (menu != null) {
             menuSetApplyOrSave(mainMenu, Api.isEnabled(MainActivity.this));
         }
@@ -1235,6 +1233,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         } else if (selectedItem == R.id.menu_rules) {
             showRules();
+            return true;
+        } else if (selectedItem == R.id.menu_globalrules) {
+            startActivity(AppRulesActivity.globalRulesIntent(this));
             return true;
         } else if (selectedItem == R.id.menu_setcustom) {
             setCustomScript();
@@ -2358,10 +2359,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(Api.updateBaseContextLocale(base));
-    }
 
     private class PurgeTask extends AsyncTask<Void, Void, Boolean> {
 
