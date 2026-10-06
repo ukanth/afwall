@@ -44,6 +44,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import dev.ukanth.ufirewall.Api;
 import dev.ukanth.ufirewall.R;
+import dev.ukanth.ufirewall.util.CustomScript;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.ThemeHelper;
 
@@ -99,6 +100,38 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
     }
 
     /**
+     * Save, after showing the lines that won't be run (if any) with the choice to fix them first.
+     */
+    private void checkAndSave() {
+        StringBuilder problems = new StringBuilder();
+        appendProblems(problems, R.string.custom_script_check_startup, script.getText().toString());
+        appendProblems(problems, R.string.custom_script_check_shutdown, script2.getText().toString());
+        if (problems.length() == 0) {
+            resultOk();
+            return;
+        }
+        new MaterialDialog.Builder(this)
+                .title(R.string.custom_script_check_title)
+                .content(problems.toString().trim())
+                .positiveText(R.string.custom_script_keep_editing)
+                .negativeText(R.string.custom_script_save_anyway)
+                .onNegative((dialog, which) -> resultOk())
+                .show();
+    }
+
+    private void appendProblems(StringBuilder out, int titleRes, String text) {
+        // the chain name only matters for the commands, not for the check
+        CustomScript.Result result = CustomScript.parse(text, "afwall");
+        if (result.rejected.isEmpty()) {
+            return;
+        }
+        out.append(getString(titleRes)).append('\n');
+        for (CustomScript.Rejected r : result.rejected) {
+            out.append(Api.describeCustomScriptProblem(this, r)).append("\n\n");
+        }
+    }
+
+    /**
      * Set the activity result to RESULT_OK and terminate this activity.
      */
     private void resultOk() {
@@ -112,7 +145,7 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.customscript_ok) {
-            resultOk();
+            checkAndSave();
         } else {
             setResult(RESULT_CANCELED);
             finish();
@@ -136,7 +169,7 @@ public class CustomScriptActivity extends AppCompatActivity implements OnClickLi
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        resultOk();
+                        checkAndSave();
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {

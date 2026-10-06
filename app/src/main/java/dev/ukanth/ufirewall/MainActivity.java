@@ -1535,16 +1535,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivityForResult(intent, SHOW_CUSTOM_SCRIPT);
     }
 
-    /*private void startCustomRules() {
-        if ((G.isDoKey(getApplicationContext()) || isDonate())) {
-            Intent intent = new Intent();
-            intent.setClass(this, CustomRulesActivity.class);
-            startActivity(intent);
-        } else {
-            Api.donateDialog(MainActivity.this, false);
-        }
-    }*/
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

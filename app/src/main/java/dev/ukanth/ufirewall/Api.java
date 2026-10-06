@@ -136,6 +136,7 @@ import dev.ukanth.ufirewall.util.ApkInfo;
 import dev.ukanth.ufirewall.util.AppRuleHelper;
 import dev.ukanth.ufirewall.util.BackupHelper;
 import dev.ukanth.ufirewall.util.BackupStorage;
+import dev.ukanth.ufirewall.util.CustomScript;
 import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.IptablesRestorePlanner;
 import dev.ukanth.ufirewall.util.IptablesVersion;
@@ -198,6 +199,10 @@ public final class Api {
     public static final String STATUS_CHANGED_MSG = "dev.ukanth.ufirewall.intent.action.STATUS_CHANGED";
     public static final String TOGGLE_REQUEST_MSG = "dev.ukanth.ufirewall.intent.action.TOGGLE_REQUEST";
     public static final String CUSTOM_SCRIPT_MSG = "dev.ukanth.ufirewall.intent.action.CUSTOM_SCRIPT";
+    // custom script line, already a complete command: a failure is reported but not fatal
+    private static final String LITERAL = "#LITERAL# ";
+    // custom script line, already a complete command: a failure is ignored
+    private static final String LITERAL_NOCHK = "#LITNOCHK# ";
     // Message extras (parameters)
     public static final String STATUS_EXTRA = "dev.ukanth.ufirewall.intent.extra.STATUS";
     public static final String SCRIPT_EXTRA = "dev.ukanth.ufirewall.intent.extra.SCRIPT";
@@ -920,38 +925,106 @@ public final class Api {
         return sanitizeRule(rule);
     }
 
-    private static void addCustomRules(String prefName, List<String> cmds) {
-        addCustomRules(prefName, cmds, false);
-    }
-
-    private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6) {
-        addCustomRules(prefName, cmds, ipv6, true);
+    /**
+     * The startup script lines for one address family pass of a full apply. Lines into the
+     * chains that {@link #addInterfaceRouting} rebuilds are added there instead, right after
+     * the rebuild, or they would be flushed again.
+     */
+    private static void addCustomScript(List<String> cmds, boolean ipv6, String chainName) {
+        Set<String> rebuilt = afwallChains(chainName, dynChains);
+        for (CustomScript.Command c : CustomScript.parse(G.pPrefs.getString(PREF_CUSTOMSCRIPT, ""), chainName).commands) {
+            if (c.appliesTo(ipv6, G.enableIPv6()) && !(isInFlushedChain(c, ipv6, rebuilt))) {
+                addCustomScriptCommand(cmds, c, ipv6, chainName);
+            }
+        }
     }
 
     /**
-     * @param includeDatabaseRules add the per-app (direct) rules too. They are appended to the main
-     *                             chain, which only a full apply rebuilds, so a partial apply must
-     *                             not add them again (each network change used to add a copy).
+     * The startup script lines into {@code chains}, for a pass that has just flushed them.
      */
-    private static void addCustomRules(String prefName, List<String> cmds, boolean ipv6,
-                                       boolean includeDatabaseRules) {
-        String customRulesStr = G.pPrefs.getString(prefName, "");
-        if (!customRulesStr.isEmpty()) {
-            String[] customRules = customRulesStr.split("[\\r\\n]+");
-            for (String rule : customRules) {
-                if (rule.matches(".*\\S.*")) {
-                    // Sanitize the rule to prevent command injection
-                    String sanitizedRule = sanitizeRule(rule.trim());
-                    if (sanitizedRule != null && !sanitizedRule.isEmpty()) {
-                        cmds.add("#LITERAL# " + sanitizedRule);
-                    }
-                }
+    private static void addCustomScriptForChains(List<String> cmds, boolean ipv6, String chainName, Set<String> chains) {
+        for (CustomScript.Command c : CustomScript.parse(G.pPrefs.getString(PREF_CUSTOMSCRIPT, ""), chainName).commands) {
+            if (c.appliesTo(ipv6, G.enableIPv6()) && isInFlushedChain(c, ipv6, chains)) {
+                addCustomScriptCommand(cmds, c, ipv6, chainName);
             }
         }
+    }
 
-        if (includeDatabaseRules && PREF_CUSTOMSCRIPT.equals(prefName)) {
-            addDatabaseCustomRules(cmds, ipv6);
+    /**
+     * On disable: remove the rules the startup script added to chains AFWall+ does not flush
+     * (INPUT, nat, own chains, ...), then run the shutdown script.
+     */
+    private static void addCustomScriptShutdown(List<String> cmds, boolean ipv6, String chainName) {
+        Set<String> flushed = afwallChains(chainName, staticChains, dynChains);
+        List<CustomScript.Command> startup = CustomScript.parse(G.pPrefs.getString(PREF_CUSTOMSCRIPT, ""), chainName).commands;
+        for (int i = startup.size() - 1; i >= 0; i--) {
+            CustomScript.Command c = startup.get(i);
+            if (c.addsRule() && c.appliesTo(ipv6, G.enableIPv6()) && !isInFlushedChain(c, ipv6, flushed)) {
+                cmds.add(LITERAL_NOCHK + CustomScript.toShell(getBinaryPath(G.ctx, c.usesIp6tables(ipv6)), c.deleteArgs()));
+            }
         }
+        for (CustomScript.Command c : CustomScript.parse(G.pPrefs.getString(PREF_CUSTOMSCRIPT2, ""), chainName).commands) {
+            if (c.appliesTo(ipv6, G.enableIPv6())) {
+                addCustomScriptCommand(cmds, c, ipv6, chainName);
+            }
+        }
+    }
+
+    /**
+     * A rule added to a chain AFWall+ did not just flush is deleted first, so applying again
+     * (every apply, every network change for INPUT, nat, user chains) never adds a second copy.
+     */
+    private static void addCustomScriptCommand(List<String> cmds, CustomScript.Command c, boolean ipv6, String chainName) {
+        String bin = getBinaryPath(G.ctx, c.usesIp6tables(ipv6));
+        if (c.addsRule() && !isInFlushedChain(c, ipv6, afwallChains(chainName, staticChains, dynChains))) {
+            cmds.add(LITERAL_NOCHK + CustomScript.toShell(bin, c.deleteArgs()));
+        }
+        cmds.add((c.failureIsHarmless() ? LITERAL_NOCHK : LITERAL) + CustomScript.toShell(bin, c.args));
+    }
+
+    /** @return true if the line targets one of {@code chains} in the tables of this pass */
+    private static boolean isInFlushedChain(CustomScript.Command c, boolean ipv6, Set<String> chains) {
+        return c.usesIp6tables(ipv6) == ipv6 && "filter".equals(c.table) && c.chain != null && chains.contains(c.chain);
+    }
+
+    private static Set<String> afwallChains(String chainName, String[]... suffixLists) {
+        Set<String> chains = new HashSet<>();
+        for (String[] suffixes : suffixLists) {
+            for (String s : suffixes) {
+                chains.add(chainName + s);
+            }
+        }
+        return chains;
+    }
+
+    /**
+     * @return the lines of the startup and shutdown scripts that are not run, as user-facing text
+     */
+    public static List<String> describeCustomScriptProblems(Context ctx) {
+        List<String> out = new ArrayList<>();
+        for (String pref : new String[]{PREF_CUSTOMSCRIPT, PREF_CUSTOMSCRIPT2}) {
+            for (CustomScript.Rejected r : CustomScript.parse(G.pPrefs.getString(pref, ""), getThreadSafeChainName()).rejected) {
+                out.add(describeCustomScriptProblem(ctx, r));
+            }
+        }
+        return out;
+    }
+
+    public static String describeCustomScriptProblem(Context ctx, CustomScript.Rejected r) {
+        String d = r.detail != null ? r.detail : "";
+        String reason;
+        switch (r.problem) {
+            case SHELL_SYNTAX: reason = ctx.getString(R.string.custom_script_problem_shell, d); break;
+            case VARIABLE: reason = ctx.getString(R.string.custom_script_problem_variable, d); break;
+            case UNTERMINATED_QUOTE: reason = ctx.getString(R.string.custom_script_problem_quote); break;
+            case NOT_IPTABLES: reason = ctx.getString(R.string.custom_script_problem_not_iptables, d); break;
+            case LISTING: reason = ctx.getString(R.string.custom_script_problem_listing, d); break;
+            case MISSING_CHAIN: reason = ctx.getString(R.string.custom_script_problem_chain, d); break;
+            case UNKNOWN_TABLE: reason = ctx.getString(R.string.custom_script_problem_table, d); break;
+            case FORBIDDEN_OPTION: reason = ctx.getString(R.string.custom_script_problem_option, d); break;
+            default: reason = ctx.getString(R.string.custom_script_problem_command); break;
+        }
+        return ctx.getString(R.string.custom_script_line_ignored, r.lineNumber, reason, r.line);
     }
 
     /**
@@ -1025,6 +1098,8 @@ public final class Api {
             for (String s : dynChains) {
                 cmds.add("-F " + chainName + s);
             }
+            // startup script lines into these chains go first, as in a full apply
+            addCustomScriptForChains(cmds, ipv6, chainName, afwallChains(chainName, dynChains));
 
             if (whitelist) {
                 // always allow the DHCP client full wifi access
@@ -1066,6 +1141,8 @@ public final class Api {
                 // rebuilds staticChains separately).
                 if (lanList != null) {
                     cmds.add("#NOCHK# -F " + chainName + "-wifi-lan");
+                    addCustomScriptForChains(cmds, ipv6, chainName,
+                            Collections.singleton(chainName + "-wifi-lan"));
                     addRulesForUidlist(cmds, lanList, chainName + "-wifi-lan", whitelist);
                 }
             } else {
@@ -1114,8 +1191,8 @@ public final class Api {
     private static void applyShortRules(Context ctx, List<String> cmds, boolean ipv6) {
         Log.i(TAG, "Setting OUTPUT chain to DROP");
         cmds.add("-P OUTPUT DROP");
-        Log.i(TAG, "Applying custom rules");
-        addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6, false);
+        // the startup script lines stay in place; the ones into the chains rebuilt here are
+        // re-added by addInterfaceRouting
         String chainName = getThreadSafeChainName();
         // Pass the current LAN UID list so fastApply also rebuilds the -wifi-lan chain,
         // keeping LAN access self-healing across network-change routing refreshes.
@@ -1210,7 +1287,8 @@ public final class Api {
             }
 
             // custom rules in afwall-{3g,wifi,reject} supersede everything else
-            addCustomRules(Api.PREF_CUSTOMSCRIPT, cmds, ipv6);
+            addCustomScript(cmds, ipv6, chainName);
+            addDatabaseCustomRules(cmds, ipv6);
 
             // Loopback is self-device traffic, not LAN or WAN. Keep it out of
             // the LAN split chains so local app services continue to work when
@@ -1406,22 +1484,13 @@ public final class Api {
             // (in the form this iptables version supports)
             waitTime = IptablesVersion.waitOption(iptablesVersion(ipPath));
         }
-        boolean firstLit = true;
         for (String s : in) {
             s = s + waitTime;
-            if (s.matches("#LITERAL# .*")) {
-                if (firstLit) {
-                    // export vars for the benefit of custom scripts
-                    // "true" is a dummy command which needs to return success
-                    firstLit = false;
-                    out.add("export IPTABLES=\"" + ipPath + "\"; "
-                            + "export BUSYBOX=\"" + bbPath + "\"; "
-                            + "export IPV6=" + (ipv6 ? "1" : "0") + "; "
-                            + "true");
-                }
-                // custom script line: a failure is reported, but no longer aborts the whole apply
-                // (e.g. an IPv4-only line in the IPv6 pass, #1493)
-                out.add("#WARN# " + s.replaceFirst("^#LITERAL# ", ""));
+            if (s.startsWith(LITERAL)) {
+                // custom script line: a failure is reported, but doesn't abort the whole apply
+                out.add("#WARN# " + s.substring(LITERAL.length()));
+            } else if (s.startsWith(LITERAL_NOCHK)) {
+                out.add("#NOCHK# " + s.substring(LITERAL_NOCHK.length()));
             } else if (s.matches("#NOCHK# .*")) {
                 out.add(s.replaceFirst("^#NOCHK# ", "#NOCHK# " + ipPath + " "));
             } else {
@@ -1540,8 +1609,8 @@ public final class Api {
                 } finally {
                     onApplyFinished(appCtx, state.exitCode == 0, networkSeqAtBuild);
                     Notifications.onApplyFinished(appCtx, state.exitCode == 0);
-                    if (!state.warnings.isEmpty() && appCtx != null) {
-                        customScriptWarningNotification(appCtx, new ArrayList<>(state.warnings));
+                    if (appCtx != null) {
+                        reportCustomScriptWarnings(appCtx, state.warnings);
                     }
                 }
             }
@@ -2087,7 +2156,7 @@ public final class Api {
             cmds.add("#NOCHK# -D INPUT -j " + chainName + "-input");
         }
 
-        addCustomRules(Api.PREF_CUSTOMSCRIPT2, cmds);
+        addCustomScriptShutdown(cmds, false, chainName);
         
         // Execute the purge commands and call the callback
         Log.i(TAG, "Executing purge commands for IPv4");
@@ -2108,6 +2177,7 @@ public final class Api {
             if (G.enableInbound()) {
                 cmdsv6.add("#NOCHK# -D INPUT -j " + chainName + "-input");
             }
+            addCustomScriptShutdown(cmdsv6, true, chainName);
             iptablesCommands(cmdsv6, out, true);
         }
         
@@ -3587,6 +3657,27 @@ public final class Api {
         }
     }
 
+
+    // the ignored script lines last reported, so an unchanged script isn't reported on every apply
+    private static String lastReportedScriptProblems;
+
+    /**
+     * Report the custom script lines that failed in this apply, and the lines that are not run at
+     * all (once per change of the script).
+     */
+    private static void reportCustomScriptWarnings(Context ctx, List<String> failures) {
+        List<String> problems = describeCustomScriptProblems(ctx);
+        String key = problems.toString();
+        List<String> all = new ArrayList<>();
+        if (!problems.isEmpty() && !key.equals(lastReportedScriptProblems)) {
+            all.addAll(problems);
+        }
+        lastReportedScriptProblems = key;
+        all.addAll(failures);
+        if (!all.isEmpty()) {
+            customScriptWarningNotification(ctx, all);
+        }
+    }
 
     /**
      * Custom script lines no longer abort an apply when they fail; report them instead.

@@ -91,8 +91,8 @@
     <string name="custom_script_defined">Custom script defined</string>
     <string name="custom_script_removed">Custom script removed</string>
     <string name="custom_script_error">Error saving custom script</string>
-    <string name="custom_script_info"><b>Enter custom script below.</b>		\n<i>(Leave blank to remove.)</i>		\nFor information about custom scripts, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
-    <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
+    <string name="custom_script_info"><b>Enter custom script below.</b>\n<i>(Leave blank to remove.)</i>\nOne iptables command per line. <tt>iptables</tt> lines are IPv4 only, <tt>ip6tables</tt> lines IPv6 only, <tt>$IPTABLES</tt> lines (or lines starting with an option like <tt>-A</tt>) run for both. <tt>$AFWALL_CHAIN</tt> is AFWall+\'s main chain, lines starting with <tt>#</tt> are comments.\nFor more, click <a href="https://github.com/ukanth/afwall/wiki/CustomScripts">here</a>.</string>
+    <string name="custom_script2_info">\n<b>Custom shutdown script</b>\nRuns when the firewall is <b>disabled</b>. Rules the startup script added outside AFWall+\'s own chains (INPUT, nat, your own chains) are removed automatically first.</string>
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
     <string name="help_dialog_text"></string>
@@ -118,9 +118,24 @@
     <string name="notification_title">Open AFWall+</string>
     <string name="error_notification_title">AFWall+ error</string>
     <string name="custom_script_warning_title">Custom script errors</string>
+    <string name="custom_script_line_ignored">Line %1$d ignored, %2$s: %3$s</string>
+    <string name="custom_script_problem_shell">shell syntax is not supported (found %s), write one iptables command per line</string>
+    <string name="custom_script_problem_variable">%s can\'t be used here ($IPTABLES and $IP6TABLES only as the first word, $AFWALL_CHAIN anywhere)</string>
+    <string name="custom_script_problem_quote">a quote is not closed</string>
+    <string name="custom_script_problem_not_iptables">only iptables commands are allowed, not %s</string>
+    <string name="custom_script_problem_command">it needs exactly one iptables command such as -A, -I, -D, -N, -F or -P</string>
+    <string name="custom_script_problem_listing">listing commands (%s) do nothing in a script</string>
+    <string name="custom_script_problem_chain">%s needs a chain name</string>
+    <string name="custom_script_problem_table">unknown table %s</string>
+    <string name="custom_script_problem_option">%s is not allowed</string>
+    <string name="custom_script_check_title">Some lines will be ignored</string>
+    <string name="custom_script_check_startup">Startup script</string>
+    <string name="custom_script_check_shutdown">Shutdown script</string>
+    <string name="custom_script_save_anyway">Save anyway</string>
+    <string name="custom_script_keep_editing">Keep editing</string>
     <plurals name="custom_script_warning_text">
-        <item quantity="one">%1$d custom script line failed; the other rules were applied. %2$s</item>
-        <item quantity="other">%1$d custom script lines failed; the other rules were applied. First: %2$s</item>
+        <item quantity="one">%1$d custom script line failed or was ignored; the other rules were applied. %2$s</item>
+        <item quantity="other">%1$d custom script lines failed or were ignored; the other rules were applied. First: %2$s</item>
     </plurals>
     <plurals name="import_skipped_apps">
         <item quantity="one">%1$d app in the backup is not installed on this device; its rules were skipped.</item>
