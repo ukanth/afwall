@@ -59,6 +59,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
+import dev.ukanth.ufirewall.log.LogHistory;
 import dev.ukanth.ufirewall.log.LogDetailRecyclerViewAdapter;
 import dev.ukanth.ufirewall.log.LogPreference;
 import dev.ukanth.ufirewall.log.LogPreference_Table;
@@ -457,6 +458,8 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                             .where(LogData_Table.uid.eq(uid))
                             .async()
                             .execute();
+                    final int clearedUid = uid;
+                    new Thread(() -> LogHistory.get(ctx).clearUid(clearedUid), "LogHistory-clear").start();
                     Toast.makeText(getApplicationContext(), ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 })

@@ -97,6 +97,20 @@
     </string-array>
 
 
+    <string-array name="log_history_days">
+        <item>@string/log_history_off</item>
+        <item>@string/log_history_7</item>
+        <item>@string/log_history_30</item>
+        <item>@string/log_history_90</item>
+    </string-array>
+
+    <string-array name="log_history_days_values" translatable="false">
+        <item>0</item>
+        <item>7</item>
+        <item>30</item>
+        <item>90</item>
+    </string-array>
+
     <string-array name="filters">
         <item>@string/pkg_all</item>
         <item>@string/pkg_core</item>

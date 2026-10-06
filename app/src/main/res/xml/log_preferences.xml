@@ -46,6 +46,16 @@
             android:summary="@string/showhost_desc"
             android:title="@string/show_host" />
 
+        <!-- counts kept for the log dashboard; the log itself only keeps a few hours (LogHistory) -->
+        <ListPreference
+            android:defaultValue="30"
+            android:dependency="enableLogService"
+            android:entries="@array/log_history_days"
+            android:entryValues="@array/log_history_days_values"
+            android:key="logHistoryDays"
+            android:summary="%s"
+            android:title="@string/log_history_title" />
+
 
        <!-- <ListPreference
             android:defaultValue="bottom"

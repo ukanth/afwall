@@ -815,6 +815,11 @@
     <string name="direct_rules_order_hint">Rules for one app are checked before global rules, and Block before Allow. Rules for all networks come before rules for one network.</string>
     <string name="direct_rules_disabled_warning">Direct rules are turned off in Preferences. These rules are kept but not applied.</string>
     <string name="direct_rules_script_link">Need more? Custom script ›</string>
+    <string name="log_history_title">Keep log history</string>
+    <string name="log_history_off">Off (delete history)</string>
+    <string name="log_history_7">7 days</string>
+    <string name="log_history_30">30 days</string>
+    <string name="log_history_90">90 days</string>
     <string name="language_system">System default</string>
     <string name="global_rules">Global rules</string>
     <string name="global_rules_subtitle">Rules for all apps</string>

@@ -42,7 +42,9 @@ public final class BackupCodec {
     public static final Set<String> NOT_BACKED_UP = new HashSet<>(Arrays.asList(
             "appVersion", "hasRoot", "storedProfile", "storedPid", "sort", "fixLeak", "enableLogService",
             "logChains", "kingDetect", "fingerprintEnabled", "passSetting", "profilePwd", "pwdEncrypt",
-            "ipurchaseddonatekey", "profilesmigrated", "plusprofiles"));
+            "ipurchaseddonatekey", "profilesmigrated", "plusprofiles",
+            // device-specific bookkeeping (AppLanguage, LogHistory)
+            "localeMigrated", "logHistoryMaintained"));
 
     // v1 wrote every preference as a string; these are known to be stored as other types
     private static final Set<String> V1_INT_KEYS = new HashSet<>(Arrays.asList("customDelay", "logPingTime"));

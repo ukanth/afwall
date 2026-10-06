@@ -125,6 +125,7 @@ import dev.ukanth.ufirewall.MainActivity.GetAppList;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
+import dev.ukanth.ufirewall.log.LogHistory;
 import dev.ukanth.ufirewall.profiles.ProfileData;
 import dev.ukanth.ufirewall.profiles.ProfileHelper;
 import dev.ukanth.ufirewall.service.FirewallService;
@@ -3875,6 +3876,8 @@ public final class Api {
         if (AppRuleHelper.deleteRulesForUidInAllProfiles(pkgRemoved) > 0) {
             isRuleChanged = true;
         }
+        // and its log history, for the same reason
+        LogHistory.get(ctx).clearUid(pkgRemoved);
 
         if (isRuleChanged) {
             editor.apply();

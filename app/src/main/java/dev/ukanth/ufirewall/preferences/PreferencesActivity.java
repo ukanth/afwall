@@ -60,6 +60,7 @@ import dev.ukanth.ufirewall.util.G;
 import dev.ukanth.ufirewall.util.Notifications;
 import dev.ukanth.ufirewall.util.SecurityUtil;
 import dev.ukanth.ufirewall.util.ThemeHelper;
+import dev.ukanth.ufirewall.log.LogHistory;
 import io.reactivex.rxjava3.disposables.Disposable;
 
 public class PreferencesActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -323,6 +324,11 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             // the direct rules are applied (or not) with the next full apply
             dev.ukanth.ufirewall.MainActivity.requireFullApply();
             Api.setRulesUpToDate(false);
+        }
+
+        if (LogHistory.PREF_DAYS.equals(key)) {
+            // shorter: trim now; off: delete the history now
+            new Thread(() -> LogHistory.get(ctx).maintain(System.currentTimeMillis()), "LogHistory-maintain").start();
         }
 
         if (key.equals("ipt_path") || key.equals("dns_value")) {

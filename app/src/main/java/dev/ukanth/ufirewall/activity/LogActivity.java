@@ -59,6 +59,7 @@ import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogData_Table;
 import dev.ukanth.ufirewall.log.LogDatabase;
+import dev.ukanth.ufirewall.log.LogHistory;
 import dev.ukanth.ufirewall.log.LogRecyclerViewAdapter;
 import dev.ukanth.ufirewall.util.DateComparator;
 import dev.ukanth.ufirewall.service.LogService;
@@ -383,6 +384,7 @@ public class LogActivity extends AppCompatActivity implements SwipeRefreshLayout
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         //SQLite.delete(LogData_Table.class);
                         FlowManager.getDatabase(LogDatabase.NAME).reset();
+                        new Thread(() -> LogHistory.get(ctx).clear(), "LogHistory-clear").start();
                         Toast.makeText(ctx, ctx.getString(R.string.log_cleared), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                         (new CollectLog()).setContext(LogActivity.this).execute();

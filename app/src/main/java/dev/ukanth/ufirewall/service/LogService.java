@@ -71,6 +71,7 @@ import dev.ukanth.ufirewall.events.LogEvent;
 import dev.ukanth.ufirewall.log.Log;
 import dev.ukanth.ufirewall.log.LogData;
 import dev.ukanth.ufirewall.log.LogDatabase;
+import dev.ukanth.ufirewall.log.LogHistory;
 import dev.ukanth.ufirewall.log.LogInfo;
 import dev.ukanth.ufirewall.service.FirewallService;
 import dev.ukanth.ufirewall.util.AppLanguage;
@@ -910,6 +911,8 @@ public class LogService extends Service {
             scheduledFlush.cancel(false);
             scheduledFlush = null;
         }
+        // the log is trimmed to a few hours; the history keeps counts for weeks
+        LogHistory.get(this).record(batch);
         FlowManager.getDatabase(LogDatabase.class)
                 .beginTransactionAsync(dw -> { for (LogData d : batch) d.save(dw); })
                 .build().execute();
