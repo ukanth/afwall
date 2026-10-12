@@ -10,7 +10,7 @@ android {
         minSdkVersion 23
         targetSdk 36
         versionCode 20261004
-        versionName "5.0.0-BETA_1"
+        versionName "5.0.0"
         buildConfigField 'boolean', 'DONATE', 'false'
         vectorDrawables.useSupportLibrary = true
         ndk {
