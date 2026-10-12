@@ -1,12 +1,19 @@
 AFWall+ Changelog
 ==================
 
-AFWall+ v5.0.0-BETA
+AFWall+ v5.0.0
 
     Added: Backups, log and rule exports are saved to Download/AFWall (visible in file managers, kept after uninstall); import uses the system file picker and old backups are copied over automatically
     Added: System services without an app (UIDs below 10000) are listed once they use the network, so they can be allowed or blocked
     Added: "Allow this app" / "Block this app" in the log details
-    Added: Security - Allow Tasker/Locale control setting to prevent unauthroized access.
+    Added: Security - "Allow Tasker/Locale control" setting to prevent unauthorized access
+    Added: Global rules (Menu > Global rules) - allow or block an address, port or protocol for all apps
+    Added: Direct rules can block as well as allow, can be limited to Wi-Fi, mobile data or VPN, and each rule has an on/off switch
+    Added: Custom scripts - "iptables" lines are IPv4 only, "ip6tables" lines IPv6 only, "$IPTABLES" lines both; $AFWALL_CHAIN for the AFWall+ chain (works for every user); # comments
+    Added: Custom script editor checks lines as you type and says why a line is ignored; Snippets menu with ready-made lines
+    Added: Language can also be set in Android 13+ Settings > Apps > AFWall+ > Language; Croatian, Danish, Norwegian, Persian and Vietnamese
+    Added: Log history (Log > Keep log history) - blocked-connection counts kept for 7, 30 (default) or 90 days, beyond the few hours the log itself keeps; cleared together with the log
+    Added: Log details - turn notifications for the app's blocked connections on or off
     Improved: Faster, atomic rule apply using iptables-restore, with automatic fallback
     Improved: Root command engine rewritten - one root library (libsu), fewer root shells, more reliable apply
     Improved: Direct rules also apply to IPv6
@@ -16,14 +23,26 @@ AFWall+ v5.0.0-BETA
     Improved: Work profile / Private Space apps shown with name, icon and badge
     Improved: Boot leak protection works with file-based encryption and finds the boot script directory itself
     Improved: Custom script errors are reported instead of aborting the apply (#1493)
+    Improved: Custom scripts are not run through a shell any more - each line is checked and run as one iptables command, so a script (or an imported backup) can't run other commands
+    Improved: Disabling the firewall removes the rules a custom script added outside AFWall+'s chains (INPUT, nat, own chains)
+    Improved: Language list shows each language in its own name, with "System default" as the default
+    Improved: Backups keep block and network direct rules apart, so older versions skip them instead of importing them as allow rules
     Improved: Preferences show the iptables binary actually in use
+    Improved: iptables binary - falls back to the built-in one when system iptables is missing, and to system iptables when the built-in one can't run
+    Improved: Help screen redesigned - about, legend and app list help in one place; icons for special entries (kernel, system services, media, etc.)
+    Improved: New-app notification says which connections the app got
     Changed: "Experimental" settings moved into Rules/Connectivity; "Migrate profiles" removed (now automatic)
+    Changed: Custom script lines with shell syntax (&&, ;, |, sourcing a file, $IPV6, $BUSYBOX) are not run; the editor and a notification name the line and the reason
     Fixed: Missing system and Private Space apps (#1476, #1482, #1485, #1490, #1499)
     Fixed: nflog on Android 16 (#1505, #1506) and iptables-restore wait option on older iptables (#1500)
     Fixed: Device left offline at boot or after a failed apply
     Fixed: Widget, quick settings tile and Tasker issues - other apps or the lock screen could turn the firewall off
     Fixed: Crashes on Android 12+/15 background starts, after importing a backup and in the log details
     Fixed: Rules of hidden apps deleted on apply; direct rules duplicated or applied to the wrong user
+    Fixed: Default connections for new apps - allow-list and block-list mode settings overwrote each other
+    Fixed: Export from the log and data dump did nothing after granting the storage permission
+    Fixed: Custom scripts - rules added again on every apply and network change, IPv4 rules added twice with IPv6 on, lines starting with -A and $IP6TABLES lines never worked, rules in the -postcustom chains lost, shutdown script not run for IPv6
+    Fixed: Language - Portuguese (Brazil), Serbian (Latin) and Asturian showed English, "System" showed English, several screens ignored the chosen language, Serbian Cyrillic/Latin labels swapped
 
 AFWall+ v4.1.0
 
