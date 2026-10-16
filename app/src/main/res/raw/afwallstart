@@ -2,7 +2,7 @@
 # AFWall+ boot leak protection: block all traffic until AFWall+ has applied its rules
 # (AFWall+ resets the policies once its rules are in place, or when the firewall is disabled).
 #
-# This runs very early (post-fs-data), before the device is unlocked. On devices with
+# This runs at boot (service.d, once netd is up), before the device is unlocked. On devices with
 # file-based encryption the app data directory (/data/data/...) is not readable yet, so
 # only rely on paths that are: the APK directory (/data/app) to check that AFWall+ is
 # still installed, and the system iptables binaries.

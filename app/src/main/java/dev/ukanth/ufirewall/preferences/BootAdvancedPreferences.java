@@ -36,12 +36,13 @@ final class BootAdvancedPreferences {
     private static final String SCRIPT = "afwallstart";
 
     /**
-     * Where root solutions run boot scripts, best first. The script is meant to run early
-     * (post-fs-data); the others are kept for older root solutions (SuperSU, old Magisk, init.d).
+     * Where root solutions run boot scripts, best first. service.d runs once netd is up; setting
+     * the policies in post-fs-data, before netd has started, bootloops some ROMs (GrapheneOS,
+     * #1509). The others are kept for older root solutions (SuperSU, old Magisk, init.d).
      */
     private static final String[] INIT_DIRS = {
-            "/data/adb/post-fs-data.d/",
-            "/data/adb/service.d/",
+            Api.BOOT_DIR_SERVICE,
+            Api.BOOT_DIR_POST_FS_DATA,
             "/data/adb/su/su.d",
             "/sbin/supersu/su.d",
             "/su/su.d/",
