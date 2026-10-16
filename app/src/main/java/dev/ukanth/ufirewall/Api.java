@@ -178,6 +178,9 @@ public final class Api {
      */
     public static final int SPECIAL_UID_NTP = -14;
 
+    /** Android's dns_tether UID (the tethering DNS forwarder) */
+    private static final int AID_DNS_TETHER = 1052;
+
     public static final int NOTIFICATION_ID = 1;
     public static final String PREF_FIREWALL_STATUS = "AFWallStatus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
@@ -694,6 +697,12 @@ public final class Api {
     private static void addRulesForUidlist(List<String> cmds, List<Integer> uids, String chain, boolean whitelist) {
         String action = whitelist ? " -j RETURN" : " -j " + chain + "-reject";
 
+        // UID 1052 (dns_tether, the tethering DNS forwarder) is always allowed on Wi-Fi. Added
+        // once, by the chain's own call and before its reject rules (#1510)
+        if (G.hasOwnerModule() && (chain.endsWith("-wifi-wan") || (chain.endsWith("-wifi-lan") && G.enableLAN()))) {
+            cmds.add("-A " + chain + " -m owner --uid-owner " + AID_DNS_TETHER + " -j RETURN");
+        }
+
         if (uids.contains(SPECIAL_UID_ANY)) {
             if (!whitelist) {
                 cmds.add("-A " + chain + action);
@@ -771,16 +780,6 @@ public final class Api {
                         cmds.add("-A " + chain + " -j " + chain + "-reject");
                     }
                 }
-            }
-
-            // add 1052 for LAN; "afwall<userId>" under multi-user, so take the prefix of this chain
-            String chainPrefix = chain.contains("-") ? chain.substring(0, chain.indexOf('-')) : chain;
-            if(G.enableLAN() && G.hasOwnerModule()) {
-                cmds.add("-A " + chainPrefix + "-wifi-lan" + " -m owner --uid-owner 1052 -j RETURN");
-            }
-
-            if (G.hasOwnerModule()) {
-                cmds.add("-A " + chainPrefix + "-wifi-wan" + " -m owner --uid-owner 1052 -j RETURN");
             }
         }
     }
@@ -1889,6 +1888,9 @@ public final class Api {
                 List<String> ipv6restore = buildRestoreCommands(ctx, ipv6raw, true);
                 parts.add(newApplyPart(completionCallback, ipv6restore != null ? ipv6restore : ipv6cmds, true));
                 fallbacks.add(ipv6restore != null ? ipv6cmds : null);
+            } else {
+                parts.add(newApplyPart(completionCallback, ipv6CleanupCommands(chainName), true));
+                fallbacks.add(null);
             }
             runApplyParts(ctx, completionCallback, parts, fallbacks);
             Log.i(TAG, "Submitted firewall rule command sequence");
@@ -2151,9 +2153,9 @@ public final class Api {
                 cmdsv4.add("#NOCHK# -t nat -F " + chainName + s);
             }
             cmdsv4.add("#NOCHK# -t nat -D OUTPUT -j " + chainName);
-        } else {
-            cmdsv4.add("#NOCHK# -D OUTPUT -j " + chainName);
         }
+        // with Tor the filter OUTPUT jump exists as well
+        cmdsv4.add("#NOCHK# -D OUTPUT -j " + chainName);
 
         //make sure reset the OUTPUT chain to accept state.
         cmds.add("-P OUTPUT ACCEPT");
@@ -2188,12 +2190,36 @@ public final class Api {
             }
             addCustomScriptShutdown(cmdsv6, true, chainName);
             iptablesCommands(cmdsv6, out, true);
+        } else {
+            out.addAll(ipv6CleanupCommands(chainName));
         }
         
         Log.i(TAG, "Submitted purge commands");
         callback.setRetryExitCode(IPTABLES_TRY_AGAIN).run(ctx, out);
     }
     
+    /**
+     * With IPv6 support off nothing else touches ip6tables, so the IPv6 rules of an earlier apply
+     * would stay in force, and stale, until the next reboot (#1495). Removes the jumps and flushes
+     * the chains; the policies are left to "Only control IPv6 chains".
+     *
+     * @return ip6tables commands, ready to run
+     */
+    private static List<String> ipv6CleanupCommands(String chainName) {
+        List<String> cmds = new ArrayList<>();
+        cmds.add("#NOCHK# -D OUTPUT -j " + chainName);
+        cmds.add("#NOCHK# -D INPUT -j " + chainName + "-input");
+        for (String s : staticChains) {
+            cmds.add("#NOCHK# -F " + chainName + s);
+        }
+        for (String s : dynChains) {
+            cmds.add("#NOCHK# -F " + chainName + s);
+        }
+        List<String> out = new ArrayList<>();
+        iptablesCommands(cmds, out, true);
+        return out;
+    }
+
     private static void addTetherDhcpReplyRule(List<String> cmds, String chain, String action) {
         // dnsmasq can run under device-specific app UIDs, so the special tethering entry
         // must allow DHCP replies by port instead of relying only on a fixed UID list.
@@ -2634,7 +2660,7 @@ public final class Api {
                     selected_roam, selected_vpn, selected_tether, selected_lan, selected_tor);
 
             if (G.supportDual()) {
-                addProfileOnlyPackages(pkgmanager, packagesForUser, profileMarkers, syncMap,
+                addProfileOnlyPackages(pkgmanager, packagesForUser, profileMarkers, syncMap, multiUserAppsMap,
                         selected_wifi, selected_3g, selected_roam, selected_vpn,
                         selected_tether, selected_lan, selected_tor, internetPermissionCache);
                 //run through multi user map
@@ -2981,6 +3007,7 @@ public final class Api {
                                                HashMap<Integer, String> packagesForUser,
                                                HashMap<Integer, String> profileMarkers,
                                                SparseArray<PackageInfoData> syncMap,
+                                               SparseArray<PackageInfoData> multiUserAppsMap,
                                                List<Integer> selectedWifi,
                                                List<Integer> selected3g,
                                                List<Integer> selectedRoam,
@@ -2996,8 +3023,9 @@ public final class Api {
         for (Map.Entry<Integer, String> entry : packagesForUser.entrySet()) {
             int uid = entry.getKey();
             String packageName = entry.getValue();
-            // Already discovered via PackageManager in the main scan — skip.
-            if (syncMap.get(uid) != null || packageName == null || packageName.trim().isEmpty()) {
+            // Already discovered in the main scan (main user, or a clone of a main user app) — skip.
+            if (syncMap.get(uid) != null || multiUserAppsMap.get(uid) != null
+                    || packageName == null || packageName.trim().isEmpty()) {
                 continue;
             }
             if (!showAllApps() && !hasInternetPermission(pkgmanager, packageName, internetPermissionCache)) {
@@ -3054,15 +3082,34 @@ public final class Api {
     private static boolean hasInternetPermission(PackageManager pkgmanager, String packageName,
                                                  HashMap<String, Boolean> internetPermissionCache) {
         try {
-            if (PackageManager.PERMISSION_GRANTED == pkgmanager.checkPermission(
-                    Manifest.permission.INTERNET, packageName)) {
-                if (internetPermissionCache != null) internetPermissionCache.put(packageName, true);
-                return true;
+            Boolean requested = requestsInternet(pkgmanager, packageName);
+            if (requested != null) {
+                // PackageManager's answer for packages it can see; only ask the shell (one root
+                // call per package, #1513) for the ones it can't
+                if (internetPermissionCache != null) internetPermissionCache.put(packageName, requested);
+                return requested;
             }
         } catch (Exception e) {
             Log.w(TAG, "PackageManager permission check failed for " + packageName + ": " + e.getMessage());
         }
         return hasInternetPermissionViaShell(packageName, internetPermissionCache);
+    }
+
+    /**
+     * Requested permissions are the same for every user, so this also answers for packages
+     * installed only in a profile (checkPermission() answers for this user only). INTERNET is an
+     * install-time permission: requested means granted.
+     *
+     * @return null if PackageManager doesn't know the package
+     */
+    private static Boolean requestsInternet(PackageManager pkgmanager, String packageName) {
+        try {
+            String[] permissions = pkgmanager.getPackageInfo(packageName,
+                    PackageManager.GET_PERMISSIONS | PackageManager.GET_UNINSTALLED_PACKAGES).requestedPermissions;
+            return permissions != null && Arrays.asList(permissions).contains(Manifest.permission.INTERNET);
+        } catch (PackageManager.NameNotFoundException e) {
+            return null;
+        }
     }
 
     private static String getApplicationLabel(PackageManager pkgmanager,
@@ -4645,6 +4692,10 @@ public final class Api {
         ctx.sendBroadcast(broadcastIntent);
     }
 
+    /** boot script directories of Magisk, KernelSU and APatch */
+    public static final String BOOT_DIR_SERVICE = "/data/adb/service.d/";
+    public static final String BOOT_DIR_POST_FS_DATA = "/data/adb/post-fs-data.d/";
+
     public static String getFixLeakPath(String fileName) {
         if (G.initPath() != null) {
             return G.initPath() + "/" + fileName;
@@ -4674,8 +4725,28 @@ public final class Api {
 
     public static void checkAndCopyFixLeak(final Context context, final String fileName) {
         if (G.initPath() != null && G.fixLeak()) {
-            new Thread(() -> installFixLeakScript(context, fileName)).start();
+            new Thread(() -> {
+                moveFixLeakOutOfPostFsData(context, fileName);
+                installFixLeakScript(context, fileName);
+            }).start();
         }
+    }
+
+    /**
+     * 5.0.0 preferred post-fs-data.d, where the script runs before netd has started; that
+     * bootloops some ROMs (GrapheneOS, #1509). Move it to service.d when the device has one.
+     * Blocking.
+     */
+    private static void moveFixLeakOutOfPostFsData(Context context, String fileName) {
+        if (!BOOT_DIR_POST_FS_DATA.equals(G.initPath()) || !RootFiles.exists(BOOT_DIR_SERVICE)) {
+            return;
+        }
+        if (!removeFixLeakScriptAt(context, getFixLeakPath(fileName))) {
+            Log.w(TAG, "Unable to remove the fix leak script from " + BOOT_DIR_POST_FS_DATA);
+            return;
+        }
+        Log.i(TAG, "Moving the fix leak script to " + BOOT_DIR_SERVICE);
+        G.initPath(BOOT_DIR_SERVICE);
     }
 
     /**
