@@ -181,6 +181,9 @@ public final class Api {
     /** Android's dns_tether UID (the tethering DNS forwarder) */
     private static final int AID_DNS_TETHER = 1052;
 
+    /** Users the system DNS resolver sends queries as (root; "dns" is AID_DNS, 1051) */
+    private static final String[] DNS_RESOLVER_USERS = {"root", "dns"};
+
     public static final int NOTIFICATION_ID = 1;
     public static final String PREF_FIREWALL_STATUS = "AFWallStatus";
     public static final String DEFAULT_PREFS_NAME = "AFWallPrefs";
@@ -721,13 +724,10 @@ public final class Api {
 				addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53",  action);
 			}*/
 
-            if (whitelist) {
-                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
-                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
-            } else {
-                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p udp --dport 53", " -j RETURN");
-                addRuleForUsers(cmds, new String[]{"root"}, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
-            }
+            // DNS from the system resolver (netd), for all apps: its sockets are owned by root, or by
+            // the "dns" user (1051) on some Android versions / kernels (#1515)
+            addRuleForUsers(cmds, DNS_RESOLVER_USERS, "-A " + chain + " -p udp --dport 53", " -j RETURN");
+            addRuleForUsers(cmds, DNS_RESOLVER_USERS, "-A " + chain + " -p tcp --dport 53", " -j RETURN");
 
 
             // NTP service runs as "system" user
@@ -1421,8 +1421,8 @@ public final class Api {
                 // Add rules for specific DNS servers instead of all LAN hosts
                 addDnsServerRules(cmds, cfg, chainName + "-wifi-lan", ipv6);
                 
-                // Fallback: if no specific DNS servers found, use the old broad rule
-                if (cfg.dnsServersV4.isEmpty() && cfg.dnsServersV6.isEmpty()) {
+                // Fallback: if no DNS server of this address family was found, use the old broad rule
+                if ((ipv6 ? cfg.dnsServersV6 : cfg.dnsServersV4).isEmpty()) {
                     cmds.add("-A " + chainName + "-wifi-lan -p udp --dport 53 -j RETURN");
                     cmds.add("-A " + chainName + "-wifi-lan -p tcp --dport 53 -j RETURN");
                 }
