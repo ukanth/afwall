@@ -260,10 +260,12 @@ public class DataUsageParser {
 
     /**
      * Format WiFi/Mobile breakdown for display
+     *
+     * @return null if there was no traffic
      */
     public static String formatWifiMobileUsage(DataUsageStats stats) {
         if (stats.getTotalWifiBytes() == 0 && stats.getTotalMobileBytes() == 0) {
-            return "No data usage";
+            return null;
         }
         
         StringBuilder sb = new StringBuilder();

@@ -7,20 +7,14 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (捐贈版)</string>
-    <string name="title_disabled">AFWall+ (停用)</string>
-    <string name="whitelist_array_item">允許所選</string>
-    <string name="blacklist_array_item">阻擋所選</string>
     <string name="showrules">顯示規則</string>
     <string name="applyrules">應用規則</string>
     <string name="saverules">保存</string>
-    <string name="setpwd">設定密碼</string>
     <string name="help">幫助</string>
     <string name="close">關閉</string>
     <string name="exit">退出</string>
     <string name="error_purge">清除 iptables 時錯誤</string>
     <string name="error_binary">安裝二進位檔案時錯誤</string>
-    <string name="error_migration">遷移舊設定時錯誤</string>
-    <string name="error_refresh">更新 iptables 時錯誤</string>
     <string name="error_apply">套用 iptables 規則時錯誤</string>
     <string name="error_fetch">獲取 iptables 規則時錯誤</string>
     <string name="error_su_toast">無法取得 root 權限!</string>
@@ -32,7 +26,6 @@
     <string name="android_system">Android 系統</string>
     <string name="unknown_item">未知</string>
     <string name="tethering_item">(網路共用) - DHCP+DNS 服務</string>
-    <string name="dnsproxy_item">(DNS 代理) - 以 netd 搜尋 DNS</string>
     <string name="ntp_item">(NTP) - 互聯網時間伺服器</string>
     <string name="root_item">(root) - 以root身分執行應用程式</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
@@ -47,9 +40,6 @@
     <string name="flushed">已啟用規則</string>
     <string name="show_log">檢視紀錄</string>
     <string name="clear_log">清除日誌</string>
-    <string name="applying_rules">正在套用 iptables 規則</string>
-    <string name="applying">套用中</string>
-    <string name="saving_rules">正在儲存 iptables 規則</string>
     <string name="rules_applied">規則應用成功</string>
     <string name="rules_saved">已儲存規則</string>
     <string name="rules_deleted">已刪除規則</string>
@@ -58,14 +48,10 @@
     <string name="enterpass">輸入密碼</string>
     <string name="reenterpass">確認密碼</string>
     <string name="error_write_pref">儲存設定時出錯</string>
-    <string name="enternewpass">輸入新密碼（留空將移除密碼）：</string>
     <string name="passdefined">已啟動密碼鎖</string>
-    <string name="passremoved">已停止密碼鎖</string>
-    <string name="passerror">改變密碼鎖錯誤</string>
     <string name="working">工作中</string>
     <string name="reading_apps">檢查安裝的應用程式</string>
     <string name="mode">防火牆模式</string>
-    <string name="mode_header">模式：%s</string>
     <string name="legend_clear">取消全部選擇</string>
     <string name="mode_whitelist">允許所選</string>
     <string name="legend_whitelist">授權所選的應用程式存取網路</string>
@@ -73,7 +59,6 @@
     <string name="legend_blacklist">阻止所選的應用程式存取網路</string>
     <string name="set_custom_script">設定自定義腳本</string>
     <string name="preferences">優先選項</string>
-    <string name="reload">再載入應用程式</string>
     <string name="flush">更新規則</string>
     <string name="send_report">傳送錯誤報告</string>
     <string name="enter_problem">請描述問題：</string>
@@ -87,15 +72,11 @@
     <string name="custom_script2_info">\n<b>自定義腳本關閉</b>\n您可以自定義腳本用於當防火牆被<b>禁用</b>時：</string>
     <string name="unsaved_changes">未保存更改</string>
     <string name="unsaved_changes_message">有更改尚未保存。\n您想保存還是放棄它們？</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Iptables 規則</string>
     <string name="copy">複製</string>
     <string name="copied">已複製</string>
     <string name="Search">搜尋</string>
     <string name="flushRulesConfirm">更新所有 iptables 規則嗎？</string>
-    <string name="overrideRules">你確定要匯入規則，取代現有的規則嗎？</string>
-    <string name="notification_new">已安裝新應用程式</string>
-    <string name="notification_new_package">設定網路權限</string>
     <string name="confirmMsg">完全停止防火牆嗎？</string>
     <string name="apply">應用</string>
     <string name="discard">放棄</string>
@@ -107,16 +88,12 @@
     <string name="No">否</string>
     <string name="OK">確定</string>
     <string name="Cancel">取消</string>
-    <string name="notification_title">打開 AFWall+</string>
     <string name="error_notification_title">AFWall+ 錯誤</string>
     <string name="error_notification_text">套用防火牆規則時發生錯誤。請按此處開啟設定。</string>
-    <string name="error_notification_ticker">AFWall+ 無法套用規則</string>
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">啟動腳本已安裝</string>
-    <string name="unable_initd">無法安裝 AFWall+ 啟動腳本。請驗證您的 ROM/內核是否支援 init.d/su.d</string>
     <string name="remove_initd">已刪除啟動腳本</string>
-    <string name="unable_remove_initd">無法移除 AFWall+ 啟動指令碼</string>
     <!-- Widget -->
     <string name="widget_disable_fail">防火牆受密碼保護，無法停用！</string>
     <string name="widget_label_status">AFWall+ 開關</string>
@@ -125,7 +102,6 @@
     <!-- Color Picker -->
     <string name="color_pick">按下顏色以套用修改</string>
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">匯入 Droidwall 規則</string>
     <string name="export_rules">僅匯出規則</string>
     <string name="export_all">匯出規則、 設定檔和偏好設定</string>
     <string name="import_rules">僅匯入規則</string>
@@ -134,36 +110,19 @@
     <string name="export_rules_fail">無法匯出！</string>
     <string name="import_rules_success">匯入從</string>
     <string name="import_rules_fail">無法匯入！</string>
-    <string name="import_rules_missing">找不到規則檔！</string>
-    <string name="exportConfirm">匯出規則到儲存裝置？</string>
     <string name="export_logs_fail">無法匯出到儲存裝置！</string>
     <string name="export_to_sd">匯出到儲存裝置</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">啟用防火牆日誌</string>
     <string name="enable_firewall_log_service">打開日誌服務</string>
     <string name="showlog_title">防火牆日誌</string>
-    <string name="showlog_service_summary">啟用當連線被阻止時將顯示訊息 </string>
-    <string name="enable_log">啟用日誌</string>
-    <string name="disable_log">禁用日誌</string>
-    <string name="log_disabled">日誌已禁用</string>
-    <string name="log_was_enabled">日誌已啟用</string>
-    <string name="log_was_disabled">日誌已禁用</string>
     <string name="log_target_success">日誌目標修改成功</string>
     <string name="log_target_fail">日誌目標修改失敗</string>
-    <string name="log_toggle_failed">切換日誌狀態時錯誤</string>
-    <string name="log_target_failed">錯誤：內核缺少 LOG/NFLOG 支援</string>
     <string name="log_cleared">日誌已清除</string>
-    <string name="log_dmesg">日誌讀取方式</string>
-    <string name="log_clear_error">清除日誌時錯誤</string>
-    <string name="log_fetch_error">獲取日誌時錯誤</string>
     <string name="log_parse_error">剖析日誌時錯誤</string>
     <string name="no_log">紀錄是空的</string>
     <string name="LogAppName">應用程式名稱</string>
     <string name="LogPackBlock">總數據包阻塞</string>
-    <string name="blocked">AFWall + 阻擋:</string>
     <string name="refresh">更新</string>
-    <string name="block_ipv6_title">刪除</string>
-    <string name="block_ipv6_summary">刪除</string>
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">設定檔</string>
     <string name="custom_title1">自定義預設配置名稱</string>
@@ -180,7 +139,6 @@
     <string name="profile3">設定檔 3</string>
     <string name="profile_hint">配置文件名稱</string>
     <string name="profile_duplicate">設定檔已存在！</string>
-    <string name="reapply_profile">重新應用設定檔規則</string>
     <!-- Interface -->
     <string name="lan_title">區域網路控制</string>
     <string name="lan_summary">分別設定 LAN 及 Wi-Fi 權限</string>
@@ -207,12 +165,7 @@
     <string name="builtin_bb">內建 busybox</string>
     <string name="system_ipt">系統 iptables</string>
     <string name="builtin_ipt">內置 iptables</string>
-    <string name="auto">自動</string>
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">XPosed 相關</string>
-    <string name="fixDownloadTitle">修復 下載管理員 漏洞</string>
-    <string name="fixDownloadTitleSummary">使用 xposed 防止：當程式網路權限被拒絕時，轉而使用 Android 內建下載管理器來下載檔案。</string>
-    <string name="LeakDetected">檢查到漏洞！</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker 相關</string>
     <string name="disable_toaster">停用螢幕中央的訊息通知</string>
@@ -227,24 +180,19 @@
     <string name="ipv6_title">支援 IPv6</string>
     <string name="ipv6_summary">啟用對 IPv6 的支持</string>
     <string name="control_ipv6_title">僅控制 IPv6 鏈</string>
-    <string name="ip6unavailable">錯誤：IPv6 需要 \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">切換 IPv6 規則</string>
     <string name="switch_ipv4">切換 IPv4 規則</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">安全性</string>
-    <string name="usePattern">使用圖案鎖代替密碼鎖</string>
     <string name="stealthMode">隱身模式圖案</string>
     <string name="patternMaxTry">最大嘗試次數</string>
-    <string name="resetPattern">重置鎖定模式？</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">裝置管理員</string>
     <string name="device_admin_enabled">已啟用 AFWall+ 裝置管理員</string>
     <string name="device_admin_disabled">已停用 AFWall+ 裝置管理員</string>
-    <string name="device_admin_on_disable">請至 系統設定->安全性->裝置管理員 取消 AFWall+</string>
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">實驗性</string>
     <!-- Startup -->
-    <string name="startup_service">正在套用規則，請稍等。</string>
     <string name="addStartupDelayTitle">啟動延遲</string>
     <string name="addStartupDelaySummary">AFWall+ 將等待 5 秒，然後再套用規則。只有在開機時，規則無法套用，才需要使用這個選項。</string>
     <string name="fixleakTitle">修復啟動數據洩漏</string>
@@ -270,7 +218,6 @@
     <string name="primary_pref_title">主色</string>
     <string name="status_pref_title">狀態列顏色</string>
     <string name="accent_pref_title">I love you China</string>
-    <string name="syscolor_pref_summary_on">所有系統程式的顏色</string>
     <string name="enableConfirmTitle">確認禁用防火牆</string>
     <string name="enableConfirm_summary_on">防火牆被禁用前將要求確認</string>
     <string name="showUid">顯示應用程式的 UID </string>
@@ -283,9 +230,7 @@
     <string name="active_rules">啟動規則</string>
     <string name="active_rules_summary">各種連接變更時套用防火牆規則 (漫遊/LAN/Wi-Fi/3G/4G/網路共用)</string>
     <string name="profile_add">新增設定檔</string>
-    <string name="profile_remove">移除設定檔</string>
     <string name="profile_rename">重新命名設定檔</string>
-    <string name="Donate">捐贈</string>
     <string name="multi_apply_rules">設定檔案切換時套用規則</string>
     <string name="multi_apply_rules_info">切換設定檔案時將載入並套用規則</string>
     <string name="multi_user_title">啟用多使用者支援</string>
@@ -297,7 +242,6 @@
     <string name="downloaded">已下載</string>
     <string name="app_system_detail">開啟系統細節訊息</string>
     <string name="settings_pwd_not_equal">密碼不符合</string>
-    <string name="faq">常見問題解答</string>
     <string name="reverse_all">反轉所有選定的應用程式？</string>
     <string name="unselect_all">清除所有選定的應用程式？</string>
     <string name="check_all">選擇全部</string>
@@ -320,40 +264,28 @@
     <string name="pkg_sys">系統</string>
     <string name="pkg_user">使用者</string>
     <string name="menu">選單</string>
-    <string name="backup_notexist">沒有備份存在。請從功能表中匯出。</string>
     <string name="showFilter">顯示過濾器</string>
     <string name="showfilter_summary_on">在首頁中顯示過濾器 (所有/核心/系统/用戶)</string>
     <string name="showfilter_summary_off">在首頁中隱藏過濾器 (所有/核心/系统/用戶)</string>
-    <string name="enable_dns">通過 netd 啟用 DNS</string>
-    <string name="disable_dns">通過 netd 停用 DNS</string>
     <string name="tasker_lable">AFWall + Tasker 插件</string>
     <string name="enable">啟用</string>
     <string name="disable">停用</string>
-    <string name="filters_apps_title">通知篩選器</string>
     <string name="apply_color">按下顏色以套用修改</string>
     <string name="binaries">二進位檔案</string>
     <string name="widgets">小工具</string>
     <string name="exports">匯出</string>
     <string name="imports">匯入</string>
-    <string name="invalid_profile">不正確設定檔名稱</string>
     <!-- Donate -->
     <string name="donate_only">此功能只在贊助版/解鎖版使用</string>
     <string name="buy_donate">購買捐贈版或解鎖版</string>
-    <string name="unlock_donate"> 點擊解鎖贊助版</string>
-    <string name="donate_support">您可以現在使用贊助版的功能。</string>
     <string name="donate_thanks">謝謝您的支持。</string>
-    <string name="activeNotification">顯示通知圖示</string>
-    <string name="activeNotification_summary">在通知列永久顯示圖示</string>
     <string name="active">防火牆已啟用</string>
     <string name="inactive">防火牆已停用</string>
-    <string name="About">關於</string>
-    <string name="FAQ">常見問題</string>
     <string name="su_check_title">狀態</string>
     <string name="su_check_message">檢查root存取</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
-    <string name="selectMode">防火牆模式</string>
     <string name="confirmation">確認</string>
     <!--<string name="prefill_profile">Enter profile name</string>-->
     <!--<string name="profile_default">MyProfile</string>-->
@@ -364,7 +296,6 @@
     <string name="pref_pattern">圖案</string>
     <string name="pref_device">使用裝置安全保護</string>
     <string name="pref_device_desc">使用裝置安全檢查打開 AFWall + (捐贈/金鑰版的功能)</string>
-    <string name="secure_option">設備未設定密碼/PIN</string>
     <string name="android_version">此功能僅適用於 Lollipop (Android5.0) 以上</string>
     <!--<string name="pref_pin">Pin</string>-->
     <string name="set_password">設定</string>
@@ -377,19 +308,10 @@
     <string name="defaultsort">依名稱(預設)</string>
     <string name="lastupdated">依安裝/更新</string>
     <string name="uid">依UID</string>
-    <string name="select_dir">選擇目錄</string>
     <string name="select">選擇操作</string>
     <string name="manage_profiles">管理設定檔</string>
     <string name="manage_profiles_summary">新增或刪除設定檔</string>
     <string name="profiles">設定檔 </string>
-    <string name="insert_profile">檔案名稱</string>
-    <string name="add">新增</string>
-    <string name="showlog_toasts">在阻擋時顯示 toast 通知</string>
-    <string name="enable_show_toasts">啟動顯示通知</string>
-    <string name="top">頂端</string>
-    <string name="center">中間</string>
-    <string name="bottom">底端</string>
-    <string name="position">Toasts 消息位置</string>
     <string name="widget_prefs_title">小工具位置</string>
     <string name="xTitle">小工具X軸位置</string>
     <string name="xTitleSummary">手動複寫X軸位置</string>
@@ -397,36 +319,22 @@
     <string name="yTitle">小工具Y軸位置</string>
     <string name="yTitleSummary">手動複寫Y軸位置</string>
     <string name="yTitleDialog">設定Y軸位置(數字)</string>
-    <string name="error_nonsupported">檢測到 King Root！</string>
-    <string name="error_nonsupported_details">AFWall+ 檢測到不支援的超級使用者應用程式，這已知的 bypaas 防火牆規則。因為它是一個超級使用者的應用程式，AFWall+ 不能解決此問題。</string>
-    <string name="lockNotification">在鎖定畫面隱藏通知圖示</string>
-    <string name="lockScreenNotification_summary">在鎖定畫面上隱藏通知</string>
-    <string name="menu_legend">圖例</string>
     <string name="permissiondenied_importexport">讀/寫儲存空間權限被拒絕。請授予匯出/匯入規則的存取權限。</string>
     <string name="permissiondenied_asset">讀/寫儲存空間權限被拒絕。請授予權限以便複製 AFWall+ 二進制檔案。</string>
     <string name="log_deletedapp">刪除應用程式</string>
     <string name="log_denied">已拒絕：</string>
     <string name="log_times">次</string>
     <string name="log_time">次</string>
-    <string name="log_dst">目標：</string>
-    <string name="log_src">來源：</string>
-    <string name="log_proto">協定：</string>
     <string name="no_data_available">請啟用日誌服務通過首選項。如果啟用，然後沒有日誌資料。</string>
     <string name="loading_data_title">載入中...</string>
     <string name="loading_data">讀取日誌中</string>
-    <string name="switch_old">切換到舊版檢視</string>
     <string name="switch_new">切換到新版檢視</string>
     <string name="showlogdetail_title">應用程式日誌資訊</string>
-    <string name="reapply_rules">因為偏好設定改變，請重新套用規則</string>
-    <string name="custom_rules">自訂規則</string>
     <string name="mdnslabel">(mdns) 組播 DNS</string>
-    <string name="mdns">啟用組播 DNS</string>
     <string name="error_log">無法啟用開機記錄服務。LogTarget 為空或未啟用 LogService。</string>
     <!-- Log Details -->
     <string name="destination_address">目的地址</string>
     <string name="source_address">來源位址</string>
-    <string name="ping_destination">Ping 目的地址</string>
-    <string name="ping_source">Ping 來源位址</string>
     <string name="resolve_destination">解析目的地址</string>
     <string name="resolve_source">解析來源地址</string>
     <string name="copy_text">複製文字</string>
@@ -435,29 +343,20 @@
     <string name="select_the_action">請選擇操作</string>
     <string name="result_copied_to_clipboard">文字已複製到剪貼簿。</string>
     <string name="result">結果</string>
-    <string name="output_is_empty">輸出是空的，因為網路訪問和 SuperSu 被拒絕</string>
     <string name="searching">搜尋中</string>
     <string name="looking_for_data">正在尋找資料...</string>
-    <string name="reachable_timeout">超過時間限制 %d 毫秒</string>
     <string name="error_or_unknown_category">錯誤或未知的類別</string>
     <string name="show_destination_address">顯示目的地址</string>
     <string name="show_source_address">顯示來源位址</string>
-    <string name="network_connection_not_available">無可用的網路連線</string>
     <!-- Custom Rules -->
-    <string name="add_ip_rule">新增到自訂規則</string>
     <!-- Fingerprint -->
     <string name="pref_fingerprint">指紋</string>
-    <string name="fingerprint_authentication_error">指紋驗證錯誤\n</string>
     <string name="fingerprint_authentication_help">指紋驗證說明\n</string>
     <string name="fingerprint_authentication_failed">指紋驗證失敗。</string>
     <string name="fingerprint_authentication_successded">指紋驗證成功。</string>
-    <string name="title_activity_main">主要活動</string>
     <string name="title_fingerprint">一健解鎖</string>
     <string name="desc_fingerprint">請把你的手指放在掃描器以驗證您的身份</string>
     <string name="note">（指紋登入加快您的應用程式登入。您的裝置應該有至少一個指紋註冊在裝置設定裡）</string>
-    <string name="title_activity_home">指紋</string>
-    <string name="activity_home_desc">您已由指紋身份驗證登入</string>
-    <string name="activity_home_note">關閉並重新開啟應用程式，將會看到指紋驗證畫面</string>
     <string name="fingerprint_required">需要設定指紋</string>
     <string name="device_with_no_fingerprint_sensor">您的設備沒有指紋感應器</string>
     <string name="fingerprint_permission_manifest_missing">未啟用指紋驗證權限</string>
@@ -468,12 +367,6 @@
     <string name="label_zoomin">放大</string>
     <string name="label_zoomout">缩小</string>
     <string name="exception_pref">因為偏好設定毀損而無法啟動，請清除本程式資料</string>
-    <string name="ipdetect">AFWall+ 檢測到 IPv6 連接。請從偏好設定 - 規則/連線中啟用後重新應用程式</string>
-    <string name="delayDialog">設定延遲秒數</string>
-    <string name="pingDelayTitle">Ping 超時</string>
-    <string name="notification_priority">通知訊息的優先度</string>
-    <string name="defaultPriority">預設優先順序</string>
-    <string name="lowPriority">低優先權</string>
     <string name="dualAppsTitle">多開 App 支援</string>
     <string name="dualAppsDesc">支援 Dual Apps、MIUI、Island 等工作資料應用程式</string>
     <string name="choose">選擇</string>
@@ -489,27 +382,16 @@
     <string name="input_chain_v6">INPUT Chain (IPv6)</string>
     <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
     <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
-    <string name="quick_apply_title">顯示快速套用</string>
-    <string name="quick_apply_summary">僅限捐贈版！顯示懸浮按鈕以快速套用規則</string>
     <string name="init_d">腳本的啟動目錄路徑</string>
     <string name="mount_initd_error">無法掛載資料夾。</string>
     <string name="delete_initd_error">無法刪除啟動腳本</string>
-    <string name="runNotification_summary">套用規則時將顯示提示通知</string>
-    <string name="runNotification">Rules Progress</string>
     <string name="displayBlockNotification">停用日誌通知</string>
     <string name="displayBlockNotification_enable">啟用日誌通知</string>
-    <string name="applyRulesFasterTitle">立即套用</string>
-    <string name="applyRulesFaster">僅當套用規則更慢時使用 - 早期實驗功能</string>
     <string name="purging_rules">刪除所有防火牆 iptables 規則</string>
     <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
     <string name="show_host">顯示主機名稱</string>
-    <string name="host">Host:</string>
-    <string name="battery_optimization_title">Whitelist afwall+ doze</string>
-    <string name="battery_optimization_desc">AFWall 需要在背景執行，並在發生連接更改時套用規則。請取消/忽略 AFWall+ 的電池最佳化/休眠設定。</string>
     <string name="firewall_service">防火牆服務</string>
-    <string name="boot_notification">啟動服務</string>
     <string name="app_notification">程式通知</string>
-    <string name="hide">隱藏</string>
     <string name="firewall_error_notify">防火牆問題</string>
     <string name="firewall_log_notify">日誌通知</string>
     <string name="ui_themes_header">主題</string>
@@ -530,8 +412,6 @@
     <string name="log_service_start">正在啟動日誌服務</string>
     <string name="log_service_stop">正在停止日誌服務</string>
     <string name="log_service_select">請先選擇日誌目標</string>
-    <string name="log_service_watcher">正在打開日誌監視器...</string>
-    <string name="log_service_success">成功啟動日誌服務！</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>

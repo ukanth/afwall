@@ -146,11 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                 data1.setName(newName);
                                                 data1.setIdentifier(identifier);
                                                 data1.save();
-                                                // rules are stored under the identifier, not the display name
-                                                SharedPreferences fromShared = getSharedPreferences(data.getIdentifier(), Context.MODE_PRIVATE);
-                                                SharedPreferences.Editor toShared = getSharedPreferences(identifier, Context.MODE_PRIVATE).edit();
-                                                Api.copySharedPreferences(fromShared,toShared);
-                                                AppRuleHelper.copyRulesToProfile(data.getIdentifier(), identifier);
+                                                copyRules(data.getIdentifier(), identifier);
                                                 profilesList.add(data1);
                                                 profileAdapter.notifyDataSetChanged();
                                             } else {
@@ -212,19 +208,35 @@ public class ProfileActivity extends AppCompatActivity {
                 }).show();
     }
 
+    /**
+     * Copy a profile's rules (app lists and settings, and the per-app rules) to another profile,
+     * replacing what it had. Rules are stored under the identifier, not the display name.
+     */
+    private void copyRules(String fromIdentifier, String toIdentifier) {
+        SharedPreferences from = getSharedPreferences(fromIdentifier, Context.MODE_PRIVATE);
+        SharedPreferences.Editor to = getSharedPreferences(toIdentifier, Context.MODE_PRIVATE).edit().clear();
+        Api.copySharedPreferences(from, to);
+        AppRuleHelper.copyRulesToProfile(fromIdentifier, toIdentifier);
+    }
+
     // Handle user click
     private void addNewProfile() {
-
+        // a new profile starts from the active profile's rules unless unchecked (#1443)
+        final String current = G.enableMultiProfile() ? G.storedProfile() : Api.DEFAULT_PREFS_NAME;
         new MaterialDialog.Builder(this)
                 .cancelable(true)
                 .title(R.string.profile_add)
                 .inputType(InputType.TYPE_CLASS_TEXT)
+                .checkBoxPrompt(getString(R.string.profile_copy_current, ProfileHelper.displayName(this, current)), true, null)
                 .input(R.string.profile_add, R.string.profile_hint, (dialog, input) -> {
                     String profileName = input.toString();
                     if (isNotDuplicate(profileName)) {
                         String identifier = profileName.replaceAll("\\s+", "");
                         ProfileData data = new ProfileData(profileName, identifier);
                         data.save();
+                        if (dialog.isPromptCheckBoxChecked()) {
+                            copyRules(current, identifier);
+                        }
                         profilesList.add(data);
                         profileAdapter.notifyDataSetChanged();
                     } else {

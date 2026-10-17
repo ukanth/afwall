@@ -7,20 +7,14 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (donatie)</string>
-    <string name="title_disabled">AFWall+ (uitgeschakeld)</string>
-    <string name="whitelist_array_item">Selectie toestaan</string>
-    <string name="blacklist_array_item">Selectie blokkeren</string>
     <string name="showrules">Toon regels</string>
     <string name="applyrules">Toepassen</string>
     <string name="saverules">Opslaan</string>
-    <string name="setpwd">Wachtwoord instellen</string>
     <string name="help">Help</string>
     <string name="close">Sluiten</string>
     <string name="exit">Afsluiten</string>
     <string name="error_purge">Fout bij legen iptables</string>
     <string name="error_binary">Fout bij installeren bestanden</string>
-    <string name="error_migration">Fout bij migreren oude instellingen</string>
-    <string name="error_refresh">Fout bij vernieuwen iptables</string>
     <string name="error_apply">Fout bij toepassen iptables regels</string>
     <string name="error_fetch">Fout bij ophalen iptables regels</string>
     <string name="error_su_toast">Unable to acquire root access !</string>
@@ -32,7 +26,6 @@
     <string name="android_system">Android systeem</string>
     <string name="unknown_item">Onbekend</string>
     <string name="tethering_item">(Tethering) - DHCP + DNS diensten</string>
-    <string name="dnsproxy_item">(DNS-proxy) - DNS-lookups via netd</string>
     <string name="ntp_item">(NTP) - Internet tijd server</string>
     <string name="root_item">(root) - Applicaties draaiend als root</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
@@ -47,9 +40,6 @@
     <string name="flushed">Regels geleegd</string>
     <string name="show_log">Bekijk log</string>
     <string name="clear_log">Leeg log</string>
-    <string name="applying_rules">Toepassen iptables regels</string>
-    <string name="applying">Toepassen</string>
-    <string name="saving_rules">Opslaan iptables regels</string>
     <string name="rules_applied">Regels succesvol toegepast</string>
     <string name="rules_saved">Regels opgeslagen</string>
     <string name="rules_deleted">Regels verwijderd</string>
@@ -58,14 +48,10 @@
     <string name="enterpass">Voer wachtwoord in</string>
     <string name="reenterpass">Bevestig wachtwoord</string>
     <string name="error_write_pref">Fout bij opslaan voorkeuren</string>
-    <string name="enternewpass">Voer nieuw wachtwoord in (laat leeg om te verwijderen):</string>
     <string name="passdefined">Wachtwoord beveiliging ingesteld</string>
-    <string name="passremoved">Wachtwoord beveiliging uitgeschakeld</string>
-    <string name="passerror">Fout bij wijzigen wachtwoord</string>
     <string name="working">Toepassen</string>
     <string name="reading_apps">Ophalen van geïnstalleerde applicaties</string>
     <string name="mode">Firewall-modus</string>
-    <string name="mode_header">Modus: %s</string>
     <string name="legend_clear">Selectievakjes in alle kolommen leegmaken</string>
     <string name="mode_whitelist">Selectie toestaan</string>
     <string name="legend_whitelist">Geselecteerde apps zal internet toegang worden toegestaan</string>
@@ -73,7 +59,6 @@
     <string name="legend_blacklist">Geselecteerde apps zal internet toegang worden geweigerd</string>
     <string name="set_custom_script">Eigen script</string>
     <string name="preferences">Voorkeuren</string>
-    <string name="reload">Applicaties opnieuw laden</string>
     <string name="flush">Regels leegmaken</string>
     <string name="send_report">Foutrapport verzenden</string>
     <string name="enter_problem">Beschrijf het probleem:</string>
@@ -90,15 +75,11 @@
 \nJe kan tevens een aangepast script instellen om uit te voeren als de Firewall is<b>uitgeschakeld</b>:</string>
     <string name="unsaved_changes">Niet opgeslagen wijzigingen</string>
     <string name="unsaved_changes_message">Je hebt niet opgeslagen wijzigingen.\nWil je deze toepassen of verwijderen?</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Iptables regels</string>
     <string name="copy">Kopiëren</string>
     <string name="copied">Gekopieerd</string>
     <string name="Search">Zoeken</string>
     <string name="flushRulesConfirm">Alle iptables regels verwijderen?</string>
-    <string name="overrideRules">Nieuwe regels importeren? De bestaande regels worden overschreven!</string>
-    <string name="notification_new">Nieuwe applicatie geïnstalleerd</string>
-    <string name="notification_new_package">Internet rechten configureren</string>
     <string name="confirmMsg">Volledig uitschakelen van de firewall?</string>
     <string name="apply">Toepassen</string>
     <string name="discard">Negeren</string>
@@ -110,16 +91,12 @@
     <string name="No">Nee</string>
     <string name="OK">OK</string>
     <string name="Cancel">Annuleren</string>
-    <string name="notification_title">Open AFWall+</string>
     <string name="error_notification_title">AFWall+ fout</string>
     <string name="error_notification_text">Fout tijdens het toepassen firewall regels. Klik hier om instellingen te openen.</string>
-    <string name="error_notification_ticker">AFWall+ kon de regels niet toepassen</string>
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">Opstartscript is geïnstalleerd</string>
-    <string name="unable_initd">Installatie van het AFWall+ start script niet mogelijk. Controleer of init.d/su.d door de ROM/Kernel wordt ondersteunt.</string>
     <string name="remove_initd">Opstartscript is verwijderd</string>
-    <string name="unable_remove_initd">Niet mogelijk om AFWall+ startup script te verwijderen</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Kan firewall niet uitschakelen. Beveiligd met een wachtwoord!</string>
     <string name="widget_label_status">AFWall+ Switch</string>
@@ -128,7 +105,6 @@
     <!-- Color Picker -->
     <string name="color_pick">Kies kleur om toe te passen</string>
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">DroidWall regels importeren</string>
     <string name="export_rules">Alleen de regels exporteren</string>
     <string name="export_all">Regels, profielinstellingen en voorkeuren exporteren</string>
     <string name="import_rules">Alleen de regels importeren</string>
@@ -137,36 +113,19 @@
     <string name="export_rules_fail">Exporteren mislukt!</string>
     <string name="import_rules_success">Geïmporteerd uit </string>
     <string name="import_rules_fail">Importeren mislukt!</string>
-    <string name="import_rules_missing">Bestand met regels ontbreekt!</string>
-    <string name="exportConfirm">Regels exporteren?</string>
     <string name="export_logs_fail">Exporteren regels mislukt!</string>
     <string name="export_to_sd">Regels exporteren</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">Inschakelen firewall log</string>
     <string name="enable_firewall_log_service">Log-service inschakelen</string>
     <string name="showlog_title">Firewall logs</string>
-    <string name="showlog_service_summary">Schakel toast berichten in wanneer verbindingen worden geblokkeerd </string>
-    <string name="enable_log">Log inschakelen</string>
-    <string name="disable_log">Log uitschakelen</string>
-    <string name="log_disabled">Log uitgeschakeld</string>
-    <string name="log_was_enabled">Log ingeschakeld</string>
-    <string name="log_was_disabled">Log uitgeschakeld</string>
     <string name="log_target_success">Log target change succesful</string>
     <string name="log_target_fail">Log target change failed</string>
-    <string name="log_toggle_failed">Fout bij wijzigen log status</string>
-    <string name="log_target_failed">Fout: kernel heeft geen LOG/NFLOG ondersteuning</string>
     <string name="log_cleared">Log gewist</string>
-    <string name="log_dmesg">Log uitlees methode</string>
-    <string name="log_clear_error">Fout bij legen logboek</string>
-    <string name="log_fetch_error">Fout bij ophalen logboek</string>
     <string name="log_parse_error">Fout bij analyseren logboek</string>
     <string name="no_log">Log is leeg</string>
     <string name="LogAppName">Applicatie naam:</string>
     <string name="LogPackBlock">Totaal aantal packets geblokkeerd</string>
-    <string name="blocked">AFWall+ blokkeerde:</string>
     <string name="refresh">Ververs</string>
-    <string name="block_ipv6_title">verwijder</string>
-    <string name="block_ipv6_summary">verwijder</string>
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profielen</string>
     <string name="custom_title1">Aangepaste naam voor standaardprofiel</string>
@@ -183,7 +142,6 @@
     <string name="profile3">Profiel 3</string>
     <string name="profile_hint">Profiel naam</string>
     <string name="profile_duplicate">Profiel bestaat al!</string>
-    <string name="reapply_profile">Profiel regels opnieuw toepassen</string>
     <!-- Interface -->
     <string name="lan_title">LAN beheer</string>
     <string name="lan_summary">Inschakelen om de LAN en WiFi permissies apart te beheren</string>
@@ -210,12 +168,7 @@
     <string name="builtin_bb">Ingebouwde BusyBox</string>
     <string name="system_ipt">Systeem iptables</string>
     <string name="builtin_ipt">Ingebouwde iptables</string>
-    <string name="auto">Automatisch</string>
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">XPosed gerelateerd</string>
-    <string name="fixDownloadTitle">Repareer DownloadManager lek</string>
-    <string name="fixDownloadTitleSummary">Dit zal Xposed gebruiken om het downloaden van data te blokkeren voor applicaties via de ingebouwde Android download-manager, ook wanneer de applicatie hier geen toegang toe geeft</string>
-    <string name="LeakDetected">Lek gedetecteerd!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker gerelateerd</string>
     <string name="disable_toaster">Uitschakelen tasker popups</string>
@@ -230,24 +183,19 @@
     <string name="ipv6_title">IPv6 ondersteuning</string>
     <string name="ipv6_summary">Ondersteuning voor IPv6 inschakelen</string>
     <string name="control_ipv6_title">Alleen IPv6-chains beheren</string>
-    <string name="ip6unavailable">Fout: IPv6 vereist \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Naar IPv6 regels</string>
     <string name="switch_ipv4">Naar IPv4 regels</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Beveiliging</string>
-    <string name="usePattern">Vergrendel patroon gebruiken in plaats van wachtwoord</string>
     <string name="stealthMode">Stealth-modus op patroon</string>
     <string name="patternMaxTry">Maximaal aantal pogingen</string>
-    <string name="resetPattern">Lock patroon opnieuw instellen?</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">Apparaat Admin</string>
     <string name="device_admin_enabled">AFWall+ Device Admin ingeschakeld</string>
     <string name="device_admin_disabled">AFWall+ Device Admin uitgeschakeld</string>
-    <string name="device_admin_on_disable">Ga naar de aparaatbeheerders in de beveiligingsinstellingen om AFWall+ uit te schakelen</string>
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Experimenteel</string>
     <!-- Startup -->
-    <string name="startup_service">Regels toepassen. Even geduld.</string>
     <string name="addStartupDelayTitle">Opstartvertraging</string>
     <string name="addStartupDelaySummary">AFWall+ zal 5 seconden wachten voor de regels worden toegepast. Deze instelling alleen inschakelen als de opstart-regels tijdens het opstarten niet worden toegepast.</string>
     <string name="fixleakTitle">Repareer opstart datalek</string>
@@ -273,7 +221,6 @@
     <string name="primary_pref_title">Primaire kleur</string>
     <string name="status_pref_title">Statusbalk kleur</string>
     <string name="accent_pref_title">Accentkleur</string>
-    <string name="syscolor_pref_summary_on">Kleur voor alle systeem applicaties</string>
     <string name="enableConfirmTitle">Bevestiging bij uitschakelen AFWall+</string>
     <string name="enableConfirm_summary_on">Firewall zal om bevestiging vragen voor het uitschakelen</string>
     <string name="showUid">Toon UID voor applicaties</string>
@@ -286,9 +233,7 @@
     <string name="active_rules">Actieve regels</string>
     <string name="active_rules_summary">Pas firewall regels toe op elke connectiewijziging (LAN/Wi-Fi/mobiele-data/roam/tether)</string>
     <string name="profile_add">Profiel toevoegen</string>
-    <string name="profile_remove">Profiel verwijderen</string>
     <string name="profile_rename">Profiel hernoemen</string>
-    <string name="Donate">Doneer</string>
     <string name="multi_apply_rules">Regels toepassen bij wisselen profiel</string>
     <string name="multi_apply_rules_info">Regels laden en toepassen bij het wisselen van profiel</string>
     <string name="multi_user_title">Multi-user ondersteuning</string>
@@ -300,7 +245,6 @@
     <string name="downloaded">Gedownload</string>
     <string name="app_system_detail">Systeem details openen</string>
     <string name="settings_pwd_not_equal">Wachtwoorden komen niet overeen</string>
-    <string name="faq">Veelgestelde vragen (FAQ\'s)</string>
     <string name="reverse_all">Selectie omkeren?</string>
     <string name="unselect_all">Selectie leegmaken?</string>
     <string name="check_all">Alles selecteren</string>
@@ -323,40 +267,28 @@
     <string name="pkg_sys">Systeem</string>
     <string name="pkg_user">Gebruiker</string>
     <string name="menu">Menu</string>
-    <string name="backup_notexist">Geen back-up aanwezig. Exporteer vanuit het menu.</string>
     <string name="showFilter">Filters weergeven</string>
     <string name="showfilter_summary_on">Filters (All/Core/systeem/gebruiker) worden weergegeven in het hoofdscherm</string>
     <string name="showfilter_summary_off">Filters (All/Core/systeem/gebruiker) worden verborgen in het hoofdscherm</string>
-    <string name="enable_dns">DNS via netd inschakelen</string>
-    <string name="disable_dns">DNS via netd uitschakelen</string>
     <string name="tasker_lable">AFWall+ Tasker Plug-in</string>
     <string name="enable">Inschakelen</string>
     <string name="disable">Uitschakelen</string>
-    <string name="filters_apps_title">Meldingen filter</string>
     <string name="apply_color">Kies kleur om toe te passen</string>
     <string name="binaries">Binaries</string>
     <string name="widgets">Widgets</string>
     <string name="exports">Exporteren</string>
     <string name="imports">Importeren</string>
-    <string name="invalid_profile">Ongeldige profielnaam</string>
     <!-- Donate -->
     <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
     <string name="buy_donate">Purchase donate version or Unlocker</string>
-    <string name="unlock_donate"> tik om donatie versie te ontgrendelen</string>
-    <string name="donate_support">U kunt nu de donatie functies gebruiken.</string>
     <string name="donate_thanks">Bedankt voor uw steun.</string>
-    <string name="activeNotification">Notificatie icoon weergeven</string>
-    <string name="activeNotification_summary">Permanent icoon in de systeembalk weergeven</string>
     <string name="active">Firewall ingeschakeld</string>
     <string name="inactive">Firewall uitgeschakeld</string>
-    <string name="About">Over</string>
-    <string name="FAQ">FAQ</string>
     <string name="su_check_title">Status</string>
     <string name="su_check_message">Root-toegang controleren</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
-    <string name="selectMode">Firewall modus</string>
     <string name="confirmation">Bevestiging</string>
     <!--<string name="prefill_profile">Enter profile name</string>-->
     <!--<string name="profile_default">MyProfile</string>-->
@@ -367,7 +299,6 @@
     <string name="pref_pattern">Patroon</string>
     <string name="pref_device">Apparaat beveiliging gebruiken</string>
     <string name="pref_device_desc">Android beveiliging gebruiken om AFWall+ te openen (donatie versie)</string>
-    <string name="secure_option">Apparaat niet is beveiligd met een wachtwoord/pin</string>
     <string name="android_version">Deze functie is alleen beschikbaar op Android vanaf versie Lollipop</string>
     <!--<string name="pref_pin">Pin</string>-->
     <string name="set_password">Instellen</string>
@@ -380,19 +311,10 @@
     <string name="defaultsort">Op naam (standaard)</string>
     <string name="lastupdated">Op installatie/update datum</string>
     <string name="uid">Op UID</string>
-    <string name="select_dir">Selecteer directory</string>
     <string name="select">Selecteer actie voor</string>
     <string name="manage_profiles">Beheer profielen</string>
     <string name="manage_profiles_summary">Profielen toevoegen of verwijderen</string>
     <string name="profiles">Profiel </string>
-    <string name="insert_profile">Profielnaam</string>
-    <string name="add">Toevoegen</string>
-    <string name="showlog_toasts">Toast-melding weergeven bij blokkeren</string>
-    <string name="enable_show_toasts">Schakel toast notificaties in</string>
-    <string name="top">Naar boven</string>
-    <string name="center">Centreer</string>
-    <string name="bottom">Naar beneden</string>
-    <string name="position">Toast positie</string>
     <string name="widget_prefs_title">Widget posities</string>
     <string name="xTitle">Widget X-positie</string>
     <string name="xTitleSummary">Handmatig aanpassen X-positie</string>
@@ -400,36 +322,22 @@
     <string name="yTitle">Widget Y-positie</string>
     <string name="yTitleSummary">Handmatig aanpassen Y-positie</string>
     <string name="yTitleDialog">Y-Positie (waarde) instellen</string>
-    <string name="error_nonsupported">KingRoot gedetecteerd!</string>
-    <string name="error_nonsupported_details">AFWall+ heeft een niet ondersteunde superuser applicatie gedetecteerd welke bekend staat om het omzeilen van firewall rules. Aangezien het een superuser app betreft, kan AFWall+ dit probleem niet verhelpen.</string>
-    <string name="lockNotification">Meldingen verbergen op vergrendelingsscherm</string>
-    <string name="lockScreenNotification_summary">Verberg actieve meldingen op vergrendelingsscherm</string>
-    <string name="menu_legend">Legenda</string>
     <string name="permissiondenied_importexport">Lees-/schrijfrechten naar opslag geweigerd. Gelieve toegang te verlenen voor het exporteren/importeren van regels.</string>
     <string name="permissiondenied_asset">Lees-/schrijfrechten naar opslag geweigerd. Gelieve toegang te verlenen voor het kopiëren van AFWALL+ binaries.</string>
     <string name="log_deletedapp">Verwijder App</string>
     <string name="log_denied">Geweigerd:</string>
     <string name="log_times">keer</string>
     <string name="log_time">tijd</string>
-    <string name="log_dst">Bestemming:</string>
-    <string name="log_src">Bron:</string>
-    <string name="log_proto">Protocol:</string>
     <string name="no_data_available">Activeer de log-service via voorkeuren om logboekgegevens op te slaan.</string>
     <string name="loading_data_title">Laden&#8230;</string>
     <string name="loading_data">Logboek gegevens worden opgehaald</string>
-    <string name="switch_old">Schakel over naar oude weergave</string>
     <string name="switch_new">Schakel over naar nieuwe weergave</string>
     <string name="showlogdetail_title">Applicatie log details</string>
-    <string name="reapply_rules">Instellingen zijn gewijzigd, pas de regels opnieuw toe</string>
-    <string name="custom_rules">Persoonlijke regels</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Multicast DNS inschakelen</string>
     <string name="error_log">Kan log-service niet starten. LogTarget is leeg of LogService is niet ingeschakeld.</string>
     <!-- Log Details -->
     <string name="destination_address">Adres bestemming</string>
     <string name="source_address">Bron adres</string>
-    <string name="ping_destination">Ping bestemming</string>
-    <string name="ping_source">Ping bron</string>
     <string name="resolve_destination">Resolve bestemming</string>
     <string name="resolve_source">Resolve bron</string>
     <string name="copy_text">Kopieer tekst</string>
@@ -438,29 +346,20 @@
     <string name="select_the_action">Actie selecteren</string>
     <string name="result_copied_to_clipboard">Resultaat gekopieerd naar het klembord</string>
     <string name="result">Resultaat</string>
-    <string name="output_is_empty">Uitvoer leeg omdat toegang tot het netwerk en SuperSu wordt geweigerd</string>
     <string name="searching">Bezig met zoeken...</string>
     <string name="looking_for_data">Zoeken naar gegevens...</string>
-    <string name="reachable_timeout">Bereikbaar, time-out: %d ms</string>
     <string name="error_or_unknown_category">Fout of onbekende categorie</string>
     <string name="show_destination_address">Toon adres bestemming</string>
     <string name="show_source_address">Toon adres bron</string>
-    <string name="network_connection_not_available">Netwerkverbinding niet beschikbaar</string>
     <!-- Custom Rules -->
-    <string name="add_ip_rule">Toevoegen aan aangepaste regel</string>
     <!-- Fingerprint -->
     <string name="pref_fingerprint">Vingerafdruk</string>
-    <string name="fingerprint_authentication_error">Fout bij vingerafdruk authenticatie \n</string>
     <string name="fingerprint_authentication_help">Vingerafdruk authenticatie help\n</string>
     <string name="fingerprint_authentication_failed">Vingerafdruk authenticatie mislukt.</string>
     <string name="fingerprint_authentication_successded">Vingerafdruk authenticatie geslaagd.</string>
-    <string name="title_activity_main">Hoofdactiviteit</string>
     <string name="title_fingerprint">Ontgrendelen met vingerafdruk</string>
     <string name="desc_fingerprint">Plaats je vingertop op de scanner om je identiteit te verifiëren</string>
     <string name="note">(Inloggen met een vingerafdruk is sneller. Er dient hiervoor minimaal één vingerafdruk geregistreerd te zijn in de beveiligingsinstellingen)</string>
-    <string name="title_activity_home">Vingerafdruk</string>
-    <string name="activity_home_desc">Succesvol aangemeld middels vingerafdruk authenticatie</string>
-    <string name="activity_home_note">Start de app opnieuw op om de vingerafdruk authenticatie opnieuw te tonen</string>
     <string name="fingerprint_required">Vingerafdruk benodigd</string>
     <string name="device_with_no_fingerprint_sensor">Geen vingerafdruksensor aanwezig</string>
     <string name="fingerprint_permission_manifest_missing">Vingerafdruk authenticatie toestemming niet ingeschakeld</string>
@@ -471,12 +370,6 @@
     <string name="label_zoomin">Inzoomen</string>
     <string name="label_zoomout">Uitzoomen</string>
     <string name="exception_pref">Kan de activiteit niet starten vanwege de corrupte voorkeur, verwijder de applicatie gegevens</string>
-    <string name="ipdetect">AFWall+ heeft IPv6 verbinding gedetecteerd. Schakel in van Voorkeursregels/Connectie en pas opnieuw toe</string>
-    <string name="delayDialog">Vertraging in seconden</string>
-    <string name="pingDelayTitle">Ping timeout</string>
-    <string name="notification_priority">Notificatie prioriteit</string>
-    <string name="defaultPriority">Standaardprioriteit</string>
-    <string name="lowPriority">Lage Prioriteit</string>
     <string name="dualAppsTitle">Dual Apps ondersteuning</string>
     <string name="dualAppsDesc">Ondersteuning voor Dual Apps, MIUI, Island en werkprofiel apps</string>
     <string name="choose">Kies</string>
@@ -492,27 +385,16 @@
     <string name="input_chain_v6">INPUT chain (IPv6)</string>
     <string name="output_chain_v6">OUTPUT chain (IPv6)</string>
     <string name="forward_chain_v6">DOORSTUREN chain (IPv6)</string>
-    <string name="quick_apply_title">Snel toepassen tonen</string>
-    <string name="quick_apply_summary">Enkel Doneren! Toon zwevende toepassing knop om regels snel toe te passen</string>
     <string name="init_d">Opstartmap pad voor script</string>
     <string name="mount_initd_error">Kan de map niet koppelen</string>
     <string name="delete_initd_error">Kan het opstart script niet verwijderen</string>
-    <string name="runNotification_summary">Melding wordt getoond bij het toepassen van regels</string>
-    <string name="runNotification">Regel voortgang</string>
     <string name="displayBlockNotification">Disable log notification</string>
     <string name="displayBlockNotification_enable">Enable log notification</string>
-    <string name="applyRulesFasterTitle">Onmiddellijke toepassen</string>
-    <string name="applyRulesFaster">Gebruik alleen als het toepassen van regels langzamer is - Erg experimenteel</string>
     <string name="purging_rules">Alle firewall iptables regels verwijderen</string>
     <string name="showhost_desc">Toon opgeloste hostname uit DNS (Doneer functie/INTERNET toegang nodig voor AFWall+)</string>
     <string name="show_host">Toon hostnaam</string>
-    <string name="host">Host:</string>
-    <string name="battery_optimization_title">Whitelist AFWALL+ doze</string>
-    <string name="battery_optimization_desc">AFWall+ moet op de achtergrond draaien en regels toepassen wanneer er verandering is van connectie. Verwijder/negeer AFWall+ van batterij optimalisatie.</string>
     <string name="firewall_service">Firewall Service</string>
-    <string name="boot_notification">Boot Service</string>
     <string name="app_notification">App notificatie</string>
-    <string name="hide">Verberg</string>
     <string name="firewall_error_notify">Firewall probleem</string>
     <string name="firewall_log_notify">Log Notification</string>
     <string name="ui_themes_header">Thema\'s</string>
@@ -533,8 +415,6 @@
     <string name="log_service_start">Starting Log service</string>
     <string name="log_service_stop">Stopping Log service</string>
     <string name="log_service_select">Please select log target first</string>
-    <string name="log_service_watcher">Opening log watcher...</string>
-    <string name="log_service_success">Started Log service Successfully!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>

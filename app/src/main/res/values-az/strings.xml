@@ -7,20 +7,14 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (İanə)</string>
-    <string name="title_disabled">AFWall+ (LƏĞV EDİLDİ)</string>
-    <string name="whitelist_array_item">Seçilmişlərə icazə ver</string>
-    <string name="blacklist_array_item">Seçilmişləri əngəllə</string>
     <string name="showrules">Qaydaları göstər</string>
     <string name="applyrules">Tətbiq et</string>
     <string name="saverules">Saxla</string>
-    <string name="setpwd">Şifrə tənzimlə</string>
     <string name="help">Kömək</string>
     <string name="close">Bağla</string>
     <string name="exit">Çıxış</string>
     <string name="error_purge">Iptables təmizləmə xətası</string>
     <string name="error_binary">Binary faylları quraşdırma xətası</string>
-    <string name="error_migration">Köhnə tənzimləmələri köçürərkən xəta baş verdi</string>
-    <string name="error_refresh">Iptables təzələmə xətası</string>
     <string name="error_apply">Iptables qaydalarının tətbiq edilmə xətası</string>
     <string name="error_fetch">Iptables qaydalarının alınma xətası</string>
     <string name="error_su_toast">Unable to acquire root access !</string>
@@ -32,7 +26,6 @@
     <string name="android_system">Android Sistemi</string>
     <string name="unknown_item">Bilinmir</string>
     <string name="tethering_item">(tethering) - DHCP+DNS services</string>
-    <string name="dnsproxy_item">(dns proxy) - Netd vasitəsilə DNS axtarışı</string>
     <string name="ntp_item">(ntp) - İnternet vaxt serverləri</string>
     <string name="root_item">(root) - Tətbiq root müraciəti ilə işləyir</string>
     <string name="adb_item">(adb) - Android Debug Bridge (Android Sazlama Körpüsü)</string>
@@ -47,9 +40,6 @@
     <string name="flushed">Rules flushed</string>
     <string name="show_log">View log</string>
     <string name="clear_log">Qeyd jurnalını təmizlə</string>
-    <string name="applying_rules">iptables qaydaları tətbiq edilir</string>
-    <string name="applying">Tətbiq edilir</string>
-    <string name="saving_rules">iptables qaydarı saxlanılır</string>
     <string name="rules_applied">Qaydalar uğurla tətbiq olundu</string>
     <string name="rules_saved">Qaydalar saxlanıldı</string>
     <string name="rules_deleted">Qaydalar silindi</string>
@@ -58,14 +48,10 @@
     <string name="enterpass">Şifrə daxil et</string>
     <string name="reenterpass">Şifrəni təsdiqlə</string>
     <string name="error_write_pref">Xüsusiyyətləri saxlayarkən xəta baş verdi</string>
-    <string name="enternewpass">Yeni şifrəni daxil edin (çıxartmaq üçün boş buraxın):</string>
     <string name="passdefined">Şifrə kilidi fəallaşdırıldı</string>
-    <string name="passremoved">Şifrə kilidi ləğv edildi</string>
-    <string name="passerror">Şifrə kilidini dəyişərkən xəta baş verdi</string>
     <string name="working">İşləyir</string>
     <string name="reading_apps">Quraşdırılmış tətbiqlər alınır</string>
     <string name="mode">Firewall Mode</string>
-    <string name="mode_header">Rejim: %s</string>
     <string name="legend_clear">Bütün sütunlardakı təsdiq qutularını təmizlə</string>
     <string name="mode_whitelist">Seçilmişlərə icazə ver</string>
     <string name="legend_whitelist">Selected apps will be granted Internet access</string>
@@ -73,7 +59,6 @@
     <string name="legend_blacklist">Selected apps will be denied Internet access</string>
     <string name="set_custom_script">Set custom script</string>
     <string name="preferences">Tənzimləmələr</string>
-    <string name="reload">Tətbiqləri yenidən yüklə</string>
     <string name="flush">Flush rules</string>
     <string name="send_report">Xəta hesabatı göndər</string>
     <string name="enter_problem">Zəhmət olmasa məsələni izah edin:</string>
@@ -87,15 +72,11 @@
     <string name="custom_script2_info">    	\n<b>Custom shutdown script</b>    	\nYou can also define a custom script to be executed when the firewall is <b>disabled</b>:</string>
     <string name="unsaved_changes">Saxlanılmamış dəyişikliklər</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Iptables qaydaları</string>
     <string name="copy">Kopyala</string>
     <string name="copied">Kopyalandı</string>
     <string name="Search">Axtar</string>
     <string name="flushRulesConfirm">Flush all iptables rules?</string>
-    <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
-    <string name="notification_new">Yeni tətbiq quraşdırıldı</string>
-    <string name="notification_new_package">İnternet icazələrini konfiqurasiya et</string>
     <string name="confirmMsg">Completely DISABLE the firewall?</string>
     <string name="apply">Tətbiq et</string>
     <string name="discard">Ləğv et</string>
@@ -107,16 +88,12 @@
     <string name="No">Xeyr</string>
     <string name="OK">Oldu</string>
     <string name="Cancel">İmtina</string>
-    <string name="notification_title">AFWall+ aç</string>
     <string name="error_notification_title">AFWall+ error</string>
     <string name="error_notification_text">Error applying firewall rules. Click to open settings.</string>
-    <string name="error_notification_ticker">AFWall+ could not apply rules</string>
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">Startup script installed</string>
-    <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
     <string name="remove_initd">Startup script removed</string>
-    <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
     <string name="widget_label_status">AFWall+ Toggle</string>
@@ -125,7 +102,6 @@
     <!-- Color Picker -->
     <string name="color_pick">Select color to apply</string>
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Import DroidWall rules</string>
     <string name="export_rules">Export rules only</string>
     <string name="export_all">Export rules, profile settings, and preferences</string>
     <string name="import_rules">Import rules only</string>
@@ -134,36 +110,19 @@
     <string name="export_rules_fail">Export failed!</string>
     <string name="import_rules_success">Imported from </string>
     <string name="import_rules_fail">Import failed!</string>
-    <string name="import_rules_missing">Rules file is missing!</string>
-    <string name="exportConfirm">Export rules to storage?</string>
     <string name="export_logs_fail">Export to storage failed!</string>
     <string name="export_to_sd">Export to storage</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">Enable firewall log</string>
     <string name="enable_firewall_log_service">Turn on log service</string>
     <string name="showlog_title">Firewall Logs</string>
-    <string name="showlog_service_summary">Enable to show toast messages when a connection gets blocked </string>
-    <string name="enable_log">Enable log</string>
-    <string name="disable_log">Disable log</string>
-    <string name="log_disabled">Log disabled</string>
-    <string name="log_was_enabled">Log enabled</string>
-    <string name="log_was_disabled">Log disabled</string>
     <string name="log_target_success">Log target change succesful</string>
     <string name="log_target_fail">Log target change failed</string>
-    <string name="log_toggle_failed">Error toggling log status</string>
-    <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
-    <string name="log_dmesg">Log fetch method</string>
-    <string name="log_clear_error">Error clearing log</string>
-    <string name="log_fetch_error">Error fetching log</string>
     <string name="log_parse_error">Error parsing log</string>
     <string name="no_log">Log is empty</string>
     <string name="LogAppName">Tətbiq adı</string>
     <string name="LogPackBlock">Bütün Paketlər Əngəlləndi</string>
-    <string name="blocked">AFWall+ Əngəllədi:</string>
     <string name="refresh">Təzələ</string>
-    <string name="block_ipv6_title">sil</string>
-    <string name="block_ipv6_summary">sil</string>
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profil</string>
     <string name="custom_title1">İlkin Profil üçün xüsusi ad</string>
@@ -180,7 +139,6 @@
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Profil adı</string>
     <string name="profile_duplicate">Profil artıq mövcuddur!</string>
-    <string name="reapply_profile">Profil qaydalarını yenidən tətbiq et</string>
     <!-- Interface -->
     <string name="lan_title">LAN control</string>
     <string name="lan_summary">Enable to control LAN permissions separately from Wi-Fi permissions</string>
@@ -207,12 +165,7 @@
     <string name="builtin_bb">Built-in BusyBox</string>
     <string name="system_ipt">System iptables</string>
     <string name="builtin_ipt">Built-in iptables</string>
-    <string name="auto">Auto</string>
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">Xposed Related</string>
-    <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-    <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-    <string name="LeakDetected">Leak detected!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
     <string name="disable_toaster">Disable Tasker toasts</string>
@@ -227,24 +180,19 @@
     <string name="ipv6_title">IPv6 support</string>
     <string name="ipv6_summary">Enable support for IPv6</string>
     <string name="control_ipv6_title">Only Control IPv6 Chains</string>
-    <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Switch IPv6 rules</string>
     <string name="switch_ipv4">Switch IPv4 rules</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Security</string>
-    <string name="usePattern">Use lock pattern instead of password</string>
     <string name="stealthMode">Stealth mode on pattern</string>
     <string name="patternMaxTry">Maximum number of attempts</string>
-    <string name="resetPattern">Reset lock pattern?</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">Device admin</string>
     <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
     <string name="device_admin_disabled">AFWall+ Device Admin disabled</string>
-    <string name="device_admin_on_disable">Please go to Device Administrator settings to deactivate AFWall+</string>
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Experimental</string>
     <!-- Startup -->
-    <string name="startup_service">Applying rules. Please wait.</string>
     <string name="addStartupDelayTitle">Startup Delay</string>
     <string name="addStartupDelaySummary">AFWall+ will wait for \'n\' seconds before applying the rules. Enable this setting only if the startup rules are not applying properly during boot.</string>
     <string name="fixleakTitle">Fix startup data leak</string>
@@ -270,7 +218,6 @@
     <string name="primary_pref_title">Primary Color</string>
     <string name="status_pref_title">Statusbar Color</string>
     <string name="accent_pref_title">Accent Color</string>
-    <string name="syscolor_pref_summary_on">Color for all system apps</string>
     <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
     <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
     <string name="showUid">Show UID for apps</string>
@@ -283,9 +230,7 @@
     <string name="active_rules">Active rules</string>
     <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
     <string name="profile_add">Add profile</string>
-    <string name="profile_remove">Remove profile</string>
     <string name="profile_rename">Rename profile</string>
-    <string name="Donate">İanə</string>
     <string name="multi_apply_rules">Apply rules on profile switch</string>
     <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
     <string name="multi_user_title">Enable multi-user support</string>
@@ -297,7 +242,6 @@
     <string name="downloaded">Endirildi</string>
     <string name="app_system_detail">Sistem təfsilatlarını aç</string>
     <string name="settings_pwd_not_equal">Şifrələr uyğun gəlmir</string>
-    <string name="faq">Tez-tez Soruşulan Suallar</string>
     <string name="reverse_all">Invert all the selected apps?</string>
     <string name="unselect_all">Clear all the selected apps?</string>
     <string name="check_all">Check all</string>
@@ -320,40 +264,28 @@
     <string name="pkg_sys">Sistem</string>
     <string name="pkg_user">İstifadəçi</string>
     <string name="menu">Menyu</string>
-    <string name="backup_notexist">No backup exists. Please export from the menu.</string>
     <string name="showFilter">Show filters</string>
     <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
     <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
-    <string name="enable_dns">Enable DNS via netd</string>
-    <string name="disable_dns">Disable DNS via netd</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Fəallaşdır</string>
     <string name="disable">Ləğv et</string>
-    <string name="filters_apps_title">Bildiriş filtri</string>
     <string name="apply_color">Tətbiq etmək üçün rəng seçin</string>
     <string name="binaries">Binaries</string>
     <string name="widgets">Vidgetlər</string>
     <string name="exports">İxrac</string>
     <string name="imports">İdxal</string>
-    <string name="invalid_profile">Etibarsız profil adı</string>
     <!-- Donate -->
     <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
     <string name="buy_donate">Purchase donate version or Unlocker</string>
-    <string name="unlock_donate"> tap to unlock donate</string>
-    <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Thanks for your support.</string>
-    <string name="activeNotification">Show notification icon</string>
-    <string name="activeNotification_summary">Display permanent icon in notification bar</string>
     <string name="active">Firewall enabled</string>
     <string name="inactive">Firewall disabled</string>
-    <string name="About">About</string>
-    <string name="FAQ">FAQ</string>
     <string name="su_check_title">Status</string>
     <string name="su_check_message">Checking root access</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
-    <string name="selectMode">Firewall mode</string>
     <string name="confirmation">Confirmation</string>
     <!--<string name="prefill_profile">Enter profile name</string>-->
     <!--<string name="profile_default">MyProfile</string>-->
@@ -364,7 +296,6 @@
     <string name="pref_pattern">Pattern</string>
     <string name="pref_device">Use Device Security Protection</string>
     <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
-    <string name="secure_option">Device is not secured with password/PIN</string>
     <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
     <!--<string name="pref_pin">Pin</string>-->
     <string name="set_password">Tənzimlə</string>
@@ -377,19 +308,10 @@
     <string name="defaultsort">Ada görə (ilkin)</string>
     <string name="lastupdated">Quraşdırma/yeniləməyə görə</string>
     <string name="uid">UID-ə görə</string>
-    <string name="select_dir">Select directory</string>
     <string name="select">Select action for</string>
     <string name="manage_profiles">Profilləri idarə et</string>
     <string name="manage_profiles_summary">Profilləri əlavə et və ya çıxart</string>
     <string name="profiles">Profil </string>
-    <string name="insert_profile">Profil adı</string>
-    <string name="add">Əlavə et</string>
-    <string name="showlog_toasts">Show toast notification on block</string>
-    <string name="enable_show_toasts">Bildirişləri göstərməsini fəallaşdır</string>
-    <string name="top">Ən üst</string>
-    <string name="center">Mərkəz</string>
-    <string name="bottom">Alt</string>
-    <string name="position">Bildiriş mövqeyi</string>
     <string name="widget_prefs_title">Vidget mövqeyi</string>
     <string name="xTitle">Widget X position</string>
     <string name="xTitleSummary">Manual override X position</string>
@@ -397,36 +319,22 @@
     <string name="yTitle">Widget Y position</string>
     <string name="yTitleSummary">Manual override Y position</string>
     <string name="yTitleDialog">Set Y position (number)</string>
-    <string name="error_nonsupported">King Root aşkarlandı!</string>
-    <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
-    <string name="lockNotification">Hide lockscreen notification icon</string>
-    <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-    <string name="menu_legend">Legend</string>
     <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
     <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
     <string name="log_deletedapp">Silinmiş tətbiq</string>
     <string name="log_denied">Rədd edildi:</string>
     <string name="log_times">dəfə</string>
     <string name="log_time">dəfə</string>
-    <string name="log_dst">Təyinat yeri:</string>
-    <string name="log_src">Mənbə:</string>
-    <string name="log_proto">Protokol:</string>
     <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
     <string name="loading_data_title">Yüklənir&#8230;</string>
     <string name="loading_data">Retrieving log data</string>
-    <string name="switch_old">Switch to old view</string>
     <string name="switch_new">Switch to new view</string>
     <string name="showlogdetail_title">Application Log Details</string>
-    <string name="reapply_rules">Please reapply the rules due to preference change</string>
-    <string name="custom_rules">Custom Rules</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
     <!-- Log Details -->
     <string name="destination_address">Destination Address</string>
     <string name="source_address">Source Address</string>
-    <string name="ping_destination">Ping Destination</string>
-    <string name="ping_source">Ping Source</string>
     <string name="resolve_destination">Resolve Destination</string>
     <string name="resolve_source">Resolve Source</string>
     <string name="copy_text">Copy text</string>
@@ -435,29 +343,20 @@
     <string name="select_the_action">Select The Action</string>
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
-    <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
     <string name="searching">Searching</string>
     <string name="looking_for_data">Looking for data&#8230;</string>
-    <string name="reachable_timeout">Reachable, timeout: %d ms</string>
     <string name="error_or_unknown_category">Error or Unknown Category</string>
     <string name="show_destination_address">Show Destination Address</string>
     <string name="show_source_address">Show Source Address</string>
-    <string name="network_connection_not_available">Network connection not Available</string>
     <!-- Custom Rules -->
-    <string name="add_ip_rule">Add to custom rule</string>
     <!-- Fingerprint -->
     <string name="pref_fingerprint">Fingerprint</string>
-    <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
     <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
     <string name="fingerprint_authentication_failed">Barmaq izi təsdiqləməsi uğursuz oldu.</string>
     <string name="fingerprint_authentication_successded">Barmaq izi təsdiqləməsi uğurlu oldu.</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_fingerprint">Bir Toxunuşla Kilid Açma</string>
     <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
     <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-    <string name="title_activity_home">Barmaq izi</string>
-    <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
-    <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
     <string name="fingerprint_required">Barmaq izi lazımdır</string>
     <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
     <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
@@ -468,12 +367,6 @@
     <string name="label_zoomin">Yaxınlaşdır</string>
     <string name="label_zoomout">Uzaqlaşdır</string>
     <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
-    <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
-    <string name="delayDialog">Set delay in seconds</string>
-    <string name="pingDelayTitle">Ping timeout</string>
-    <string name="notification_priority">Bildiriş Üstünlüyü</string>
-    <string name="defaultPriority">İlkin Üstünlük</string>
-    <string name="lowPriority">Aşağı Üstünlük</string>
     <string name="dualAppsTitle">Dual Apps Support</string>
     <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
     <string name="choose">Seç</string>
@@ -489,27 +382,16 @@
     <string name="input_chain_v6">GİRİŞ Zənciri (IPv6)</string>
     <string name="output_chain_v6">ÇIXIŞ Zənciri (IPv6)</string>
     <string name="forward_chain_v6">YÖNLƏNDİRMƏ Zənciri (IPv6)</string>
-    <string name="quick_apply_title">Cəld Tətbiqi Göstər</string>
-    <string name="quick_apply_summary">Yalnız İanə! Qaydaları cəld tətbiq etmək üçün üzən tətbiq düyməsini göstər</string>
     <string name="init_d">Startup directory path for script</string>
     <string name="mount_initd_error">Unable to mount the directory</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
-    <string name="runNotification_summary">Notification will be shown when applying rules</string>
-    <string name="runNotification">Rules Progress</string>
     <string name="displayBlockNotification">Disable log notification</string>
     <string name="displayBlockNotification_enable">Enable log notification</string>
-    <string name="applyRulesFasterTitle">Instant Apply</string>
-    <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
     <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
     <string name="show_host">Show hostname</string>
-    <string name="host">Host:</string>
-    <string name="battery_optimization_title">Whitelist afwall+ doze</string>
-    <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
     <string name="firewall_service">Firewall Service</string>
-    <string name="boot_notification">Boot Service</string>
     <string name="app_notification">App Notification</string>
-    <string name="hide">Hide</string>
     <string name="firewall_error_notify">Firewall Issue</string>
     <string name="firewall_log_notify">Log Notification</string>
     <string name="ui_themes_header">Themes</string>
@@ -530,8 +412,6 @@
     <string name="log_service_start">Starting Log service</string>
     <string name="log_service_stop">Stopping Log service</string>
     <string name="log_service_select">Please select log target first</string>
-    <string name="log_service_watcher">Opening log watcher...</string>
-    <string name="log_service_success">Started Log service Successfully!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>

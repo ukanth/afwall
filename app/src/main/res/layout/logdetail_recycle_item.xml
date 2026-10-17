@@ -62,7 +62,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BLOCKED"
+                    android:text="@string/log_item_blocked"
                     android:textSize="10sp"
                     android:textStyle="bold"
                     android:textColor="#F44336"
@@ -91,7 +91,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="TO:"
+                        android:text="@string/log_item_to"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textColor="?attr/tint"
@@ -130,7 +130,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="FROM:"
+                        android:text="@string/log_item_from"
                         android:textSize="11sp"
                         android:textStyle="bold"
                         android:textColor="?attr/tint"

@@ -69,11 +69,11 @@ public class LogNetUtil {
                             if (inetAddress != null) {
                                 return inetAddress.getHostName();
                             } else {
-                                return "<Unable to resolve host>";
+                                return context.getString(R.string.host_unresolved);
                             }
                         } catch (UnknownHostException ex) {
                             Log.e(TAG, "Exception(02): " + ex.getMessage());
-                            return String.format("Currently can not resolve Host for IP(%s), timeout: %d ms", params[0].address, finish_time());
+                            return context.getString(R.string.host_resolve_failed, params[0].address, finish_time());
                         }
                 }
             } catch (Exception e) {

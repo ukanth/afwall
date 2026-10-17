@@ -2526,7 +2526,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     .customView(R.layout.apply_view, false)
                     //.content(enabled ? R.string.applying_rules
                     //        : R.string.saving_rules)
-                    .negativeText("Dismiss")
+                    .negativeText(R.string.dismiss)
                     .show();
             if (G.enableIPv6()) {
                 runProgress.findViewById(R.id.apply6layout).setVisibility(View.VISIBLE);

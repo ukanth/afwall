@@ -7,20 +7,14 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall + (Đóng góp)</string>
-    <string name="title_disabled">AFWall+ (TẮT)</string>
-    <string name="whitelist_array_item">Đánh dấu cho phép</string>
-    <string name="blacklist_array_item">Đánh dấu chặn</string>
     <string name="showrules">Hiện quy tắc</string>
     <string name="applyrules">Áp dụng</string>
     <string name="saverules">Lưu</string>
-    <string name="setpwd">Đặt mật khẩu</string>
     <string name="help">Trợ giúp</string>
     <string name="close">Đóng</string>
     <string name="exit">Thoát</string>
     <string name="error_purge">Lỗi khi xoá iptables</string>
     <string name="error_binary">Lỗi cài đặt tập tin nhị phân</string>
-    <string name="error_migration">Lỗi khi nhập thiết lập cũ</string>
-    <string name="error_refresh">Lỗi khi tải lại iptables</string>
     <string name="error_apply">Lỗi khi áp dụng quy tắc iptables</string>
     <string name="error_fetch">Lỗi khi tải quy tắc iptables</string>
     <string name="error_su_toast">Không được cấp quyền root!</string>
@@ -32,7 +26,6 @@
     <string name="android_system">Hệ thống Android</string>
     <string name="unknown_item">Không rõ</string>
     <string name="tethering_item">(phát mạng) - tác vụ DHCP+DNS</string>
-    <string name="dnsproxy_item">(dns proxy) - tra cứu DNS bằng netd</string>
     <string name="ntp_item">(ntp) - máy chủ thời gian internet</string>
     <string name="root_item">(root) - Ứng dụng có quyền root</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
@@ -47,9 +40,6 @@
     <string name="flushed">Đã xoá hết quy tắc</string>
     <string name="show_log">Xem nhật ký</string>
     <string name="clear_log">Xoá nhật ký</string>
-    <string name="applying_rules">Đang áp dụng quy tắc iptables</string>
-    <string name="applying">Đang áp dụng</string>
-    <string name="saving_rules">Đang lưu quy tắc iptales</string>
     <string name="rules_applied">Áp dụng quy tắc thành công</string>
     <string name="rules_saved">Đã lưu quy tắc</string>
     <string name="rules_deleted">Đã xoá quy tắc</string>
@@ -58,14 +48,10 @@
     <string name="enterpass">Nhập mật khẩu</string>
     <string name="reenterpass">Xác nhận mật khẩu</string>
     <string name="error_write_pref">Lỗi khi lưu các thiết lập</string>
-    <string name="enternewpass">Nhập mật khẩu mới (để trống đễ bỏ mật khẩu):</string>
     <string name="passdefined">Đã bật mật khẩu khoá</string>
-    <string name="passremoved">Đã tắt mật khẩu khoá</string>
-    <string name="passerror">Lỗi khi thay đổi mật khẩu khóa</string>
     <string name="working">Đang tiến hành</string>
     <string name="reading_apps">Đang liệt kê ứng dụng đã cài</string>
     <string name="mode">Chế độ tường lửa</string>
-    <string name="mode_header">Chế độ: %s</string>
     <string name="legend_clear">Xoá hết đánh dấu ở các cột</string>
     <string name="mode_whitelist">Đánh dấu cho phép</string>
     <string name="legend_whitelist">Các ứng dụng được đánh dấu sẽ được truy cập internet</string>
@@ -73,7 +59,6 @@
     <string name="legend_blacklist">Các ứng dụng được đánh dấu sẽ bị chặn truy cập internet</string>
     <string name="set_custom_script">Đặt mã thực thi riêng</string>
     <string name="preferences">Tùy chỉnh</string>
-    <string name="reload">Tải lại các ứng dụng</string>
     <string name="flush">Xoá các quy tắc</string>
     <string name="send_report">Gửi báo cáo lỗi</string>
     <string name="enter_problem">Hãy miêu tả vấn đề:</string>
@@ -87,15 +72,11 @@
     <string name="custom_script2_info">    \n<b>Mã thực thi khi tắt</b> \nBạn cũng có thể đặt một mã riêng để thực thi khi tường lửa bị  <b>tắt</b>:</string>
     <string name="unsaved_changes">Chưa lưu các thay đổi</string>
     <string name="unsaved_changes_message">Bạn chưa lưu các thay đổi. \nBạn muốn áp dụng hay bỏ chúng đi?</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Quy tắc iptables</string>
     <string name="copy">Sao chép</string>
     <string name="copied">Đã sao chép</string>
     <string name="Search">Tìm</string>
     <string name="flushRulesConfirm">Xoá hết các quy tắc iptales?</string>
-    <string name="overrideRules">Bạn có muốn nhập các quy tắc? Việc này sẽ ghi đè lên các quy tắc hiện tại!</string>
-    <string name="notification_new">Ứng dụng mới cài đặt</string>
-    <string name="notification_new_package">Cấu hình quyền truy cập internet</string>
     <string name="confirmMsg">TẮT hoàn toàn tường lửa?</string>
     <string name="apply">Áp dụng</string>
     <string name="discard">Loại bỏ</string>
@@ -107,16 +88,12 @@
     <string name="No">Không</string>
     <string name="OK">OK</string>
     <string name="Cancel">Bỏ</string>
-    <string name="notification_title">Mở AFWall+</string>
     <string name="error_notification_title">Lỗi AFWall+</string>
     <string name="error_notification_text">Lỗi khi áp dụng quy tắc tường lửa. Bấm để mở thiết lập.</string>
-    <string name="error_notification_ticker">AFWall+ không thể áp dụng quy tắc</string>
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">Đã cài mã thực thi khởi động</string>
-    <string name="unable_initd">Không thể cài mã thực thi khởi động của AFWall+. Hãy đảm bảo bản ROM/Kernel của bạn hỗ trợ init.d/su.d</string>
     <string name="remove_initd">Đã bỏ mã thực thi khởi động</string>
-    <string name="unable_remove_initd">Không thể bỏ mã thực thi khởi động của AFWall+</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Không thể tắt tường lửa. Khoá bằng mật khẩu!</string>
     <string name="widget_label_status">Bật/Tắt AFWall+</string>
@@ -125,7 +102,6 @@
     <!-- Color Picker -->
     <string name="color_pick">Chọn màu để áp dụng</string>
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Nhập quy tắc từ DroidWall</string>
     <string name="export_rules">Chỉ xuất quy tắc</string>
     <string name="export_all">Xuất quy tắc, thiết lập cấu hình và tuỳ chọn</string>
     <string name="import_rules">Chỉ nhập quy tắc</string>
@@ -134,36 +110,19 @@
     <string name="export_rules_fail">Xuất thất bại!</string>
     <string name="import_rules_success">Nhập từ </string>
     <string name="import_rules_fail">Nhập thất bại!</string>
-    <string name="import_rules_missing">Thiếu tập tin quy tắc!</string>
-    <string name="exportConfirm">Xuất quy tắc ra bộ nhớ?</string>
     <string name="export_logs_fail">Xuất ra bộ nhớ thất bại!</string>
     <string name="export_to_sd">Xuất ra bộ nhớ</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">Bật nhật ký tường lửa</string>
     <string name="enable_firewall_log_service">Bật tác vụ ghi chép</string>
     <string name="showlog_title">Nhật ký tường lửa</string>
-    <string name="showlog_service_summary">Bật để hiện thông báo khi tiến hành chặn kết nối </string>
-    <string name="enable_log">Bật nhật ký</string>
-    <string name="disable_log">Tắt nhật ký</string>
-    <string name="log_disabled">Nhật ký đã tắt</string>
-    <string name="log_was_enabled">Nhật ký đã bật</string>
-    <string name="log_was_disabled">Nhật ký đã tắt</string>
     <string name="log_target_success">Đã đổi đối tượng ghi</string>
     <string name="log_target_fail">Không thể đổi đối tượng ghi</string>
-    <string name="log_toggle_failed">Lỗi khi bật/tắt nhật ký</string>
-    <string name="log_target_failed">Lỗi: Kernel không hỗ trợ LOG/NFLOG</string>
     <string name="log_cleared">Đã xóa nhật ký</string>
-    <string name="log_dmesg">Phương thức dò lỗi</string>
-    <string name="log_clear_error">Lỗi khi xóa nhật ký</string>
-    <string name="log_fetch_error">Lỗi khi mở nhật ký</string>
     <string name="log_parse_error">Lỗi khi phân tích nhật ký</string>
     <string name="no_log">Nhật ký trống</string>
     <string name="LogAppName">Tên ứng dụng</string>
     <string name="LogPackBlock">Tổng số gói dữ liệu bị chặn</string>
-    <string name="blocked">AFWall+ đã chặn:</string>
     <string name="refresh">Tải lại</string>
-    <string name="block_ipv6_title">xoá</string>
-    <string name="block_ipv6_summary">xoá</string>
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Cấu hình</string>
     <string name="custom_title1">Đặt tên cho Cấu hình mặc định</string>
@@ -180,7 +139,6 @@
     <string name="profile3">Cấu hình 3</string>
     <string name="profile_hint">Tên_cấu_hình</string>
     <string name="profile_duplicate">Cấu hình đã tồn tại!</string>
-    <string name="reapply_profile">Áp dụng lại các quy tắc</string>
     <!-- Interface -->
     <string name="lan_title">Kiểm soát LAN</string>
     <string name="lan_summary">Bật để tách riêng quyền truy cập mạng LAN và Wifi</string>
@@ -207,12 +165,7 @@
     <string name="builtin_bb">BusyBox tích hợp</string>
     <string name="system_ipt">Iptables hệ thống</string>
     <string name="builtin_ipt">Iptables tích hợp</string>
-    <string name="auto">Tự động</string>
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">Liên quan đến Xposed</string>
-    <string name="fixDownloadTitle">Sửa lỗi rò rỉ DownloadManager</string>
-    <string name="fixDownloadTitleSummary">Dùng Xposed để chặn ứng dụng tải dữ liệu bằng download manager tích hợp của Android ngay cả khi ứng dụng bị chặn kết nối</string>
-    <string name="LeakDetected">Phát hiện có rò rỉ!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Liên quan đến Tasker</string>
     <string name="disable_toaster">Ẩn thông báo Tasker</string>
@@ -227,24 +180,19 @@
     <string name="ipv6_title">Hỗ trợ IPv6</string>
     <string name="ipv6_summary">Bật hỗ trợ cho IPv6</string>
     <string name="control_ipv6_title">Chỉ kiểm soát chuỗi IPv6</string>
-    <string name="ip6unavailable">Lỗi: IPv6 yêu cầu \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Chuyển quy tắc IPv6</string>
     <string name="switch_ipv4">Chuyển quy tắc IPv4</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Bảo mật</string>
-    <string name="usePattern">Mở khoá bằng đường nối thay cho mật khẩu</string>
     <string name="stealthMode">Ẩn đường nối mở khoá</string>
     <string name="patternMaxTry">Số lần thử tối đa</string>
-    <string name="resetPattern">Đặt lại khoá đường nối?</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">Quản trị thiết bị</string>
     <string name="device_admin_enabled">Bật quản trị thiết bị cho AFWall+</string>
     <string name="device_admin_disabled">Tắt quản trị thiết bị cho AFWall+</string>
-    <string name="device_admin_on_disable">Hãy mở thiết lập Quản trị Thiết bị để tắt AFWall+</string>
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Thử nghiệm</string>
     <!-- Startup -->
-    <string name="startup_service">Đang áp dụng quy tắc. Vui lòng chờ.</string>
     <string name="addStartupDelayTitle">Khởi động chậm</string>
     <string name="addStartupDelaySummary">AFWall+ sẽ đợi \'n\' giây trước khi áp dụng các quy tắc. Chỉ bật tính năng này nếu các quy tắc khởi động không được áp dụng khi khởi động.</string>
     <string name="fixleakTitle">Sửa lỗi rò rỉ dữ liệu khởi động</string>
@@ -270,7 +218,6 @@
     <string name="primary_pref_title">Màu chính</string>
     <string name="status_pref_title">Màu thanh trạng thái</string>
     <string name="accent_pref_title">Màu phụ</string>
-    <string name="syscolor_pref_summary_on">Màu các ứng dụng hệ thống</string>
     <string name="enableConfirmTitle">Xác nhận khi tắt AFWall+</string>
     <string name="enableConfirm_summary_on">Tường lửa sẽ yêu cầu xác nhận trước khi tắt</string>
     <string name="showUid">Hiện UID của ứng dụng</string>
@@ -283,9 +230,7 @@
     <string name="active_rules">Quy tắc hiện thời</string>
     <string name="active_rules_summary">Áp dụng quy tắc tường lửa mỗi khi có thay đổi kết nối (LAN/Wifi/mạng di động/chuyển vùng/phát mạng)</string>
     <string name="profile_add">Tạo cấu hình</string>
-    <string name="profile_remove">Xoá cấu hình</string>
     <string name="profile_rename">Đổi tên cấu hình</string>
-    <string name="Donate">Đóng góp</string>
     <string name="multi_apply_rules">Áp dụng quy tắc khi đổi cấu hình</string>
     <string name="multi_apply_rules_info">Tải và áp dụng quy tắc khi đổi cấu hình</string>
     <string name="multi_user_title">Bật hỗ trợ nhiều người dùng</string>
@@ -297,7 +242,6 @@
     <string name="downloaded">Đã tải về</string>
     <string name="app_system_detail">Xem chi tiết về hệ thống</string>
     <string name="settings_pwd_not_equal">Mật khẩu không khớp</string>
-    <string name="faq">Câu hỏi thường gặp</string>
     <string name="reverse_all">Đảo ngược đánh dấu các ứng dụng này?</string>
     <string name="unselect_all">Bỏ đánh dấu các ứng dụng này?</string>
     <string name="check_all">Đánh dấu hết</string>
@@ -320,40 +264,28 @@
     <string name="pkg_sys">Hệ thống</string>
     <string name="pkg_user">Người dùng</string>
     <string name="menu">Menu</string>
-    <string name="backup_notexist">Không có bản sao lưu. Hãy xuất từ menu.</string>
     <string name="showFilter">Hiện bộ lọc</string>
     <string name="showfilter_summary_on">Hiện các bộ lọc (Tất cả/Lõi/Hệ thống/Người dùng) ở màn hình chính</string>
     <string name="showfilter_summary_off">Ẩn các bộ lọc (Tất cả/Lõi/Hệ thống/Người dùng) ở màn hình chính</string>
-    <string name="enable_dns">Bật DNS bằng netd</string>
-    <string name="disable_dns">Tắt DNS bằng netd</string>
     <string name="tasker_lable">Phần mở rộng Tasker</string>
     <string name="enable">Bật</string>
     <string name="disable">Tắt</string>
-    <string name="filters_apps_title">Lọc thông báo</string>
     <string name="apply_color">Chọn màu để áp dụng</string>
     <string name="binaries">Tập tin nhị phân</string>
     <string name="widgets">Widget</string>
     <string name="exports">Xuất </string>
     <string name="imports">Nhập </string>
-    <string name="invalid_profile">Tên cấu hình không hợp lệ</string>
     <!-- Donate -->
     <string name="donate_only">Tính năng này chỉ có trong bản tài trợ/Mở khoá</string>
     <string name="buy_donate">Hãy mua bản tài trợ hoặc Mở khoá</string>
-    <string name="unlock_donate"> bấm để mở bản đóng góp</string>
-    <string name="donate_support">Bạn có thể dùng các tính năng trả phí.</string>
     <string name="donate_thanks">Cảm ơn bạn đã ủng hộ.</string>
-    <string name="activeNotification">Hiện biểu tượng thông báo</string>
-    <string name="activeNotification_summary">Luôn hiện biểu tượng trên thanh thông báo</string>
     <string name="active">Tường lửa bật</string>
     <string name="inactive">Tường lửa tắt</string>
-    <string name="About">Giới thiệu</string>
-    <string name="FAQ">CÂU HỎI THƯỜNG GẶP</string>
     <string name="su_check_title">Trạng thái</string>
     <string name="su_check_message">Đang kiểm tra quyền root</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
-    <string name="selectMode">Chế độ tường lửa</string>
     <string name="confirmation">Xác nhận</string>
     <!--<string name="prefill_profile">Enter profile name</string>-->
     <!--<string name="profile_default">MyProfile</string>-->
@@ -364,7 +296,6 @@
     <string name="pref_pattern">Đường nối</string>
     <string name="pref_device">Dùng bảo vệ an ninh thiết bị</string>
     <string name="pref_device_desc">Dùng phương thức kiểm tra an ninh của thiết bị để mở AFWall+ (tính năng đóng góp/mở khoá)</string>
-    <string name="secure_option">Thiết bị chưa được bảo vệ bằng mật khẩu/PIN</string>
     <string name="android_version">Tính năng này chỉ hoạt động trên phiên bản Lollipop trở lên</string>
     <!--<string name="pref_pin">Pin</string>-->
     <string name="set_password">Đặt</string>
@@ -377,19 +308,10 @@
     <string name="defaultsort">Theo tên (mặc định)</string>
     <string name="lastupdated">Theo cài đặt/cập nhật</string>
     <string name="uid">Theo UID</string>
-    <string name="select_dir">Chọn thư mục</string>
     <string name="select">Chọn hành động cho</string>
     <string name="manage_profiles">Quản lý cấu hình</string>
     <string name="manage_profiles_summary">Tạo và xoá cấu hình</string>
     <string name="profiles">Cấu hình </string>
-    <string name="insert_profile">Tên cấu hình</string>
-    <string name="add">Thêm</string>
-    <string name="showlog_toasts">Hiện thông báo khi chặn</string>
-    <string name="enable_show_toasts">Hiện thông báo</string>
-    <string name="top">Trên</string>
-    <string name="center">Giữa</string>
-    <string name="bottom">Dưới</string>
-    <string name="position">Vị trí thông báo</string>
     <string name="widget_prefs_title">Vị trí widget</string>
     <string name="xTitle">Vị trí ngang</string>
     <string name="xTitleSummary">Tự đặt vị trí ngang</string>
@@ -397,36 +319,22 @@
     <string name="yTitle">Vị trí dọc widget</string>
     <string name="yTitleSummary">Tự đặt vị trí dọc</string>
     <string name="yTitleDialog">Đặt vị trí dọc (số)</string>
-    <string name="error_nonsupported">Phát hiện King Root!</string>
-    <string name="error_nonsupported_details">AFWall+ phát hiện ra một ứng dụng superuser không được hỗ trợ, có thể vượt qua quy tắc tường lửa. Do đây là ứng dụng superuser, nên AFWall+ không thể làm gì khác.</string>
-    <string name="lockNotification">Ẩn biểu tượng thông báo màn hình khoá</string>
-    <string name="lockScreenNotification_summary">Ẩn thông báo liên tục trên màn hình khoá</string>
-    <string name="menu_legend">Chú thích</string>
     <string name="permissiondenied_importexport">Quyền GHI/ĐỌC dữ liệu bị từ chối. Hãy cấp quyền để xuất/nhập bộ quy tắc.</string>
     <string name="permissiondenied_asset">Quyền GHI/ĐỌC dữ liệu bị từ chối. Hãy cấp quyền để chép dữ liệu cho AFWall+.</string>
     <string name="log_deletedapp">Ứng dụng đã xóa</string>
     <string name="log_denied">Đã từ chối:</string>
     <string name="log_times">lần</string>
     <string name="log_time">lần</string>
-    <string name="log_dst">Đích đến:</string>
-    <string name="log_src">Nguồn:</string>
-    <string name="log_proto">Giao thức:</string>
     <string name="no_data_available">Hãy bật tác vụ nhật ký trong Tuỳ chỉnh. Nếu đã bật, thì hiện chưa có ghi chép gì.</string>
     <string name="loading_data_title">Đang tải&#8230;</string>
     <string name="loading_data">Đang thu thập ghi chép</string>
-    <string name="switch_old">Chuyển về giao diện cũ</string>
     <string name="switch_new">Chuyển sang giao diện mới</string>
     <string name="showlogdetail_title">Chi tiết nhật ký ứng dụng</string>
-    <string name="reapply_rules">Hãy áp dụng lại các quy tắc do có thay đổi tuỳ chỉnh</string>
-    <string name="custom_rules">Quy tắc riêng</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Bật Mutlicast DNS</string>
     <string name="error_log">Không thể bật tác vụ ghi chép. LogTarget trống hoặc LogService đang tắt.</string>
     <!-- Log Details -->
     <string name="destination_address">Địa chỉ đích</string>
     <string name="source_address">Địa chỉ nguồn</string>
-    <string name="ping_destination">Ping đích</string>
-    <string name="ping_source">Ping nguồn</string>
     <string name="resolve_destination">Chuyển đích</string>
     <string name="resolve_source">Chuyển nguồn</string>
     <string name="copy_text">Chép nội dung</string>
@@ -435,29 +343,20 @@
     <string name="select_the_action">Chọn hành động</string>
     <string name="result_copied_to_clipboard">Đã chép kết quả vào bộ nhớ tạm</string>
     <string name="result">Kết quả</string>
-    <string name="output_is_empty">Kết quả trống, do quyền truy cập mạng và SuperSu bị từ chối</string>
     <string name="searching">Đang tìm</string>
     <string name="looking_for_data">Tìm dữ liệu&#8230;</string>
-    <string name="reachable_timeout">Có thể mở, thời gian chờ: %d ms</string>
     <string name="error_or_unknown_category">Lỗi hoặc chưa phân loại</string>
     <string name="show_destination_address">Hiện địa chỉ đích</string>
     <string name="show_source_address">Hiện địa chỉ nguồn</string>
-    <string name="network_connection_not_available">Không có kết nối mạng</string>
     <!-- Custom Rules -->
-    <string name="add_ip_rule">Thêm vào quy tắc riêng</string>
     <!-- Fingerprint -->
     <string name="pref_fingerprint">Vân tay</string>
-    <string name="fingerprint_authentication_error">Lỗi xác thực bằng vân tay\n</string>
     <string name="fingerprint_authentication_help">Trợ giúp xác thực bằng vân tay\n</string>
     <string name="fingerprint_authentication_failed">Xác thực bằng vân tay thất bại.</string>
     <string name="fingerprint_authentication_successded">Xác thực bằng vân tay thành công.</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_fingerprint">Mở khoá nhanh</string>
     <string name="desc_fingerprint">Hãy đặt tay lên cảm biến để xác thực danh tính của bạn</string>
     <string name="note">(Đăng nhập bằng vân tay giúp bạn đăng nhập nhanh hơn nhiều. Bạn cần đăng ký ít nhất một mẫu vân tay trong phần thiết lập của thiết bị)</string>
-    <string name="title_activity_home">Vân tay</string>
-    <string name="activity_home_desc">Bạn đã đăng nhập bằng xác thực vân tay</string>
-    <string name="activity_home_note">Đóng và mở lại ứng dụng để xem lại màn hình xác thực vân tay</string>
     <string name="fingerprint_required">Yêu cầu vân tay</string>
     <string name="device_with_no_fingerprint_sensor">Thiết bị của bạn không có cảm biến vân tay</string>
     <string name="fingerprint_permission_manifest_missing">Chưa cấp quyền xác thực bằng vân tay</string>
@@ -468,12 +367,6 @@
     <string name="label_zoomin">Phóng to</string>
     <string name="label_zoomout">Thu nhỏ</string>
     <string name="exception_pref">Không thể chạy hoạt động do tuỳ chỉnh gặp lỗi. Hãy xoá hết dữ liệu ứng dụng</string>
-    <string name="ipdetect">AFWall+ phát hiện kết nối IPv6. Hãy bật hỗ trợ trong Tuỳ chỉnh-Quy tắc/Kết nối và áp dụng lại</string>
-    <string name="delayDialog">Đặt thời gian chờ bằng giây</string>
-    <string name="pingDelayTitle">Thời gian chờ ping</string>
-    <string name="notification_priority">Mức ưu tiên thông báo</string>
-    <string name="defaultPriority">Mặc định</string>
-    <string name="lowPriority">Ưu tiên thấp</string>
     <string name="dualAppsTitle">Hỗ trợ ứng dụng kép</string>
     <string name="dualAppsDesc">Hỗ trợ ứng dụng kép, MIUI, ứng dụng cấu hình Island và công việc</string>
     <string name="choose">Chọn</string>
@@ -489,27 +382,16 @@
     <string name="input_chain_v6">Chuỗi ĐẾN (IPv6)</string>
     <string name="output_chain_v6">Chuỗi ĐI (IPv6)</string>
     <string name="forward_chain_v6">Chuỗi CHUYỂN (IPv6)</string>
-    <string name="quick_apply_title">Hiện Áp dụng nhanh</string>
-    <string name="quick_apply_summary">Chỉ ở bản đóng góp! Hiện nổi nút áp dụng để có thể áp dụng nhanh</string>
     <string name="init_d">Đường dẫn mã thực thi khởi động</string>
     <string name="mount_initd_error">Không thể truy cập thư mục</string>
     <string name="delete_initd_error">Không thể xóa mã thực thi khởi động</string>
-    <string name="runNotification_summary">Hiện thông báo khi áp dụng quy tắc</string>
-    <string name="runNotification">Tiến độ quy tắc</string>
     <string name="displayBlockNotification">Tắt thông báo ghi</string>
     <string name="displayBlockNotification_enable">Bật thông báo ghi</string>
-    <string name="applyRulesFasterTitle">Áp dụng ngay</string>
-    <string name="applyRulesFaster">Chỉ dùng nếu áp dụng quy tắc bị chậm - vẫn đang thử nghiệm</string>
     <string name="purging_rules">Bỏ hết các quy tắc bảng ip tường lửa</string>
     <string name="showhost_desc">Hiện tên máy chủ đã đổi từ DNS (Tính năng trả phí/Cần cấp quyền truy cập Internet)</string>
     <string name="show_host">Hiện tên máy chủ</string>
-    <string name="host">Máy chủ:</string>
-    <string name="battery_optimization_title">Ngoại lệ cho afwall+</string>
-    <string name="battery_optimization_desc">AFWall+ cần chạy nền và áp dụng quy tắc khi có thay đổi về kết nối. Hãy bỏ AFWall+ khỏi chế tối ưu pin/Doze.</string>
     <string name="firewall_service">Tác vụ tường lửa</string>
-    <string name="boot_notification">Tác vụ khởi động</string>
     <string name="app_notification">Thông báo Ứng dụng</string>
-    <string name="hide">Ẩn</string>
     <string name="firewall_error_notify">Lỗi tường lửa</string>
     <string name="firewall_log_notify">Thông báo ghi</string>
     <string name="ui_themes_header">Giao diện</string>
@@ -530,8 +412,6 @@
     <string name="log_service_start">Bật tác vụ ghi chép</string>
     <string name="log_service_stop">Tắt tác vụ ghi chép</string>
     <string name="log_service_select">Hãy chọn đối tượng ghi</string>
-    <string name="log_service_watcher">Mở theo dõi ghi chép...</string>
-    <string name="log_service_success">Đã bật tác vụ ghi chép!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>

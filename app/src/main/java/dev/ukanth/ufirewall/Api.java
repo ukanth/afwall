@@ -4307,7 +4307,7 @@ public final class Api {
 
             // Basic validation of expected JSON structure
             if (!object.has("prefs") && !object.has("profiles") && !object.has("_profiles") && !object.has("default")) {
-                msg.append("Import file does not contain valid AFWall+ data");
+                msg.append(ctx.getString(R.string.import_invalid));
                 Log.w(TAG, "Invalid import file structure - missing expected keys");
                 return false;
             }
@@ -4349,7 +4349,7 @@ public final class Api {
      */
     public static boolean importBackup(Context ctx, StringBuilder builder, String data, boolean loadAll) {
         if (data == null || data.trim().isEmpty()) {
-            builder.append("Import file contains no data");
+            builder.append(ctx.getString(R.string.import_empty));
             return false;
         }
         Log.i(TAG, "Importing backup (loadAll: " + loadAll + ")");

@@ -7,20 +7,14 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (Δωρεά)</string>
-    <string name="title_disabled">AFWall + (ΑΠΕΝΕΡΓΟΠΟΙΗΜΕΝΟ)</string>
-    <string name="whitelist_array_item">Επέτρεψε τα επιλεγμένα</string>
-    <string name="blacklist_array_item">Αποκλεισμός επιλεγμένων</string>
     <string name="showrules">Εμφάνιση κανόνων</string>
     <string name="applyrules">Εφαρμογή</string>
     <string name="saverules">Αποθήκευση</string>
-    <string name="setpwd">Ορισμός κωδικού</string>
     <string name="help">Βοήθεια</string>
     <string name="close">Κλείσιμο</string>
     <string name="exit">Έξοδος</string>
     <string name="error_purge">Σφάλμα εκκαθάρισης των iptables</string>
     <string name="error_binary">Σφάλμα κατά την εγκατάσταση των δυαδικών αρχείων</string>
-    <string name="error_migration">Σφάλμα κατά την μεταφορά των παλιών ρυθμίσεων</string>
-    <string name="error_refresh">Σφάλμα ανανέωσης των iptables</string>
     <string name="error_apply">Σφάλμα κατά την εφαρμογή των κανόνων iptables</string>
     <string name="error_fetch">Σφάλμα κατά τη λήψη των κανόνων iptables</string>
     <string name="error_su_toast">Αποτυχία ανεύρεσης διαχειριστή ρίζας!</string>
@@ -32,7 +26,6 @@
     <string name="android_system">Σύστημα Android</string>
     <string name="unknown_item">Άγνωστο</string>
     <string name="tethering_item">(Tethering) - υπηρεσίες DHCP + DNS</string>
-    <string name="dnsproxy_item">(Μεσολαβητής DNS) - αναζητήσεις DNS μέσω netd</string>
     <string name="ntp_item">(ntp) - Διακομιστές ώρας διαδικτύου</string>
     <string name="root_item">(root) - εφαρμογές που εκτελούνται ως root</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
@@ -47,9 +40,6 @@
     <string name="flushed">Οι κανόνες εκκαθαρίστηκαν</string>
     <string name="show_log">Προβολή αρχείων καταγραφής</string>
     <string name="clear_log">Καθαρισμός αρχείου καταγραφής</string>
-    <string name="applying_rules">Εφαρμογή κανόνων iptables</string>
-    <string name="applying">Εφαρμογή</string>
-    <string name="saving_rules">Αποθήκευση κανόνων iptables</string>
     <string name="rules_applied">Οι κανόνες εφαρμόστηκαν επιτυχώς</string>
     <string name="rules_saved">Οι κανόνες αποθηκεύτηκαν</string>
     <string name="rules_deleted">Οι κανόνες διαγράφτηκαν</string>
@@ -58,14 +48,10 @@
     <string name="enterpass">Εισαγωγή συνθηματικού</string>
     <string name="reenterpass">Επιβεβαίωση κωδικού πρόσβασης</string>
     <string name="error_write_pref">Σφάλμα αποθήκευσης προτιμήσεων</string>
-    <string name="enternewpass">Εισάγετε νέο κωδικό πρόσβασης (αφήστε κενό για αφαίρεση):</string>
     <string name="passdefined">Ορίστηκε κλείδωμα με κωδικό</string>
-    <string name="passremoved">Απενεργοποιήθηκε το κλείδωμα με κωδικό</string>
-    <string name="passerror">Σφάλμα κατά την αλλαγή κωδικού</string>
     <string name="working">Σε επεξεργασία</string>
     <string name="reading_apps">Ανάκτηση εγκατεστημένων εφαρμογών</string>
     <string name="mode">Λειτουργία Τείχους Προστασίας</string>
-    <string name="mode_header">Λειτουργία: %s</string>
     <string name="legend_clear">Εκαθάρηση όλων των πλαισίων ελέγχου σε όλες τις στήλες</string>
     <string name="mode_whitelist">Επέτρεψε τα επιλεγμένα</string>
     <string name="legend_whitelist">Στις επιλεγμένες εφαρμογές θα χορηγηθεί πρόσβαση στο διαδίκτυο</string>
@@ -73,7 +59,6 @@
     <string name="legend_blacklist">Στις επιλεγμένες εφαρμογές θα αρνηθεί η πρόσβαση στο διαδίκτυο</string>
     <string name="set_custom_script">Ορισμός προσαρμοσμένων script</string>
     <string name="preferences">Προτιμήσεις</string>
-    <string name="reload">Ανανέωση εφαρμογών</string>
     <string name="flush">Εκκαθάρηση κανόνων</string>
     <string name="send_report">Αποστολή αναφοράς σφαλμάτων</string>
     <string name="enter_problem">Παρακαλώ να εξηγήσετε το ζήτημα:</string>
@@ -87,15 +72,11 @@
     <string name="custom_script2_info">     \n<b>Προσαρμοσμένο script απενεργοποίησης</b>\nΘα εκτελείται όταν το τείχος εισέρχεται σε κατάσταση <b>ανενεργή</b>:</string>
     <string name="unsaved_changes">Μη αποθηκευμένες αλλαγές</string>
     <string name="unsaved_changes_message">Υπάρχουν μη αποθηκευμένες αλλαγές.\nΘέλετε να εφαρμοστούν ή να απορριφθούν;</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Κανόνες iptables</string>
     <string name="copy">Αντιγραφή</string>
     <string name="copied">Αντιγράφηκε</string>
     <string name="Search">Αναζήτηση</string>
     <string name="flushRulesConfirm">Εκαθάρηση όλων των iptables κανόνων;</string>
-    <string name="overrideRules">Θέλετε να εισαγάγετε τους κανόνες; Αυτό θα αντικαταστήσει τους υφιστάμενους κανόνες!</string>
-    <string name="notification_new">Εγκαταστάθηκε νέα εφαρμογή</string>
-    <string name="notification_new_package">Ρύθμιση δικαιωμάτων διαδικτύου</string>
     <string name="confirmMsg">ΑΠΕΝΕΡΓΟΠΟΙΗΣΗ του τείχους προστασίας;</string>
     <string name="apply">Εφαρμογή</string>
     <string name="discard">Απόρριψη</string>
@@ -107,16 +88,12 @@
     <string name="No">Όχι</string>
     <string name="OK">Εντάξει</string>
     <string name="Cancel">Ακύρωση</string>
-    <string name="notification_title">Άνοιγμα AFWall+</string>
     <string name="error_notification_title">Σφάλμα AFWall+</string>
     <string name="error_notification_text">Σφάλμα κατά την εφαρμογή των κανόνων του τείχους προστασίας. Πατήστε εδώ για να ανοίξετε τις ρυθμίσεις.</string>
-    <string name="error_notification_ticker">Το AFWall+ δεν μπόρεσε να εφαρμόσει τους κανόνες</string>
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">Script εκκίνησης εγκατεστημένο</string>
-    <string name="unable_initd">Δεν είναι δυνατή η εγκατάσταση του script εκκίνησης. Βεβαιωθείτε ότι η ROM/Kernel σας, υποστηρίζει init.d/su.d</string>
     <string name="remove_initd">Το script εκκίνησης αφαιρέθηκε</string>
-    <string name="unable_remove_initd">Δεν ήταν δυνατή η αφαίρεση του script εκκίνησης</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Αδύνατη η απενεργοποίηση του τείχους. Έχει οριστεί κωδικός!</string>
     <string name="widget_label_status">Ενεργοποίηση/Απενεργοποίηση AFWall+</string>
@@ -125,7 +102,6 @@
     <!-- Color Picker -->
     <string name="color_pick">Επιλέξτετο χρώμα για να εφαρμοστεί</string>
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Εισαγωγή κανόνων DroidWall</string>
     <string name="export_rules">Εξαγωγή μόνο των κανόνων</string>
     <string name="export_all">Εξαγωγή κανόνων, ρυθμίσεων προφίλ και προτιμήσεων</string>
     <string name="import_rules">Εισαγωγή μόνο των κανόνων</string>
@@ -134,36 +110,19 @@
     <string name="export_rules_fail">Η εξαγωγή απέτυχε!</string>
     <string name="import_rules_success">Εισαγωγή από </string>
     <string name="import_rules_fail">Η εισαγωγή απέτυχε!</string>
-    <string name="import_rules_missing">Λείπει το αρχείο κανόνων!</string>
-    <string name="exportConfirm">Εξαγωγή κανόνων στον χώρο αποθήκευσης;</string>
     <string name="export_logs_fail">Η εξαγωγή στο χώρο αποθήκευσης απέτυχε!</string>
     <string name="export_to_sd">Εξαγωγή στον χώρο αποθήκευσης</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">Ενεργοποίηση καταγραφών του τείχους</string>
     <string name="enable_firewall_log_service">Ενεργοποιήστε την υπηρεσία καταγραφής</string>
     <string name="showlog_title">Καταγραφές τείχους</string>
-    <string name="showlog_service_summary">Ενεργοποίηση για την προβολή αναδυόμενων ειδοποιήσεων όταν μία σύνδεση έχει αποκλειστεί </string>
-    <string name="enable_log">Ενεργοποίηση καταγραφής</string>
-    <string name="disable_log">Απενεργοποίηση καταγραφής</string>
-    <string name="log_disabled">Καταγραφή απενεργοποιημένη</string>
-    <string name="log_was_enabled">Καταγραφή ενεργοποιημένη</string>
-    <string name="log_was_disabled">Καταγραφή απενεργοποιημένη</string>
     <string name="log_target_success">Επιτυχής αλλαγή στόχου αρχείου καταγραφής</string>
     <string name="log_target_fail">Η αλλαγή προορισμού αρχείου απέτυχε</string>
-    <string name="log_toggle_failed">Σφάλμα εναλλαγής κατάστασης του αρχείου καταγραφής</string>
-    <string name="log_target_failed">Σφάλμα: Έλλειψη υποστήριξης ΚΑΤΑΓΡΑΦΗΣ/NFLOG στο kernel</string>
     <string name="log_cleared">Έγινε εκκαθάριση του αρχείου καταγραφής</string>
-    <string name="log_dmesg">Μέθοδος συλλογής αρχείου καταγραφής</string>
-    <string name="log_clear_error">Σφάλμα καθαρισμού αρχείου καταγραφής</string>
-    <string name="log_fetch_error">Σφάλμα προσκόμισης αρχείου καταγραφής</string>
     <string name="log_parse_error">Σφάλμα ανάλυσης αρχείου καταγραφής</string>
     <string name="no_log">Το αρχείο καταγραφής είναι άδειο</string>
     <string name="LogAppName">Όνομα εφαρμογής</string>
     <string name="LogPackBlock">Σύνολο μπλοκαρισμένων πακέτων</string>
-    <string name="blocked">AFWall+ Αποκλεισμένα:</string>
     <string name="refresh">Ανανέωση</string>
-    <string name="block_ipv6_title">διαγραφή</string>
-    <string name="block_ipv6_summary">διαγραφή</string>
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Προφίλ</string>
     <string name="custom_title1">Προσαρμοσμένο όνομα για το προεπιλεγμένο προφίλ</string>
@@ -180,7 +139,6 @@
     <string name="profile3">Προφίλ 3</string>
     <string name="profile_hint">Όνομα Προφίλ</string>
     <string name="profile_duplicate">Το προφίλ υπάρχει ήδη!</string>
-    <string name="reapply_profile">Επανάληψη εφαρμογής κανόνων προφίλ</string>
     <!-- Interface -->
     <string name="lan_title">Έλεγχος LAN</string>
     <string name="lan_summary">Ενεργοποίηση διαχωρισμού κανόνων LAN - WiFi</string>
@@ -207,12 +165,7 @@
     <string name="builtin_bb">Ενσωματωμένο BusyBox</string>
     <string name="system_ipt">Iptables συστήματος</string>
     <string name="builtin_ipt">Ενσωματωμένα iptables</string>
-    <string name="auto">Αυτόματα</string>
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">Σχετικά με xposed</string>
-    <string name="fixDownloadTitle">Διόρθωση της διαρροής του διαχειριστή λήψεων</string>
-    <string name="fixDownloadTitleSummary">Χρήση του Xposed για να αποκλείσετε εφαρμογές από την λήψη δεδομένων χρησιμοποιώντας τον ενσωματωμένο διαχειριστή λήψεων του Android, ακόμη και αν στην εφαρμογή δεν επιτρέπεται η πρόσβαση</string>
-    <string name="LeakDetected">Εντοπίστηκε διαρροή!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Σχετικά με το Tasker</string>
     <string name="disable_toaster">Απενεργοποίηση των αναδυόμενων ειδοποιήσεων του Tasker</string>
@@ -227,24 +180,19 @@
     <string name="ipv6_title">Υποστήριξη IPv6</string>
     <string name="ipv6_summary">Ενεργοποίηση υποστήριξης IPv6</string>
     <string name="control_ipv6_title">Μόνο Έλεγχος Αλυσίδων Ipv6</string>
-    <string name="ip6unavailable">Σφάλμα: Το IPv6 απαιτεί την ύπαρξη του \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Μετάβαση στους κανόνες IPv6</string>
     <string name="switch_ipv4">Μετάβαση στους κανόνες IPv4</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Ασφάλεια</string>
-    <string name="usePattern">Χρήση μοτίβου αντί κωδικού</string>
     <string name="stealthMode">Μοτίβο ενεργοποίησης κατάστασης Stealth</string>
     <string name="patternMaxTry">Μέγιστος αριθμός προσπαθειών</string>
-    <string name="resetPattern">Επαναφορά μοτίβου κλειδώματος;</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">Διαχειριστής συσκευής</string>
     <string name="device_admin_enabled">AFWall+ Διαχειριστής συσκευής ενεργοποιημένος</string>
     <string name="device_admin_disabled">AFWall+ Διαχειριστής συσκευής απενεργοποιημένος</string>
-    <string name="device_admin_on_disable">Παρακαλώ μεταβείτε στις ρυθμίσεις διαχειριστή συσκευής για να απενεργοποιήσετε το AFWall+</string>
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Πειραματική έκδοση</string>
     <!-- Startup -->
-    <string name="startup_service">Εφαρμογή κανόνων. Παρακαλώ περιμένετε.</string>
     <string name="addStartupDelayTitle">Καθυστέρηση εκκίνησης</string>
     <string name="addStartupDelaySummary">Το AFWall+ θα περιμένει 5 δευτερόλεπτα πριν από την εφαρμογή των κανόνων. Ενεργοποιήσετε αυτήν τη ρύθμιση μόνο εάν οι κανόνες εκκίνησης δεν εφαρμόζουν σωστά κατά την εκκίνηση.</string>
     <string name="fixleakTitle">Διόρθωση διαρροής δεδομένων κατά την εκκίνηση</string>
@@ -270,7 +218,6 @@
     <string name="primary_pref_title">Βασικό χρώμα</string>
     <string name="status_pref_title">Χρώματα γραμμής κατάστασης</string>
     <string name="accent_pref_title">Απόχρωση</string>
-    <string name="syscolor_pref_summary_on">Χρώμα για όλες τις εφαρμογές συστήματος</string>
     <string name="enableConfirmTitle">Επιβεβαίωση απενεργοποίησης AFWall+</string>
     <string name="enableConfirm_summary_on">Το Τείχος προστασίας θα ζητάει επιβεβαίωση πριν από την απενεργοποίησή του</string>
     <string name="showUid">Εμφάνιση του UID των εφαρμογών</string>
@@ -283,9 +230,7 @@
     <string name="active_rules">Ενεργοί κανόνες</string>
     <string name="active_rules_summary">Εφαρμογή των κανόνων του τείχους προστασίας σε κάθε αλλαγή συνδεσιμότητας (LAN/Wi-Fi /Δεδομένα/Περιαγωγή/tether)</string>
     <string name="profile_add">Προσθήκη προφίλ</string>
-    <string name="profile_remove">Διαγραφή προφίλ</string>
     <string name="profile_rename">Μετονομασία προφίλ</string>
-    <string name="Donate">Δωρεά</string>
     <string name="multi_apply_rules">Εφαρμογή κανόνων κατά την αλλαγή προφίλ</string>
     <string name="multi_apply_rules_info">Φόρτωση και εφαρμογή κανόνων κατά την εναλλαγή προφίλ</string>
     <string name="multi_user_title">Ενεργοποίηση υποστήριξης πολλαπλών χρηστών</string>
@@ -297,7 +242,6 @@
     <string name="downloaded">Μεταφορτώθηκε</string>
     <string name="app_system_detail">Άνοιγμα λεπτομερειών συστήματος</string>
     <string name="settings_pwd_not_equal">Οι κωδικοί ταιριάζουν</string>
-    <string name="faq">Συχνές ερωτήσεις</string>
     <string name="reverse_all">Αντιστροφή όλως των επιλεγμένων εφαρμογών;</string>
     <string name="unselect_all">Εκκαθάριση όλων των επιλεγμένων εφαρμογών;</string>
     <string name="check_all">Επιλογή όλων</string>
@@ -320,40 +264,28 @@
     <string name="pkg_sys">Σύστημα</string>
     <string name="pkg_user">Χρήστης</string>
     <string name="menu">Μενού</string>
-    <string name="backup_notexist">Δεν υπάρχει αντίγραφο ασφαλείας. Παρακαλώ κάντε εξαγωγή από το μενού.</string>
     <string name="showFilter">Προβολή φίλτρων</string>
     <string name="showfilter_summary_on">Τα φίλτρα (Όλα/Πυρήνας/Σύστημα/Χρήστης) θα εμφανίζονται στην κύρια προβολή</string>
     <string name="showfilter_summary_off">Τα φίλτρα (Όλα/Πυρήνας/Σύστημα/Χρήστης) δεν θα εμφανίζονται στην κύρια προβολή</string>
-    <string name="enable_dns">Ενεργοποίηση DNS μέσω netd</string>
-    <string name="disable_dns">Άπενεργοποιηση DNS μέσω netd</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Ενεργοποίηση</string>
     <string name="disable">Απενεργοποίηση</string>
-    <string name="filters_apps_title">Φίλτρο ειδοποιήσεων</string>
     <string name="apply_color">Επιλέξτε το χρώμα για να εφαρμοστεί</string>
     <string name="binaries">Εκτελέσιμα</string>
     <string name="widgets">Γραφικά στοιχεία</string>
     <string name="exports">Εξαγωγή</string>
     <string name="imports">Εισαγωγή</string>
-    <string name="invalid_profile">Εσφαλμένο όνομα προφίλ</string>
     <!-- Donate -->
     <string name="donate_only">Αυτή η δυνατότητα είναι διαθέσιμη μόνο στην έκδοση δωρεάς</string>
     <string name="buy_donate">Αγορά έκδοση δωρεάς ή Unlocker</string>
-    <string name="unlock_donate"> Πατήστε για ξεκλείδωμα δωρεάς</string>
-    <string name="donate_support">Τώρα μπορείτε να χρησιμοποιήσετε τις δυνατότητες δωρεάς.</string>
     <string name="donate_thanks">Ευχαριστούμε για την υποστήριξη σας.</string>
-    <string name="activeNotification">Εμφάνιση εικονιδίου ειδοποίησης</string>
-    <string name="activeNotification_summary">Εμφάνιση μόνιμου εικονιδίου στη γραμμή ειδοποιήσεων</string>
     <string name="active">Το τείχος είναι ενεργοποιημένο</string>
     <string name="inactive">Το τείχος είναι απενεργοποιημένο</string>
-    <string name="About">Σχετικά με</string>
-    <string name="FAQ">Συχνές Ερωτήσεις</string>
     <string name="su_check_title">Κατάσταση</string>
     <string name="su_check_message">Έλεγχος Πρόσβασης Διαχειριστή (root)</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
-    <string name="selectMode">Λειτουργία Τείχους</string>
     <string name="confirmation">Επιβεβαίωση</string>
     <!--<string name="prefill_profile">Enter profile name</string>-->
     <!--<string name="profile_default">MyProfile</string>-->
@@ -364,7 +296,6 @@
     <string name="pref_pattern">Μοτίβο</string>
     <string name="pref_device">Χρήση Προστασίας Συσκευής</string>
     <string name="pref_device_desc">Χρησιμοποιήστε τον έλεγχο ασφαλείας της συσκευής για να ανοίξετε το AFWall+ (χαρακτηριστικό δωρεάς/κλειδιού)</string>
-    <string name="secure_option">Η συσκευή δεν προστατεύεται με κωδικό/PIN</string>
     <string name="android_version">Αυτή η δυνατότητα λειτουργεί μόνο σε Lollipop και σε νεότερες εκδόσεις του Android</string>
     <!--<string name="pref_pin">Pin</string>-->
     <string name="set_password">Ορισμός</string>
@@ -377,19 +308,10 @@
     <string name="defaultsort">Αλφαβητικά(Προεπιλογή)</string>
     <string name="lastupdated">Βάση ημερομηνίας εγκατάστασης</string>
     <string name="uid">Κατά UID (Μοναδικό αριθμό ταυτοποίησης)</string>
-    <string name="select_dir">Επιλογή καταλόγου</string>
     <string name="select">Επιλέξτε ενέργεια για</string>
     <string name="manage_profiles">Διαχείριση προφίλ</string>
     <string name="manage_profiles_summary">Προσθήκη ή κατάργηση προφίλ</string>
     <string name="profiles">Προφίλ </string>
-    <string name="insert_profile">Όνομα προφίλ</string>
-    <string name="add">Προσθήκη</string>
-    <string name="showlog_toasts">Εμφάνιση αναδυόμενων ειδοποιήσεων κατά τον αποκλεισμό</string>
-    <string name="enable_show_toasts">Ενεργοποίηση εμφάνισης αναδυόμενων ειδοποιήσεων</string>
-    <string name="top">Επάνω</string>
-    <string name="center">Κέντρο</string>
-    <string name="bottom">Κάτω</string>
-    <string name="position">Θέση αναδυόμενων ειδοποιήσεων</string>
     <string name="widget_prefs_title">Θέσεις γραφικού στοιχείου (widget)</string>
     <string name="xTitle">Θέση Χ γραφικού στοιχείου (widget)</string>
     <string name="xTitleSummary">Χειροκίνητη παράκαμψη X θέσης</string>
@@ -397,36 +319,22 @@
     <string name="yTitle">Θέση Υ γραφικού στοιχείου (widget)</string>
     <string name="yTitleSummary">Χειροκίνητη παράκαμψη Υ θέσης</string>
     <string name="yTitleDialog">Ορίστε θέση Υ (αριθμός)</string>
-    <string name="error_nonsupported">Εντοπίστηκε King Root!</string>
-    <string name="error_nonsupported_details">Το AFWall+ εντόπισε μια μη υποστηριζόμενη εφαρμογή superuser που είναι γνωστό για την παράκαμψη των κανόνων τείχους προστασίας. Δεδομένου ότι είναι εφαρμογή superuser, το AFWall+ δεν είναι δυνατό να διορθώσει αυτό το ζήτημα.</string>
-    <string name="lockNotification">Απόκρυψη εικονιδίου ειδοποίησης στην οθόνη κλειδώματος</string>
-    <string name="lockScreenNotification_summary">Απόκρυψη ειδοποίησης εξερχόμενης κίνησης δεδομένων στην οθόνη κλειδώματος</string>
-    <string name="menu_legend">Υπόμνημα</string>
     <string name="permissiondenied_importexport">ΑΝΑΓΝΩΣΗ/ΕΓΓΡΑΦΗ η άδεια αποθήκευσης απορρίπτεται. Παρακαλούμε να παραχωρήσετε πρόσβαση για τους κανόνες εξαγωγής/εισαγωγής.</string>
     <string name="permissiondenied_asset">ΑΝΑΓΝΩΣΗ/ΕΓΓΡΑΦΗ έγινε άρνηση πρόσβασης στον αποθηκευτικό χώρο. Παρακαλούμε να επιτρέψετε την αντιγραφή των δυαδικών αρχείων AFWAll+.</string>
     <string name="log_deletedapp">Διαγραμμένες εφαρμογές</string>
     <string name="log_denied">Δεν επιτρέπεται:</string>
     <string name="log_times">φορές</string>
     <string name="log_time">ώρα</string>
-    <string name="log_dst">Προορισμός:</string>
-    <string name="log_src">Πηγή:</string>
-    <string name="log_proto">Πρωτόκολλο:</string>
     <string name="no_data_available">Παρακαλούμε ενεργοποιήστε την υπηρεσία καταγραφής μέσω των προτιμήσεων. Εάν ειναι ενεργοποιημένη, τότε δεν υπάρχουν δεδομένα καταγραφής.</string>
     <string name="loading_data_title">Φόρτωση&#8230;</string>
     <string name="loading_data">Ανάκτηση δεδομένων αρχείου καταγραφής</string>
-    <string name="switch_old">Μεταβείτε στην παλιά προβολή</string>
     <string name="switch_new">Μεταβείτε στη νέα προβολή</string>
     <string name="showlogdetail_title">Λεπτομέρειες Καταγραφής Εφαρμογής</string>
-    <string name="reapply_rules">Παρακαλώ εφαρμόσετε ξανά τους κανόνες λόγω αλλαγής προτιμήσεων</string>
-    <string name="custom_rules">Προσαρμοσμένοι Κανόνες</string>
     <string name="mdnslabel">(mdns) Ενεργοποίηση Mutlicast DNS</string>
-    <string name="mdns">Ενεργοποίηση Mutlicast DNS</string>
     <string name="error_log">Δεν είναι δυνατή η εκκίνηση της υπηρεσίας καταγραφής. Η θέση καταγραφής είναι κενή ή δεν είναι ενεργοποιημένη η υπηρεσία καταγραφής.</string>
     <!-- Log Details -->
     <string name="destination_address">Διεύθυνση προορισμού</string>
     <string name="source_address">Διεύθυνση προέλευσης</string>
-    <string name="ping_destination">Ping προορισμού</string>
-    <string name="ping_source">Ping προέλευσης</string>
     <string name="resolve_destination">Επίλυση προορισμού</string>
     <string name="resolve_source">Επίλυση προέλευσης</string>
     <string name="copy_text">Αντιγραφή κειμένου</string>
@@ -435,29 +343,20 @@
     <string name="select_the_action">Επιλέξτε την ενέργεια</string>
     <string name="result_copied_to_clipboard">Τα αποτελέσματα αντιγράφτηκαν στο πρόχειρο</string>
     <string name="result">Αποτέλεσμα</string>
-    <string name="output_is_empty">Η έξοδος είναι κενή, λόγω της άρνησης πρόσβασης στο δίκτυο και του SuperSu</string>
     <string name="searching">Αναζήτηση</string>
     <string name="looking_for_data">Αναζήτηση για δεδομένα&#8230;</string>
-    <string name="reachable_timeout">Προσβάσιμο, timeout: %d ms</string>
     <string name="error_or_unknown_category">Σφάλμα ή άγνωστη κατηγορία</string>
     <string name="show_destination_address">Εμφάνιση διεύθυνσης προορισμού</string>
     <string name="show_source_address">Εμφάνιση διεύθυνση προέλευσης</string>
-    <string name="network_connection_not_available">Σύνδεση δικτύου μη διαθέσιμη</string>
     <!-- Custom Rules -->
-    <string name="add_ip_rule">Προσθέστε προσαρμοσμένο κανόνα</string>
     <!-- Fingerprint -->
     <string name="pref_fingerprint">Δακτυλικό αποτύπωμα</string>
-    <string name="fingerprint_authentication_error">Σφάλμα ελέγχου ταυτότητας δακτυλικών αποτυπωμάτων\n</string>
     <string name="fingerprint_authentication_help">Βοήθεια σχετικά με τον έλεγχο ταυτότητας δακτυλικού αποτυπώματος\n</string>
     <string name="fingerprint_authentication_failed">Σφάλμα ελέγχου ταυτότητας δακτυλικών αποτυπωμάτων.</string>
     <string name="fingerprint_authentication_successded">Ο έλεγχος ταυτότητας δακτυλικών αποτυπωμάτων ολοκληρώθηκε με επιτυχία.</string>
-    <string name="title_activity_main">Βασική Δραστηριότητα</string>
     <string name="title_fingerprint">Ξεκλείδωμα με ένα άγγιγμα</string>
     <string name="desc_fingerprint">Παρακαλώ τοποθετήστε το δάκτυλό σας στον σαρωτή για να επαληθεύσετε την ταυτότητά σας</string>
     <string name="note">(Η είσοδος με δακτυλικό αποτύπωμα κάνει την είσοδο στην εφαρμογή πιο γρήγορη. Η συσκευή σας θα πρέπει να έχει καταχωρημένο τουλάχιστον ένα δακτυλικό αποτύπωμα στις ρυθμίσεις της συσκευής)</string>
-    <string name="title_activity_home">Δακτυλικό αποτύπωμα</string>
-    <string name="activity_home_desc">Έχετε συνδεθεί επιτυχώς με έλεγχο δακτυλικών αποτυπωμάτων</string>
-    <string name="activity_home_note">Κλείστε και ανοίξτε ξανά την εφαρμογή για να δείτε την οθόνη πιστοποίησης δακτυλικού αποτυπώματος</string>
     <string name="fingerprint_required">Απαιτείται δακτυλικό αποτυπωμά</string>
     <string name="device_with_no_fingerprint_sensor">Συσκευή σας δεν διαθέτει αισθητήρα δακτυλικών αποτυπωμάτων</string>
     <string name="fingerprint_permission_manifest_missing">Η άδεια ελέγχου ταυτότητας δακτυλικού αποτυπώματος δεν είναι ενεργοποιημένη</string>
@@ -468,15 +367,6 @@
     <string name="label_zoomin">Μεγέθυνση</string>
     <string name="label_zoomout">Σμίκρυνση</string>
     <string name="exception_pref">Δεν είναι δυνατή η εκκίνηση της δραστηριότητας λόγω κατεστραμμένης προτίμησης, παρακαλούμε να καθαρίσετε τα δεδομένα της εφαρμογής</string>
-    <string name="ipdetect">AFWall + ανίχνευσε σύνδεση IPv6.
-Παρακαλούμε ενεργοποιήστε από
-προτίμηση-κανόνες / συνδεσιμότητα
-και εφαρμόστε ξανά</string>
-    <string name="delayDialog">Ορισμός καθυστέρησης σε δευτερόλεπτα</string>
-    <string name="pingDelayTitle">Χρονικό όριο Ping</string>
-    <string name="notification_priority">Προτεραιότητα ειδοποιήσεων</string>
-    <string name="defaultPriority">Προκαθορισμένη Προτεραιότητα</string>
-    <string name="lowPriority">Χαμηλή προτεραιότητα</string>
     <string name="dualAppsTitle">Υποστήριξη Διπλών Εφαρμογών</string>
     <string name="dualAppsDesc">Υποστήριξη για διπλές εφαρμογές, εφαρμογές MIUI, Island και προφίλ εργασίας</string>
     <string name="choose">Επιλογή</string>
@@ -492,27 +382,16 @@
     <string name="input_chain_v6">Αλυσίδα INPUT (IPv6)</string>
     <string name="output_chain_v6">Αλυσίδα OUTPUT (IPv6)</string>
     <string name="forward_chain_v6">Αλυσίδα FORWARD (IPv6)</string>
-    <string name="quick_apply_title">Εμφάνιση Γρήγορης Εφαρμογής</string>
-    <string name="quick_apply_summary">Με Δωρεά Μόνο! Εμφάνιση αιωρούμενου κουμπιού για γρήγορη εφαρμογή κανόνων</string>
     <string name="init_d">Διαδρομή φακέλου εκκίνησης για δέσμη ενεργειών</string>
     <string name="mount_initd_error">Αδυναμία προσάρτησης του φακέλου</string>
     <string name="delete_initd_error">Δεν είναι δυνατή η διαγραφή του σεναρίου εκκίνησης</string>
-    <string name="runNotification_summary">Ειδοποίηση θα εμφανίζεται κατά την εφαρμογή των κανόνων</string>
-    <string name="runNotification">Πρόοδος Κανόνων</string>
     <string name="displayBlockNotification">Απενεργοποίηση καταγραφής ειδοποίησης</string>
     <string name="displayBlockNotification_enable">Ενεργοποίηση ειδοποίησης καταγραφής</string>
-    <string name="applyRulesFasterTitle">Άμεση εφαρμογή</string>
-    <string name="applyRulesFaster">Χρήση μόνο εάν η εφαρμογή κανόνων είναι πιο αργή - Πολύ Πειραματική</string>
     <string name="purging_rules">Αφαίρεση όλων των κανόνων iptables του τείχους προστασίας</string>
     <string name="showhost_desc">Εμφάνιση επιλυμένου ονόματος κεντρικού υπολογιστή από DNS (δυνατότητα με πληρωμή/ανάγκη πρόσβασης INTERNET στο AFWall+)</string>
     <string name="show_host">Εμφάνιση ονόματος κεντρικού υπολογιστή διακομιστή μεσολάβησης</string>
-    <string name="host">Υπολογιστής:</string>
-    <string name="battery_optimization_title">Λευκή λίστα μετά την εμφάνιση +</string>
-    <string name="battery_optimization_desc">Το AFWall+ πρέπει να τρέξει στο παρασκήνιο και να εφαρμόσει κανόνες όταν υπάρχει αλλαγή συνδεσιμότητας. Παρακαλώ αφαιρέστε/αγνοήστε το AFWall+ από τη βελτιστοποίηση μπαταρίας/προτίμηση Doze.</string>
     <string name="firewall_service">Υπηρεσία Τείχους Προστασίας</string>
-    <string name="boot_notification">Υπηρεσία Εκκίνησης</string>
     <string name="app_notification">Ειδοποίηση Εφαρμογής</string>
-    <string name="hide">Απόκρυψη</string>
     <string name="firewall_error_notify">Πρόβλημα Τείχους Προστασίας</string>
     <string name="firewall_log_notify">Ειδοποίηση Καταγραφής</string>
     <string name="ui_themes_header">Θέματα</string>
@@ -533,8 +412,6 @@
     <string name="log_service_start">Έναρξη υπηρεσίας καταγραφής</string>
     <string name="log_service_stop">Διακοπή υπηρεσίας καταγραφής</string>
     <string name="log_service_select">Παρακαλώ επιλέξτε πρώτα τον στόχο καταγραφής</string>
-    <string name="log_service_watcher">Άνοιγμα αρχείου καταγραφής...</string>
-    <string name="log_service_success">Η υπηρεσία καταγραφής ξεκίνησε επιτυχώς!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>

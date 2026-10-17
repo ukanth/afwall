@@ -8,21 +8,16 @@
 
     <!-- main -->
     <string name="app_name">AFWall+ </string>
-    <string name="app_name_donate">AFWall+ (Donate)</string>
-    <string name="title_disabled">AFWall+ (DISABLED)</string>
-    <string name="whitelist_array_item">Allow selected</string>
-    <string name="blacklist_array_item">Block selected</string>
+    <!-- set as the app label by make-donate.sh -->
+    <string name="app_name_donate" tools:ignore="UnusedResources">AFWall+ (Donate)</string>
     <string name="showrules">Show rules</string>
     <string name="applyrules">Apply</string>
     <string name="saverules">Save</string>
-    <string name="setpwd">Set password</string>
     <string name="help">Help</string>
     <string name="close">Close</string>
     <string name="exit">Exit</string>
     <string name="error_purge">Error purging iptables</string>
     <string name="error_binary">Error installing binary files</string>
-    <string name="error_migration">Error migrating old settings</string>
-    <string name="error_refresh">Error refreshing iptables</string>
     <string name="error_apply">Error applying iptables rules</string>
     <string name="error_fetch">Error fetching iptables rules</string>
     <string name="error_su_toast">Unable to acquire root access !</string>
@@ -40,24 +35,20 @@
     <string name="android_system">Android System</string>
     <string name="unknown_item">Unknown</string>
     <string name="tethering_item">(tethering) - DHCP+DNS services</string>
-    <string name="dnsproxy_item">(dns proxy) - DNS lookups via netd</string>
     <string name="ntp_item">(ntp) - Internet time servers</string>
-    <string name="root_item">(root) - Apps running as root</string>
-    <string name="adb_item">(adb) - Android Debug Bridge</string>
-    <string name="media_item">(media) - Media server</string>
-    <string name="vpn_item">(vpn) - VPN networking</string>
-    <string name="drm_item">(drm) - Digital Rights Management service</string>
-    <string name="gps_item">(gps) - GPS</string>
-    <string name="shell_item">(shell) - Linux shell</string>
-    <!-- <string name="operation_timeout">Operation timed out</string> -->
+    <!-- <account>_item: looked up by name (Api.getSpecialDescription) -->
+    <string name="root_item" tools:ignore="UnusedResources">(root) - Apps running as root</string>
+    <string name="adb_item" tools:ignore="UnusedResources">(adb) - Android Debug Bridge</string>
+    <string name="media_item" tools:ignore="UnusedResources">(media) - Media server</string>
+    <string name="vpn_item" tools:ignore="UnusedResources">(vpn) - VPN networking</string>
+    <string name="drm_item" tools:ignore="UnusedResources">(drm) - Digital Rights Management service</string>
+    <string name="gps_item" tools:ignore="UnusedResources">(gps) - GPS</string>
+    <string name="shell_item" tools:ignore="UnusedResources">(shell) - Linux shell</string>
     <string name="fw_enabled">Enable firewall</string>
     <string name="fw_disabled">Disable firewall</string>
     <string name="flushed">Rules flushed</string>
     <string name="show_log">View log</string>
     <string name="clear_log">Clear log</string>
-    <string name="applying_rules">Applying iptables rules</string>
-    <string name="applying">Applying</string>
-    <string name="saving_rules">Saving iptables rules</string>
     <string name="rules_applied">Rules applied with success</string>
     <string name="rules_saved">Rules saved</string>
     <string name="rules_deleted">Rules deleted</string>
@@ -66,14 +57,10 @@
     <string name="enterpass">Enter password</string>
     <string name="reenterpass">Confirm password</string>
     <string name="error_write_pref">Error saving preferences</string>
-    <string name="enternewpass">Enter new password (leave blank to remove):</string>
     <string name="passdefined">Password lock enabled</string>
-    <string name="passremoved">Password lock disabled</string>
-    <string name="passerror">Error changing password lock</string>
     <string name="working">Working</string>
     <string name="reading_apps">Retrieving installed apps</string>
     <string name="mode">Firewall Mode</string>
-    <string name="mode_header">Mode: %s</string>
     <string name="legend_clear">Clear all checkboxes in all columns</string>
     <string name="mode_whitelist">Allow selected</string>
     <string name="legend_whitelist">Selected apps will be granted Internet access</string>
@@ -81,7 +68,6 @@
     <string name="legend_blacklist">Selected apps will be denied Internet access</string>
     <string name="set_custom_script">Set custom script</string>
     <string name="preferences">Preferences</string>
-    <string name="reload">Reload apps</string>
     <string name="flush">Flush rules</string>
     <string name="send_report">Send error report</string>
     <string name="enter_problem">Please explain the issue:</string>
@@ -95,15 +81,11 @@
     <string name="custom_script2_info">\n<b>Custom shutdown script</b>\nRuns when the firewall is <b>disabled</b>. Rules the startup script added outside AFWall+\'s own chains (INPUT, nat, your own chains) are removed automatically first.</string>
     <string name="unsaved_changes">Unsaved changes</string>
     <string name="unsaved_changes_message">You have unsaved changes.\nDo you want to apply or discard them?</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Iptables rules</string>
     <string name="copy">Copy</string>
     <string name="copied">Copied</string>
     <string name="Search">Search</string>
     <string name="flushRulesConfirm">Flush all iptables rules?</string>
-    <string name="overrideRules">Do you want to import the rules? This will override the existing rules!</string>
-    <string name="notification_new">New app installed</string>
-    <string name="notification_new_package">Configure Internet permission</string>
     <string name="confirmMsg">Completely DISABLE the firewall?</string>
     <string name="apply">Apply</string>
     <string name="discard">Discard</string>
@@ -115,7 +97,6 @@
     <string name="No">No</string>
     <string name="OK">OK</string>
     <string name="Cancel">Cancel</string>
-    <string name="notification_title">Open AFWall+</string>
     <string name="error_notification_title">AFWall+ error</string>
     <string name="custom_script_warning_title">Custom script errors</string>
     <string name="custom_script_line_ignored">Line %1$d ignored, %2$s: %3$s</string>
@@ -181,16 +162,12 @@
     <string name="notif_blocked_more">+%1$d more apps</string>
     <string name="notif_mute">Mute %1$s</string>
     <string name="error_notification_text">Error applying firewall rules. Tap to open AFWall+.</string>
-    <string name="error_notification_ticker">AFWall+ could not apply rules</string>
-
 
     <!-- Advanced Settings -->
 
     <!-- init.d -->
     <string name="success_initd">Startup script installed</string>
-    <string name="unable_initd">Unable to install AFWall+ startup script. Please verify that your ROM/Kernel supports init.d/su.d</string>
     <string name="remove_initd">Startup script removed</string>
-    <string name="unable_remove_initd">Unable to remove AFWall+ startup script</string>
 
     <!-- Widget -->
     <string name="widget_disable_fail">Cannot disable firewall. Password protected!</string>
@@ -202,7 +179,6 @@
     <string name="color_pick">Select color to apply</string>
 
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Import DroidWall rules</string>
     <string name="export_rules">Export rules only</string>
     <string name="export_all">Export rules, profile settings, and preferences</string>
     <string name="import_rules">Import rules only</string>
@@ -211,8 +187,6 @@
     <string name="export_rules_fail">Export failed!</string>
     <string name="import_rules_success">Imported from </string>
     <string name="import_rules_fail">Import failed!</string>
-    <string name="import_rules_missing">Rules file is missing!</string>
-    <string name="exportConfirm">Export rules to storage?</string>
     <string name="export_logs_fail">Export to storage failed!</string>
     <plurals name="backups_moved_to_downloads">
         <item quantity="one">%d old backup copied to Download/AFWall</item>
@@ -221,36 +195,20 @@
     <string name="export_to_sd">Export to storage</string>
 
     <!-- Logging -->
-    <string name="enable_firewall_log">Enable firewall log</string>
     <string name="enable_firewall_log_service">Turn on log service</string>
 
     <string name="showlog_title">Firewall Logs</string>
-    <string name="showlog_service_summary">Enable to show toast messages when a connection gets blocked </string>
-    <string name="enable_log">Enable log</string>
-    <string name="disable_log">Disable log</string>
-    <string name="log_disabled">Log disabled</string>
-    <string name="log_was_enabled">Log enabled</string>
-    <string name="log_was_disabled">Log disabled</string>
-    <string name="log_target_success">Log target change succesful</string>
+    <string name="log_target_success">Log target changed</string>
     <string name="log_target_fail">Log target change failed</string>
     <string name="log_target_change_title">Change Log Target</string>
     <string name="log_target_change_message">You are switching from %1$s to %2$s.\n\nThis will restart the log service which may cause a brief interruption in logging. Do you want to continue?</string>
     <string name="log_target_changed_success">Log target changed to %1$s successfully</string>
-    <string name="log_toggle_failed">Error toggling log status</string>
-    <string name="log_target_failed">Error: Kernel is missing LOG/NFLOG support</string>
     <string name="log_cleared">Log cleared</string>
-    <string name="log_dmesg">Log fetch method</string>
-    <string name="log_clear_error">Error clearing log</string>
-    <string name="log_fetch_error">Error fetching log</string>
     <string name="log_parse_error">Error parsing log</string>
     <string name="no_log">Log is empty</string>
     <string name="LogAppName">App Name</string>
     <string name="LogPackBlock">Total Packets Blocked</string>
-    <string name="blocked">AFWall+ Blocked:</string>
     <string name="refresh">Refresh</string>
-
-    <string name="block_ipv6_title">delete</string>
-    <string name="block_ipv6_summary">delete</string>
 
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profiles</string>
@@ -267,9 +225,8 @@
     <string name="profile2">Profile 2</string>
     <string name="profile3">Profile 3</string>
     <string name="profile_hint">ProfileName</string>
+    <string name="profile_copy_current">Copy the rules of %1$s</string>
     <string name="profile_duplicate">Profile exists already!</string>
-
-    <string name="reapply_profile">Reapply profile rules</string>
 
     <!-- Interface -->
     <string name="lan_title">LAN control</string>
@@ -283,8 +240,6 @@
     <string name="tetherSummary">Enable to control Bluetooth/USB tether connectivity</string>
     <string name="tor_profile">Tor control</string>
     <string name="torSummary">Enable to redirect non-Tor traffic through Tor</string>
-    <!-- <string name="usb3g_pref_summary">Prevent AFWall+ from applying 3G rules when using wired USB Connection</string>
-    <string name="usb3g_pref_title">Disable 3G rules on wired USB</string> -->
 
     <!-- Toast Messages -->
     <string name="toast_bin_installed">AFWall+: Binary files installed</string>
@@ -302,13 +257,8 @@
     <string name="ipt_in_use">%1$s\nIn use: %2$s</string>
     <string name="ipt_system_missing">System iptables not found on this device; using the built-in one instead (%1$s)</string>
     <string name="ipt_builtin_failed">%1$s\nThe built-in binary could not run on this device, so system iptables is used instead</string>
-    <string name="auto">Auto</string>
 
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">Xposed Related</string>
-    <string name="fixDownloadTitle">Fix DownloadManager leak</string>
-    <string name="fixDownloadTitleSummary">Use Xposed to block apps downloading data using Android\'s built-in download manager even if the application is denied access</string>
-    <string name="LeakDetected">Leak detected!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker Related</string>
     <string name="disable_toaster">Disable Tasker toasts</string>
@@ -322,6 +272,10 @@
     <string name="tasker_profile_not_found">Tasker: AFWall+ profile \"%1$s\" not found. Edit the Tasker action.</string>
     <string name="allow_tasker_control">Allow Tasker/Locale control</string>
     <string name="allow_tasker_control_summary">Let Tasker/Locale run the actions saved in AFWall+\'s action editor. Turn off if you don\'t use them.</string>
+    <string name="tasker_network_all">All connection types in use</string>
+    <string name="tasker_network_roaming">Roaming</string>
+    <string name="tasker_network_lan">LAN</string>
+    <string name="tasker_network_tether">Tethering</string>
     <string name="tasker_accept_unsigned">Allow unprotected actions</string>
     <string name="tasker_accept_unsigned_summary">Some of your Tasker/Locale actions aren\'t protected, so any app could send them. Open each AFWall+ action in Tasker and save it again, then turn this off.</string>
     <string name="tasker_recent">Recent actions</string>
@@ -383,22 +337,18 @@
 
     <string name="control_ipv6_title">Only Control IPv6 Chains</string>
 
-    <string name="ip6unavailable">Error: IPv6 requires \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Switch IPv6 rules</string>
     <string name="switch_ipv4">Switch IPv4 rules</string>
 
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Security</string>
-    <string name="usePattern">Use lock pattern instead of password</string>
     <string name="stealthMode">Stealth mode on pattern</string>
     <string name="patternMaxTry">Maximum number of attempts</string>
-    <string name="resetPattern">Reset lock pattern?</string>
 
     <!-- Device Admin -->
     <string name="enable_device_admin">Device admin</string>
     <string name="device_admin_enabled">AFWall+ Device Admin enabled</string>
     <string name="device_admin_disabled">AFWall+ Device Admin disabled</string>
-    <string name="device_admin_on_disable">Please go to Device Administrator settings to deactivate AFWall+</string>
 
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Experimental</string>
@@ -408,17 +358,12 @@
     <string name="off">Off</string>
 
     <!-- Startup -->
-    <string name="startup_service">Applying rules. Please wait.</string>
 
     <string name="addStartupDelayTitle">Re-apply rules after boot</string>
     <string name="addStartupDelaySummary">Apply the rules again this many seconds after boot, for devices where the network comes up late and the boot rules don\'t stick. Off by default.</string>
 
     <string name="fixleakTitle">Fix startup data leak</string>
     <string name="fixleakSummary">Block all traffic from early boot until AFWall+ has applied its rules. Needs a root solution that runs boot scripts (Magisk, KernelSU, APatch; or init.d / su.d).</string>
-    <!--
-    <string name="alternateStartTitle">Fix device start rules</string>
-    <string name="alternateStartSummary">Fix AFWall+ not applying rules on some devices (CM10.1) after device startup</string>
-    -->
     <string name="enableInboundTitle">Enable inbound connections</string>
     <string name="enableInboundSummary">Allow connections from the LAN to the phone (Samba, sshd, AirDroid, etc.)</string>
 
@@ -448,7 +393,6 @@
     <string name="custom_theme_colors_summary_off">Use the selected preset theme colors</string>
     <string name="theme_apply_error">Unable to apply custom theme colors.</string>
 
-    <string name="syscolor_pref_summary_on">Color for all system apps</string>
     <string name="enableConfirmTitle">Confirm AFWall+ disable</string>
     <string name="enableConfirm_summary_on">Firewall will ask for confirmation before being disabled</string>
     <string name="showUid">Show UID for apps</string>
@@ -465,9 +409,7 @@
     <string name="active_rules">Active rules</string>
     <string name="active_rules_summary">Apply firewall rules on every connectivity change (LAN/Wi-Fi/mobile-data/roam/tether)</string>
     <string name="profile_add">Add profile</string>
-    <string name="profile_remove">Remove profile</string>
     <string name="profile_rename">Rename profile</string>
-    <string name="Donate">Donate</string>
 
     <string name="multi_apply_rules">Apply rules on profile switch</string>
     <string name="multi_apply_rules_info">Load and apply rules when switching profiles</string>
@@ -483,8 +425,6 @@
     <string name="app_system_detail">Open system details</string>
 
     <string name="settings_pwd_not_equal">Password mismatch</string>
-
-    <string name="faq">Frequently Asked Questions</string>
 
     <string name="reverse_all">Invert all the selected apps?</string>
     <string name="unselect_all">Clear all the selected apps?</string>
@@ -512,19 +452,15 @@
     <string name="pkg_sys">System</string>
     <string name="pkg_user">User</string>
     <string name="menu">Menu</string>
-    <string name="backup_notexist">No backup exists. Please export from the menu.</string>
 
     <string name="showFilter">Show filters</string>
     <string name="showfilter_summary_on">Filters (All/Core/System/User) are shown in the main view</string>
     <string name="showfilter_summary_off">Filters (All/Core/System/User) are hidden in the main view</string>
 
-    <string name="enable_dns">Enable DNS via netd</string>
-    <string name="disable_dns">Disable DNS via netd</string>
     <string name="tasker_lable">AFWall+ Tasker plugin</string>
     <string name="enable">Enable</string>
     <string name="disable">Disable</string>
 
-    <string name="filters_apps_title">Notification filter</string>
     <string name="apply_color">Select color to apply</string>
     <string name="binaries">Binaries</string>
 
@@ -533,43 +469,22 @@
     <string name="exports">Export</string>
     <string name="imports">Import</string>
 
-    <string name="invalid_profile">Invalid profile name</string>
-
     <!-- Donate -->
     <string name="donate_only">This feature is available only in the donate version/Unlocker</string>
     <string name="donate_only_short">Donate Only</string>
     <string name="export_all_warning">Note: While you can export rules and preferences for free, importing them back requires the donate version. Continue with export?</string>
-    <string name="export_all_warning_donor">Note: This will export your rules, profile settings, and preferences. You can import this backup later since you have the donate version. Continue with export?</string>
     <string name="buy_donate">Purchase donate version or Unlocker</string>
-    <string name="unlock_donate"> tap to unlock donate</string>
-    <string name="donate_support">You can now use donate features.</string>
     <string name="donate_thanks">Thanks for your support.</string>
-
-    <string name="activeNotification">Show notification icon</string>
-    <string name="activeNotification_summary">Display permanent icon in notification bar</string>
 
     <string name="active">Firewall enabled</string>
     <string name="inactive">Firewall disabled</string>
-
-    <string name="About">About</string>
-    <string name="FAQ">FAQ</string>
 
     <string name="su_check_title">Status</string>
     <string name="su_check_message">Checking root access</string>
 
     <!-- choose file -->
 
-    <!-- <string name="fileSize">File Size</string>-->
-    <!--<string name="currentDir">Current Dir</string>-->
-
-    <string name="selectMode">Firewall mode</string>
-
     <string name="confirmation">Confirmation</string>
-
-    <!--<string name="prefill_profile">Enter profile name</string>-->
-
-    <!--<string name="profile_default">MyProfile</string>-->
-    <!--<string name="filter">Filter</string>-->
 
     <string name="enable_protection">Enable protection</string>
     <string name="pref_none">None</string>
@@ -577,10 +492,7 @@
     <string name="pref_pattern">Pattern</string>
     <string name="pref_device">Use Device Security Protection</string>
     <string name="pref_device_desc">Use device security check to open AFWall+ (donate/key feature)</string>
-    <string name="secure_option">Device is not secured with password/PIN</string>
     <string name="android_version">This feature only works on Lollipop and later versions of Android</string>
-    <!--<string name="pref_pin">Pin</string>-->
-
 
     <string name="set_password">Set</string>
     <string name="wrong_password">Incorrect password</string>
@@ -588,28 +500,15 @@
     <string name="submit">Submit</string>
     <string name="dialog_color_picker">Color Picker</string>
 
-
-    <!--<string name="sort">Sort Applications</string>-->
     <string name="access_sort">Sort option</string>
     <string name="defaultsort">By name (default)</string>
     <string name="lastupdated">By install/update</string>
     <string name="uid">By UID</string>
 
-    <string name="select_dir">Select directory</string>
     <string name="select">Select action for</string>
     <string name="manage_profiles">Manage profiles</string>
     <string name="manage_profiles_summary">Add or remove profiles</string>
     <string name="profiles">Profile </string>
-
-    <string name="insert_profile">Profile name</string>
-    <string name="add">Add</string>
-    <string name="showlog_toasts">Show toast notification on block</string>
-    <string name="enable_show_toasts">Enable show toasts</string>
-    <string name="top">Top</string>
-    <string name="center">Center</string>
-    <string name="bottom">Bottom</string>
-    <string name="position">Toasts Position</string>
-
 
     <string name="widget_prefs_title">Widget positions</string>
     <string name="xTitle">Widget X position</string>
@@ -620,12 +519,6 @@
     <string name="yTitleSummary">Manual override Y position</string>
     <string name="yTitleDialog">Set Y position (number)</string>
 
-
-    <string name="error_nonsupported">King Root detected!</string>
-    <string name="error_nonsupported_details">AFWall+ detected an unsupported superuser app which is known to bypass firewall rules. Since it is a superuser app, AFWall+ cannot fix this issue.</string>
-    <string name="lockNotification">Hide lockscreen notification icon</string>
-    <string name="lockScreenNotification_summary">Hide ongoing notification on lockscreen</string>
-    <string name="menu_legend">Legend</string>
     <string name="permissiondenied_importexport">READ/WRITE permission to storage denied. Please grant access for exporting/importing rules.</string>
     <string name="permissiondenied_asset">READ/WRITE permission to storage denied. Please grant access for copying AFWAll+ binaries.</string>
 
@@ -633,9 +526,6 @@
     <string name="log_denied">Denied:</string>
     <string name="log_times">times</string>
     <string name="log_time">time</string>
-    <string name="log_dst">Destination:</string>
-    <string name="log_src">Source:</string>
-    <string name="log_proto">Protocol:</string>
     <string name="no_data_available">Please enable log service via Preferences. If enabled, then no log data.</string>
     <string name="log_empty_service_off">The log service is off. Enable it in Preferences → Log.</string>
     <string name="log_empty_nothing_yet">No blocked connections have been logged yet.</string>
@@ -648,22 +538,16 @@
     <string name="loading_data_title">Loading…</string>
     <string name="loading_data">Retrieving log data</string>
 
-    <string name="switch_old">Switch to old view</string>
     <string name="switch_new">Switch to new view</string>
     <string name="showlogdetail_title">Application Log Details</string>
-    <string name="reapply_rules">Please reapply the rules due to preference change</string>
 
-    <string name="custom_rules">Custom Rules</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Enable Multicast DNS</string>
     <string name="error_log">Unable to start log service. LogTarget is empty or LogService is not enabled.</string>
 
     <!-- Log Details -->
 
     <string name="destination_address">Destination Address</string>
     <string name="source_address">Source Address</string>
-    <string name="ping_destination">Ping Destination</string>
-    <string name="ping_source">Ping Source</string>
     <string name="resolve_destination">Resolve Destination</string>
     <string name="resolve_source">Resolve Source</string>
     <string name="copy_text">Copy text</string>
@@ -675,34 +559,23 @@
     <string name="select_the_action">Select The Action</string>
     <string name="result_copied_to_clipboard">Result copied to clipboard</string>
     <string name="result">Result</string>
-    <string name="output_is_empty">Output empty due to Network access and SuperSu being denied</string>
     <string name="searching">Searching</string>
     <string name="looking_for_data">Looking for data&#8230;</string>
-    <string name="reachable_timeout">Reachable, timeout: %d ms</string>
     <string name="error_or_unknown_category">Error or Unknown Category</string>
     <string name="show_destination_address">Show Destination Address</string>
     <string name="show_source_address">Show Source Address</string>
-    <string name="network_connection_not_available">Network connection not Available</string>
-
 
     <!-- Custom Rules -->
-
-    <string name="add_ip_rule">Add to custom rule</string>
 
     <!-- Fingerprint -->
 
     <string name="pref_fingerprint">Fingerprint</string>
-    <string name="fingerprint_authentication_error">Fingerprint Authentication error\n</string>
     <string name="fingerprint_authentication_help">Fingerprint Authentication help\n</string>
     <string name="fingerprint_authentication_failed">Fingerprint Authentication failed.</string>
     <string name="fingerprint_authentication_successded">Fingerprint Authentication succeeded.</string>
-    <string name="title_activity_main">MainActivity</string>
     <string name="title_fingerprint">One-touch Unlock</string>
     <string name="desc_fingerprint">Please place your fingertip on the scanner to verify your identity</string>
     <string name="note">(Fingerprint sign in makes your app login much faster. Your device should have at least one fingerprint registered in device settings)</string>
-    <string name="title_activity_home">Fingerprint</string>
-    <string name="activity_home_desc">You have logged in using fingerprint authentication</string>
-    <string name="activity_home_note">Close and re-open the app to see the fingerprint auth screen again</string>
     <string name="fingerprint_required">Fingerprint required</string>
     <string name="device_with_no_fingerprint_sensor">Your Device lacks a Fingerprint Sensor</string>
     <string name="fingerprint_permission_manifest_missing">Fingerprint authentication permission not enabled</string>
@@ -712,18 +585,10 @@
     <string name="fingerprint_disabled_successfully">Fingerprint Disabled</string>
     <string name="fingerprint_security_changed">Fingerprint setup changed. Re-enable fingerprint protection in settings.</string>
 
-
     <string name="label_zoomin">Zoom In</string>
     <string name="label_zoomout">Zoom Out</string>
     <string name="exception_pref">Unable to start the activity due to corrupted preference, Please clear the application data</string>
-    <string name="ipdetect">AFWall+ detected IPv6 connection. Please enable from Preference-Rules/Connectivity and Reapply</string>
 
-    <string name="delayDialog">Set delay in seconds</string>
-
-    <string name="pingDelayTitle">Ping timeout</string>
-    <string name="notification_priority">Notification Priority</string>
-    <string name="defaultPriority">Default Priority</string>
-    <string name="lowPriority">Low Priority</string>
     <string name="dualAppsTitle">Dual Apps Support</string>
     <string name="dualAppsDesc">Support for Dual Apps, MIUI, Island and Work profile apps</string>
     <string name="choose">Choose</string>
@@ -744,38 +609,22 @@
     <string name="input_chain_v6">INPUT Chain (IPv6)</string>
     <string name="output_chain_v6">OUTPUT Chain (IPv6)</string>
     <string name="forward_chain_v6">FORWARD Chain (IPv6)</string>
-    <string name="quick_apply_title">Show Quick Apply</string>
-    <string name="quick_apply_summary">Donate Only! Show floating apply button to apply rules quickly</string>
 
     <string name="init_d">Boot script directory</string>
     <string name="mount_initd_error">Unable to mount the directory</string>
     <string name="delete_initd_error">Unable to delete the startup script</string>
-    <string name="runNotification_summary">Notification will be shown when applying rules</string>
-    <string name="runNotification">Rules Progress</string>
 
     <string name="displayBlockNotification">Disable log notification</string>
     <string name="displayBlockNotification_enable">Enable log notification</string>
 
-    <string name="applyRulesFasterTitle">Instant Apply</string>
-    <string name="applyRulesFaster">Only use if applying rules are slower - Highly Experimental</string>
     <string name="purging_rules">Removing all firewall iptables rules</string>
     <string name="showhost_desc">Display resolved hostname from DNS (Donate feature/Need INTERNET access to AFWall+)</string>
     <string name="show_host">Show hostname</string>
-    <string name="host">Host:</string>
-    <string name="connection_blocked">Connection Blocked</string>
-    <string name="packet_size">Size: %s</string>
-    <string name="repeated_blocks">%dx blocked</string>
-    <string name="via_interface">via %s</string>
-    <string name="battery_optimization_title">Whitelist afwall+ doze</string>
-    <string name="battery_optimization_desc">AFWall+ needs to run in the background and apply rules when there is a connectivity change. Please remove/ignore AFWall+ from battery optimization/Doze preference.</string>
     <string name="firewall_service">Firewall Service</string>
-    <string name="boot_notification">Boot Service</string>
     <string name="app_notification">App Notification</string>
 
-    <string name="hide">Hide</string>
     <string name="firewall_error_notify">Firewall Issue</string>
     <string name="firewall_log_notify">Log Notification</string>
-    <string name="log_service_running">Firewall log monitoring active</string>
     <string name="log_monitoring">Log monitoring</string>
 
     <string name="ui_themes_header">Themes</string>
@@ -800,8 +649,6 @@
     <string name="log_service_start">Starting Log service</string>
     <string name="log_service_stop">Stopping Log service</string>
     <string name="log_service_select">Please select log target first</string>
-    <string name="log_service_watcher">Opening log watcher…</string>
-    <string name="log_service_success">Started Log service Successfully!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>
@@ -823,9 +670,6 @@
     <string name="custom_shutdown_script">Custom Shutdown Script</string>
     <string name="enter_custom_script_hint">Enter iptables commands to execute on firewall startup</string>
     <string name="enter_shutdown_script_hint">Enter iptables commands to execute on firewall shutdown</string>
-    <string name="consider_donating">Thank you for your support! Supporter mode enabled.</string>
-    <string name="supporter_mode_title">Supporter mode</string>
-    <string name="supporter_mode_summary">Unlock donate features (or install the donate key app)</string>
     <string name="direct_rules">Direct rules</string>
     <string name="direct_rules_title">Direct rules</string>
     <string name="direct_rules_empty">No direct rules for this app.</string>
@@ -834,8 +678,6 @@
     <string name="direct_rules_port">Destination port</string>
     <string name="direct_rules_port_hint">Example: 443 or 8000:8100</string>
     <string name="direct_rules_protocol">Protocol</string>
-    <string name="direct_rules_add">Add allow rule</string>
-    <string name="direct_rules_toggle">Enable direct rules</string>
     <string name="direct_rules_visibility_title">Direct rules</string>
     <string name="direct_rules_visibility_summary">Apply the per-app direct rules and show their button in the app list. Off: the rules are kept but not applied.</string>
     <string name="direct_rules_apply_hint">Apply firewall rules for changes to take effect.</string>
@@ -883,7 +725,6 @@
     <string name="snippet_dns">Send DNS to your own server (IPv4)</string>
     <string name="snippet_chain">Group rules in your own chain</string>
     <string name="snippet_keep_block">Keep an address blocked while the firewall is off</string>
-    <string name="direct_rules_log_missing_data">Selected log item does not include enough app and destination data.</string>
     <!-- Help screen -->
     <string name="help_network_types">Network Types</string>
     <string name="help_wifi">Wi-Fi</string>
@@ -947,4 +788,37 @@
     <string name="help_status">Firewall status</string>
     <string name="help_status_desc">The shield next to the title shows whether the firewall is on</string>
     <string name="help_libraries">Key libraries: iptables (GPLv2), BusyBox (GPLv2), libsu (Apache 2.0), material-dialogs (MIT), DBFlow (MIT), RxJava (Apache 2.0), dnsjava (BSD), PrettyTime (Apache 2.0)</string>
+
+    <!-- app list, log details, apply progress -->
+    <string name="dismiss">Dismiss</string>
+    <string name="unknown">Unknown</string>
+    <string name="no_data">No data</string>
+    <string name="mobile_data">Mobile data</string>
+    <string name="app_blocked_count">Blocked: %1$s</string>
+    <string name="app_blocked_none">Blocked: -</string>
+    <string name="app_last_activity">Last: %1$s</string>
+    <string name="app_last_activity_none">Last activity: -</string>
+    <string name="app_last_blocked">Last blocked: %1$s</string>
+    <string name="app_last_blocked_none">Last blocked: -</string>
+    <string name="app_data_usage">Data: %1$s</string>
+    <string name="app_data_loading">Data usage: loading…</string>
+    <string name="app_data_unavailable">Data: not available</string>
+    <string name="app_data_none">No data usage</string>
+    <string name="app_toggle_log_notifications">Toggle log notifications</string>
+    <string name="app_open_settings">Open app settings</string>
+    <string name="app_view_logs">View firewall logs</string>
+    <string name="apply_progress_v4">"Applying IPv4 rules: "</string>
+    <string name="apply_progress_v6">"Applying IPv6 rules: "</string>
+    <string name="log_summary_title">Block summary</string>
+    <string name="log_summary_total">Total blocks</string>
+    <string name="log_summary_destinations">Destinations</string>
+    <string name="log_summary_period">Period</string>
+    <string name="log_summary_most_blocked">Most blocked:</string>
+    <string name="log_item_blocked">BLOCKED</string>
+    <string name="log_item_to">TO:</string>
+    <string name="log_item_from">FROM:</string>
+    <string name="host_unresolved">Unable to resolve the host</string>
+    <string name="host_resolve_failed">Can\'t resolve the host for %1$s (%2$d ms)</string>
+    <string name="import_invalid">The file doesn\'t contain AFWall+ data</string>
+    <string name="import_empty">The file is empty</string>
 </resources>

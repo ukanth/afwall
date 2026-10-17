@@ -169,18 +169,8 @@
         <item>NFLOG</item>
     </string-array>
 
-    <string-array name="toast_pos">
-        <item>@string/top</item>
-        <item>@string/center</item>
-        <item>@string/bottom</item>
-    </string-array>
 
 
-    <string-array name="toast_pos_val">
-        <item>top</item>
-        <item>center</item>
-        <item>bottom</item>
-    </string-array>
 
 
    <!-- <string-array name="logDmesgArray">
@@ -194,14 +184,6 @@
     </string-array>-->
 
 
-    <string-array name="notification_type_val">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-    <string-array name="notification_type">
-        <item>@string/defaultPriority</item>
-        <item>@string/lowPriority</item>
-    </string-array>
 
     <string-array name="initDir" >
     </string-array>
@@ -236,12 +218,12 @@
 
     <!-- same order as TaskerAction.NETWORKS -->
     <string-array name="tasker_networks">
-        <item>All connection types in use</item>
-        <item>Wi-Fi</item>
-        <item>Mobile data</item>
-        <item>Roaming</item>
-        <item>VPN</item>
-        <item>LAN</item>
-        <item>Tethering</item>
+        <item>@string/tasker_network_all</item>
+        <item>@string/wifi</item>
+        <item>@string/mobile_data</item>
+        <item>@string/tasker_network_roaming</item>
+        <item>@string/vpn</item>
+        <item>@string/tasker_network_lan</item>
+        <item>@string/tasker_network_tether</item>
     </string-array>
 </resources>

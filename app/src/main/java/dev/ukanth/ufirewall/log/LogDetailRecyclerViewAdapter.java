@@ -95,7 +95,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
                     protocol += " (" + serviceInfo + ")";
                 }
             }
-            holder.dataProto.setText(protocol != null ? protocol : "Unknown");
+            holder.dataProto.setText(protocol != null ? protocol : context.getString(R.string.unknown));
             
             // Format hostname with better handling
             if (data.getHostname() != null && !data.getHostname().trim().isEmpty() && !data.getHostname().equals(data.getDst())) {
@@ -142,7 +142,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     
     private String getCachedInterfaceDisplayName(String outInterface) {
         if (outInterface == null || outInterface.isEmpty()) {
-            return "Unknown";
+            return context.getString(R.string.unknown);
         }
         
         // Check cache first
@@ -157,18 +157,18 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
     
     private String getInterfaceDisplayName(String outInterface) {
         if (outInterface == null || outInterface.isEmpty()) {
-            return "Unknown";
+            return context.getString(R.string.unknown);
         }
         
         if (outInterface.contains("lan") || outInterface.startsWith("eth") || 
             outInterface.startsWith("ra") || outInterface.startsWith("bnep") ||
             outInterface.contains("wlan") || outInterface.contains("wifi")) {
-            return "Wi-Fi";
+            return context.getString(R.string.wifi);
         } else if (outInterface.contains("mobile") || outInterface.contains("rmnet") ||
                   outInterface.contains("ccmni") || outInterface.contains("pdp")) {
-            return "Mobile Data";
+            return context.getString(R.string.mobile_data);
         } else if (outInterface.contains("tun") || outInterface.contains("ppp")) {
-            return "VPN";
+            return context.getString(R.string.vpn);
         } else {
             return outInterface;
         }

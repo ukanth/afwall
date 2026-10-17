@@ -521,7 +521,7 @@ public class LogDetailActivity extends AppCompatActivity implements SwipeRefresh
                     formatTimePeriod(newestTimestamp - oldestTimestamp) : "0s";
             
             // Find most blocked destination
-            String mostBlocked = "No data";
+            String mostBlocked = getString(R.string.no_data);
             int maxCount = 0;
             for (java.util.Map.Entry<String, Integer> entry : destinationCounts.entrySet()) {
                 if (entry.getValue() > maxCount) {

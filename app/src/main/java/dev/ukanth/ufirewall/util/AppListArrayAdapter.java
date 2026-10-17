@@ -440,7 +440,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     .where(LogData_Table.uid.eq(uid))
                     .count();
 
-            holder.blockedCount.setText("Blocked: " + blockedCountValue);
+            holder.blockedCount.setText(context.getString(R.string.app_blocked_count, String.valueOf(blockedCountValue)));
 
             // Get most recent log entry
             LogData lastLogEntry = SQLite.select()
@@ -453,7 +453,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 // Format last activity time
                 SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault());
                 String formattedTime = sdf.format(new Date(lastLogEntry.getTimestamp()));
-                holder.lastActivity.setText("Last: " + formattedTime);
+                holder.lastActivity.setText(context.getString(R.string.app_last_activity, formattedTime));
 
                 // Show last blocked destination
                 String destination = lastLogEntry.getDst();
@@ -461,20 +461,20 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                     String hostname = lastLogEntry.getHostname();
                     String displayDestination = hostname != null && !hostname.isEmpty() ? 
                             hostname : destination;
-                    holder.lastBlockedDestination.setText("Last blocked: " + displayDestination);
+                    holder.lastBlockedDestination.setText(context.getString(R.string.app_last_blocked, displayDestination));
                 } else {
-                    holder.lastBlockedDestination.setText("Last blocked: -");
+                    holder.lastBlockedDestination.setText(R.string.app_last_blocked_none);
                 }
             } else {
-                holder.lastActivity.setText("Last activity: -");
-                holder.lastBlockedDestination.setText("Last blocked: -");
+                holder.lastActivity.setText(R.string.app_last_activity_none);
+                holder.lastBlockedDestination.setText(R.string.app_last_blocked_none);
             }
 
         } catch (Exception e) {
             Log.e(TAG, "Error updating log statistics", e);
-            holder.blockedCount.setText("Blocked: -");
-            holder.lastActivity.setText("Last activity: -");
-            holder.lastBlockedDestination.setText("Last blocked: -");
+            holder.blockedCount.setText(R.string.app_blocked_none);
+            holder.lastActivity.setText(R.string.app_last_activity_none);
+            holder.lastBlockedDestination.setText(R.string.app_last_blocked_none);
         }
     }
 
@@ -489,7 +489,9 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 if (activity != null) {
                     activity.runOnUiThread(() -> {
                         if (holder.dataUsage != null) {
-                            holder.dataUsage.setText("Data: " + dataUsageText);
+                            holder.dataUsage.setText(dataUsageText != null
+                                    ? context.getString(R.string.app_data_usage, dataUsageText)
+                                    : context.getString(R.string.app_data_none));
                         }
                     });
                 }
@@ -498,7 +500,7 @@ public class AppListArrayAdapter extends ArrayAdapter<PackageInfoData> {
                 if (activity != null) {
                     activity.runOnUiThread(() -> {
                         if (holder.dataUsage != null) {
-                            holder.dataUsage.setText("Data: Not available");
+                            holder.dataUsage.setText(R.string.app_data_unavailable);
                         }
                     });
                 }

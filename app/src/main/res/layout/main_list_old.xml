@@ -104,7 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Blocked: -"
+                android:text="@string/app_blocked_none"
                 android:textSize="12sp"
                 android:textColor="?android:attr/textColorSecondary"/>
 
@@ -113,7 +113,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Last activity: -"
+                android:text="@string/app_last_activity_none"
                 android:textSize="12sp"
                 android:gravity="end"/>
 
@@ -124,7 +124,7 @@
             android:id="@+id/last_blocked_destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Last blocked: -"
+            android:text="@string/app_last_blocked_none"
             android:textSize="12sp"
             android:textColor="?android:attr/textColorSecondary"
             android:layout_marginBottom="4dp"
@@ -136,7 +136,7 @@
             android:id="@+id/data_usage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Data usage: Loading..."
+            android:text="@string/app_data_loading"
             android:textSize="12sp"
             android:textColor="?android:attr/textColorSecondary"
             android:layout_marginBottom="8dp"
@@ -158,7 +158,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="6dp"
                 android:src="@drawable/ic_notifications_off_black_24dp"
-                android:contentDescription="Toggle log notifications"/>
+                android:contentDescription="@string/app_toggle_log_notifications"/>
 
             <ImageView
                 android:id="@+id/action_open_app"
@@ -168,7 +168,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="6dp"
                 android:src="@drawable/ic_open_in_new_black_24dp"
-                android:contentDescription="Open app settings"/>
+                android:contentDescription="@string/app_open_settings"/>
 
             <ImageView
                 android:id="@+id/action_view_logs"
@@ -177,7 +177,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:padding="6dp"
                 android:src="@drawable/ic_log"
-                android:contentDescription="View firewall logs"/>
+                android:contentDescription="@string/app_view_logs"/>
 
             <ImageView
                 android:id="@+id/action_direct_rules"

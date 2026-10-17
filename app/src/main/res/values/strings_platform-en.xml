@@ -23,12 +23,9 @@
     <string name="twofortyfouram_locale_breadcrumb_separator">\u0020&gt;\u0020</string>
 
     <!-- The Don't Save button in the menu or Action Bar.  MDPI 21 character maximum -->
-    <string name="twofortyfouram_locale_menu_dontsave">Cancel</string>
 
     <!-- The Help button in the menu or Action Bar.  MDPI 21 character maximum -->
-    <string name="twofortyfouram_locale_menu_help">Help</string>
 
     <!-- The Save button in the menu or Action Bar.  MDPI 21 character maximum -->
-    <string name="twofortyfouram_locale_menu_save">Done</string>
 
 </resources>

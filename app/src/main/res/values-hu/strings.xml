@@ -7,20 +7,14 @@
     <!-- main -->
     <string name="app_name">AFWall+ </string>
     <string name="app_name_donate">AFWall+ (Donate)</string>
-    <string name="title_disabled">AFWall+ (LETILTVA)</string>
-    <string name="whitelist_array_item">Kiválasztottak engedélyezése</string>
-    <string name="blacklist_array_item">Kiválasztottak blokkolása</string>
     <string name="showrules">Szabályok mutatása</string>
     <string name="applyrules">Alkalmaz</string>
     <string name="saverules">Mentés</string>
-    <string name="setpwd">Jelszó beállítása</string>
     <string name="help">Segítség</string>
     <string name="close">Bezárás</string>
     <string name="exit">Kilépés</string>
     <string name="error_purge">Hiba az iptables törlése közben</string>
     <string name="error_binary">Hiba a bináris file-ok telepítése közben</string>
-    <string name="error_migration">Hiba a régi beállítások migrálása közben</string>
-    <string name="error_refresh">Hiba az iptables frissítése közben</string>
     <string name="error_apply">Hiba az iptables szabályok alkalmazása közben</string>
     <string name="error_fetch">Hiba az iptables szabályok letöltése közben</string>
     <string name="error_su_toast">Nem sikerült root hozzáférést szerezni!</string>
@@ -32,7 +26,6 @@
     <string name="android_system">Android rendszer</string>
     <string name="unknown_item">Ismeretlen</string>
     <string name="tethering_item">(tethering) - DHCP+DNS szolgáltatások</string>
-    <string name="dnsproxy_item">(dns proxy) - DNS lekérdezések netd-n keresztül</string>
     <string name="ntp_item">(ntp) - internetes időkiszolgálók</string>
     <string name="root_item">(root) - alkalmazások futtatása root jogosultsággal</string>
     <string name="adb_item">(adb) - Android Debug Bridge</string>
@@ -47,9 +40,6 @@
     <string name="flushed">Szabályok ürítése</string>
     <string name="show_log">Napló megtekintése</string>
     <string name="clear_log">Napló (log) törlése</string>
-    <string name="applying_rules">Iptables szabályok alkalmazása</string>
-    <string name="applying">Alkalmazás</string>
-    <string name="saving_rules">Iptables szabályok mentése</string>
     <string name="rules_applied">A szabályok sikeresen alkalmazva</string>
     <string name="rules_saved">Szabály mentve</string>
     <string name="rules_deleted">Szabály törölve</string>
@@ -58,14 +48,10 @@
     <string name="enterpass">Add meg a jelszót</string>
     <string name="reenterpass">Jelszó megerősítése</string>
     <string name="error_write_pref">Hiba a beállítások mentésekor</string>
-    <string name="enternewpass">Adja meg az új jelszót (hagyja üresen a jelszó eltávolításához):</string>
     <string name="passdefined">Jelszavas védelem engedélyezve</string>
-    <string name="passremoved">Jelszavas védelem letiltva</string>
-    <string name="passerror">Hiba a jelszavas védelem megváltoztatásakor</string>
     <string name="working">Folyamatban</string>
     <string name="reading_apps">Telepített alkalmazások lekérése</string>
     <string name="mode">Tűzfal mód</string>
-    <string name="mode_header">Mód: %s</string>
     <string name="legend_clear">Összes kijelölés az összes oszlopban</string>
     <string name="mode_whitelist">Kiválasztott engedélyezése</string>
     <string name="legend_whitelist">A kiválasztott appok internet-hozzáférést fognak kapni</string>
@@ -73,7 +59,6 @@
     <string name="legend_blacklist">A kiválasztott appok nem fognak internet-hozzáférést kapni</string>
     <string name="set_custom_script">Egyéni script beállítása</string>
     <string name="preferences">Beállítások</string>
-    <string name="reload">Alkalmazások újratöltése</string>
     <string name="flush">Szabályok ürítése</string>
     <string name="send_report">Hibajelentés küldése</string>
     <string name="enter_problem">Kérjük, írja le a problémát:</string>
@@ -87,15 +72,11 @@
     <string name="custom_script2_info">    	\n<b>Egyéni leállítás script</b>    	\nBeállíthat egyéni scriptet ami akkor lesz futtatva amikor a tűzfal állapota<b>Letiltva</b>:</string>
     <string name="unsaved_changes">Nem mentett módosítások</string>
     <string name="unsaved_changes_message">Nem mentett módosítások vannak. \nAlkalmazza, vagy eldobja ezeket?</string>
-    <string name="help_dialog_text"></string>
     <string name="showrules_title">Iptables szabályok</string>
     <string name="copy">Másolás</string>
     <string name="copied">Lemásolva</string>
     <string name="Search">Keresés</string>
     <string name="flushRulesConfirm">Kiüríti az összes iptables szabályt?</string>
-    <string name="overrideRules">Szeretné importálni a szabályokat? Ez felülírja a meglévő szabályokat!</string>
-    <string name="notification_new">Új alkalmazás telepítve</string>
-    <string name="notification_new_package">Internet engedély beállítása</string>
     <string name="confirmMsg">Teljesen LETILTJA a tűzfalat?</string>
     <string name="apply">Alkamaz</string>
     <string name="discard">Elvetés</string>
@@ -107,16 +88,12 @@
     <string name="No">Nem</string>
     <string name="OK">OK</string>
     <string name="Cancel">Mégsem</string>
-    <string name="notification_title">AFWall+ megnyitása</string>
     <string name="error_notification_title">AFWall+ hiba</string>
     <string name="error_notification_text">Hiba a tűzfal szabályok alkalmazása közben. Kattintson a beállítások megnyitásához.</string>
-    <string name="error_notification_ticker">AFWall+ nem alkalmazhatók a szabályok</string>
     <!-- Advanced Settings -->
     <!-- init.d -->
     <string name="success_initd">Indító script telepítve</string>
-    <string name="unable_initd">Nem sikerült telepíteni az AFWall+ indítási scriptet. Kérjük győződjön meg róla, hogy a ROM/Kernel rendelkezik init.d/su.d támogatással</string>
     <string name="remove_initd">Indító script eltávolítva</string>
-    <string name="unable_remove_initd">Nem sikerült eltávolítani az AFWall+ indítási scriptet</string>
     <!-- Widget -->
     <string name="widget_disable_fail">Nem tudja letiltani tűzfalat. Jelszóval védett!</string>
     <string name="widget_label_status">AFWall+ Váltás</string>
@@ -125,7 +102,6 @@
     <!-- Color Picker -->
     <string name="color_pick">Válassza ki a színt</string>
     <!-- Import/Export -->
-    <string name="import_rules_droidwall">Droidwall szabályok importálása</string>
     <string name="export_rules">Csak a szabályok exportálása</string>
     <string name="export_all">Szabályok, profil és minden beállítás exportálása</string>
     <string name="import_rules">Csak a szabályok importálása</string>
@@ -134,36 +110,19 @@
     <string name="export_rules_fail">Az exportálás sikertelen!</string>
     <string name="import_rules_success">Importálás innen: </string>
     <string name="import_rules_fail">Az importálás sikertelen!</string>
-    <string name="import_rules_missing">A szabály fájl hiányzik!</string>
-    <string name="exportConfirm">Exportálja a szabályokat a tárolóra?</string>
     <string name="export_logs_fail">A tárolóra exportálás nem sikerült!</string>
     <string name="export_to_sd">Exportálás tárhelyre</string>
     <!-- Logging -->
-    <string name="enable_firewall_log">Tűzfal naplózás engedélyezése</string>
     <string name="enable_firewall_log_service">A naplózó szolgáltatás bekapcsolása</string>
     <string name="showlog_title">Tűzfal naplók (log-ok)</string>
-    <string name="showlog_service_summary">Engedélyezi a Toast üzenet mutatását amikor a kapcsolat zárolva van </string>
-    <string name="enable_log">Naplózás engedélyezése</string>
-    <string name="disable_log">Naplózás letiltása</string>
-    <string name="log_disabled">Naplózás letiltva</string>
-    <string name="log_was_enabled">Naplózás engedélyezve</string>
-    <string name="log_was_disabled">Naplózás letiltva</string>
     <string name="log_target_success">Sikeres naplózási célmódosítás</string>
     <string name="log_target_fail">Sikertelen naplózási célmódosítás</string>
-    <string name="log_toggle_failed">Hiba a napló (log) állapotának átállítása közben</string>
-    <string name="log_target_failed">Hiba: a kernelből hiányzik a LOG/NFLOG támogatás</string>
     <string name="log_cleared">A napló (log) törölve</string>
-    <string name="log_dmesg">Napló fetch módszer</string>
-    <string name="log_clear_error">Hiba a napló (log) törlése közben</string>
-    <string name="log_fetch_error">Hiba a napló (log) betöltése közben</string>
     <string name="log_parse_error">Hiba a napló (log) elemzése közben</string>
     <string name="no_log">A napló üres</string>
     <string name="LogAppName">Alkalmazás neve</string>
     <string name="LogPackBlock">Összes csomag blokkolva</string>
-    <string name="blocked">AFWall+ blokkolva:</string>
     <string name="refresh">Frissítés</string>
-    <string name="block_ipv6_title">törlés</string>
-    <string name="block_ipv6_summary">törlés</string>
     <!-- Multi-User-Interface (MUI) -->
     <string name="mp_prefs_title">Profilok</string>
     <string name="custom_title1">Egyéni név az alapértelmezett profilhoz</string>
@@ -180,7 +139,6 @@
     <string name="profile3">Profil 3</string>
     <string name="profile_hint">Profil neve</string>
     <string name="profile_duplicate">A profil már létezik!</string>
-    <string name="reapply_profile">Profil szabályok újraalkalmazása</string>
     <!-- Interface -->
     <string name="lan_title">LAN szabályzás</string>
     <string name="lan_summary">Engedélyezi a LAN-engedélyek és a Wi-Fi-engedélyek külön-külön vezérlését</string>
@@ -207,12 +165,7 @@
     <string name="builtin_bb">Beépített BusyBox</string>
     <string name="system_ipt">Rendszer iptables</string>
     <string name="builtin_ipt">Beépített iptables</string>
-    <string name="auto">Automatikus</string>
     <!-- XPOSED -->
-    <string name="XPosed_prefs_title">XPosed kapcsolódó</string>
-    <string name="fixDownloadTitle">Letöltéskezelő szivárgás javítás</string>
-    <string name="fixDownloadTitleSummary">Az Xposed használatával blokkolhatja az alkalmazásoknak az Android beépített letöltéskezelőjével való adat letöltését, még akkor is, ha az alkalmazás hozzáférését megtagadják</string>
-    <string name="LeakDetected">Szivárgás észlelve!</string>
     <!-- Tasker -->
     <string name="tasker_prefs_title">Tasker kapcsolódó</string>
     <string name="disable_toaster">Tasker Toast értesítés letiltása</string>
@@ -227,24 +180,19 @@
     <string name="ipv6_title">IPv6 támogatás</string>
     <string name="ipv6_summary">Az IPv6-támogatás engedélyezése</string>
     <string name="control_ipv6_title">Csak az IPv6 láncok ellenőrzése</string>
-    <string name="ip6unavailable">Hiba: az IPv6 hoz szükséges \"/system/bin/ip6tables\".</string>
     <string name="switch_ipv6">Átkapcsolás IPv6 szabályokra</string>
     <string name="switch_ipv4">Átkapcsolás IPv4 szabályokra</string>
     <!-- Security Preferences -->
     <string name="sec_prefs_title">Biztonság</string>
-    <string name="usePattern">Használjon zár-mintát a jelszó helyett</string>
     <string name="stealthMode">Lopakodó mód minta</string>
     <string name="patternMaxTry">Kísérletek maximális száma</string>
-    <string name="resetPattern">Feloldó minta alaphelyzetbe?</string>
     <!-- Device Admin -->
     <string name="enable_device_admin">Eszköz rendszergazda</string>
     <string name="device_admin_enabled">AFWall+ Eszköz rendszergazda engedélyezve</string>
     <string name="device_admin_disabled">AFWall+ Eszköz rendszergazda letiltva</string>
-    <string name="device_admin_on_disable">Kérjük, menjen az eszköz rendszergazda beállításokhoz az AFWall+ letiltásához</string>
     <!-- Experimental Preferences -->
     <string name="exp_prefs_title">Kísérleti</string>
     <!-- Startup -->
-    <string name="startup_service">Szabályok alkalmazása. Kérjük várjon.</string>
     <string name="addStartupDelayTitle">Indítás késleltetés</string>
     <string name="addStartupDelaySummary">Az AFWall+ vár 5 másodpercig a szabályok alkalmazása előtt. Csak akkor engedélyezze ezt a beállítást, ha a rendszerindításkor a szabályokat nem alkalmazza megfelelően.</string>
     <string name="fixleakTitle">Rendszerindításkori adatszivárgás javítása</string>
@@ -270,7 +218,6 @@
     <string name="primary_pref_title">Elsődleges szín</string>
     <string name="status_pref_title">Állapotsor színe</string>
     <string name="accent_pref_title">Kiemelés színe</string>
-    <string name="syscolor_pref_summary_on">Összes rendszeralkalmazás színe</string>
     <string name="enableConfirmTitle">Az AFWall+ letiltásának megerősítése</string>
     <string name="enableConfirm_summary_on">A tűzfal megerősítést fog kérni letiltás előtt</string>
     <string name="showUid">Mutassa az alkalmazások UID-jét</string>
@@ -283,9 +230,7 @@
     <string name="active_rules">Aktív szabályok</string>
     <string name="active_rules_summary">Tűzfalszabályok alkalmazása minden kapcsolati változáskor (LAN/Wi-Fi/mobil/roaming/tether)</string>
     <string name="profile_add">Profil hozzáadása</string>
-    <string name="profile_remove">Profil eltávolítása</string>
     <string name="profile_rename">Profil átnevezése</string>
-    <string name="Donate">Támogatás</string>
     <string name="multi_apply_rules">Alkalmazza a szabályokat profil váltás esetén</string>
     <string name="multi_apply_rules_info">Szabályok betöltése és alkalmazása amikor profilt vált</string>
     <string name="multi_user_title">Több felhasználó támogatás engedélyezése</string>
@@ -297,7 +242,6 @@
     <string name="downloaded">Letöltve</string>
     <string name="app_system_detail">App részleteinek megtekintése</string>
     <string name="settings_pwd_not_equal">A jelszó nem egyezik</string>
-    <string name="faq">Gyakran Ismételt Kérdések</string>
     <string name="reverse_all">Megfordítja az összes alkalmazás kijelölést?</string>
     <string name="unselect_all">Törli az összes alkalmazás kijelölést?</string>
     <string name="check_all">Az összes kijelölése</string>
@@ -320,40 +264,28 @@
     <string name="pkg_sys">Rendszer</string>
     <string name="pkg_user">Felhasználó</string>
     <string name="menu">Menü</string>
-    <string name="backup_notexist">Nincs biztonsági másolat. Kérem exportáljon a menüből.</string>
     <string name="showFilter">Mutassa a szűrőket</string>
     <string name="showfilter_summary_on">A szűrők (Összes/Alapvető/Rendszer/Felhasználói) megjelennek a fő nézetben</string>
     <string name="showfilter_summary_off">A szűrők (Összes/Alapvető/Rendszer/Felhasználói) nem jelennek meg a fő nézetben</string>
-    <string name="enable_dns">DNS engedélyezése netd keresztül</string>
-    <string name="disable_dns">DNS letiltása netd keresztül</string>
     <string name="tasker_lable">AFWall+ Tasker Plugin</string>
     <string name="enable">Engedélyez</string>
     <string name="disable">Letilt</string>
-    <string name="filters_apps_title">Értesítés szűrő</string>
     <string name="apply_color">Válassza ki a színt</string>
     <string name="binaries">Binárisok</string>
     <string name="widgets">Widgetek</string>
     <string name="exports">Exportálás</string>
     <string name="imports">Importálás</string>
-    <string name="invalid_profile">Érvénytelen profilnév</string>
     <!-- Donate -->
     <string name="donate_only">Ez a szolgáltatás csak a támogatói verzióban érhető el/Unlocker</string>
     <string name="buy_donate">Vásároljon támogatói verziót vagy Unlocker-t</string>
-    <string name="unlock_donate"> érintse meg a feloldáshoz</string>
-    <string name="donate_support">Most már használhatja a támogatói szolgáltatásokat.</string>
     <string name="donate_thanks">Köszönjük a támogatást!</string>
-    <string name="activeNotification">Értesítési ikon megjelenítése</string>
-    <string name="activeNotification_summary">Állandó ikon megjelenítés az értesítési sávon</string>
     <string name="active">A tűzfal engedélyezve</string>
     <string name="inactive">A tűzfal le van tiltva</string>
-    <string name="About">Névjegy</string>
-    <string name="FAQ">GYIK</string>
     <string name="su_check_title">Állapot</string>
     <string name="su_check_message">Root hozzáférés ellenőrzése</string>
     <!-- choose file -->
     <!-- <string name="fileSize">File Size</string>-->
     <!--<string name="currentDir">Current Dir</string>-->
-    <string name="selectMode">Tűzfal mód</string>
     <string name="confirmation">Megerősítés</string>
     <!--<string name="prefill_profile">Enter profile name</string>-->
     <!--<string name="profile_default">MyProfile</string>-->
@@ -364,7 +296,6 @@
     <string name="pref_pattern">Minta</string>
     <string name="pref_device">Használja az eszköz biztonsági védelmét</string>
     <string name="pref_device_desc">Használja az eszköz biztonsági ellenőrzését az AFWall+ megnyitásához (támogató/kulcs szolgáltatás)</string>
-    <string name="secure_option">Az eszközt nem védi jelszó / PIN</string>
     <string name="android_version">Ez a szolgáltatás csak Android 5. x és újabb verzióval működik</string>
     <!--<string name="pref_pin">Pin</string>-->
     <string name="set_password">Beállít</string>
@@ -377,19 +308,10 @@
     <string name="defaultsort">Név szerint (alapértelmezett)</string>
     <string name="lastupdated">Telepítés/frissítés szerint</string>
     <string name="uid">UID szerint</string>
-    <string name="select_dir">Válassz könyvtárat</string>
     <string name="select">Válassz műveletet</string>
     <string name="manage_profiles">Profilok kezelése</string>
     <string name="manage_profiles_summary">Profilok hozzáadása vagy eltávolítása</string>
     <string name="profiles">Profil </string>
-    <string name="insert_profile">Profil név</string>
-    <string name="add">Hozzáadás</string>
-    <string name="showlog_toasts">Toast üzenet mutatása zároláskor</string>
-    <string name="enable_show_toasts">Engedélyezi a Toast mutatását</string>
-    <string name="top">Fent</string>
-    <string name="center">Középen</string>
-    <string name="bottom">Alul</string>
-    <string name="position">Toast értesítés pozíció</string>
     <string name="widget_prefs_title">Widget pozíciók</string>
     <string name="xTitle">Widget X pozíció</string>
     <string name="xTitleSummary">X pozíció kézi kezelés</string>
@@ -397,36 +319,22 @@
     <string name="yTitle">Widget Y pozíció</string>
     <string name="yTitleSummary">Y pozíció kézi kezelés</string>
     <string name="yTitleDialog">Y pozíció beállítása (szám)</string>
-    <string name="error_nonsupported">King root észlelve!</string>
-    <string name="error_nonsupported_details">Az AFWall+ olyan superuser alkalmazást észlelt, amiről tudott hogy megkerüli a tűzfal szabályokat. Mivel ez superuser alkalmazás, az AFWall+ nem tudja megoldani ezt a problémát.</string>
-    <string name="lockNotification">Értesítési ikon elrejtése a lezárt képernyőn</string>
-    <string name="lockScreenNotification_summary">Folyamatos értesítés elrejtése a lezárt képernyőn</string>
-    <string name="menu_legend">Jelmagyarázat</string>
     <string name="permissiondenied_importexport">Az OLVASÁS/ÍRÁS engedély a tárhelyhez megtagadva. Kérjük adjon hozzáférést az exportálási/importálási szabályokhoz.</string>
     <string name="permissiondenied_asset">Az OLVASÁS/ÍRÁS engedély a tárhelyhez megtagadva. Kérjük biztosítson hozzáférést az AFWAll+ bináris fájlok másolásához.</string>
     <string name="log_deletedapp">Törölt app</string>
     <string name="log_denied">Megtagadva:</string>
     <string name="log_times">alkalommal</string>
     <string name="log_time">idő</string>
-    <string name="log_dst">Cél:</string>
-    <string name="log_src">Forrás:</string>
-    <string name="log_proto">Protokoll:</string>
     <string name="no_data_available">Engedélyezd a naplózást a beállításokban. Ha engedélyezve van, akkor még nincs adat a naplóban.</string>
     <string name="loading_data_title">Betöltés&#8230;</string>
     <string name="loading_data">Napló adatainak beolvasása</string>
-    <string name="switch_old">Váltás régi nézetre</string>
     <string name="switch_new">Váltás új nézetre</string>
     <string name="showlogdetail_title">Alkalmazás napló részletek</string>
-    <string name="reapply_rules">Alkalmazd újra a szabályokat, mert változás történt a beállításokban.</string>
-    <string name="custom_rules">Egyéni szabályok</string>
     <string name="mdnslabel">(mdns) Multicast DNS</string>
-    <string name="mdns">Mutlicast DNS engedélyezése</string>
     <string name="error_log">Nem lehet elindítani a naplószolgáltatást. A LogTarget üres vagy a LogService nincs engedélyezve.</string>
     <!-- Log Details -->
     <string name="destination_address">Cél cím</string>
     <string name="source_address">Forrás cím</string>
-    <string name="ping_destination">Ping cél</string>
-    <string name="ping_source">Ping forrás</string>
     <string name="resolve_destination">Cél feloldása</string>
     <string name="resolve_source">Forrás feloldása</string>
     <string name="copy_text">Szöveg másolása</string>
@@ -435,29 +343,20 @@
     <string name="select_the_action">Válassza ki a műveletet</string>
     <string name="result_copied_to_clipboard">Az eredmény a vágólapra másolva</string>
     <string name="result">Eredmény</string>
-    <string name="output_is_empty">A kimenet üres a hálózati hozzáférés és a SuperSu megtiltása miatt</string>
     <string name="searching">Keresés</string>
     <string name="looking_for_data">Adatok keresése&#8230;</string>
-    <string name="reachable_timeout">Elérhető, időtúllépés: %d ms</string>
     <string name="error_or_unknown_category">Hiba vagy ismeretlen kategória</string>
     <string name="show_destination_address">Mutassa a cél címet</string>
     <string name="show_source_address">Mutassa a forrás címet</string>
-    <string name="network_connection_not_available">Hálózati kapcsolat nem érhető el</string>
     <!-- Custom Rules -->
-    <string name="add_ip_rule">Hozzáadás az egyéni szabályhoz</string>
     <!-- Fingerprint -->
     <string name="pref_fingerprint">Ujjlenyomat</string>
-    <string name="fingerprint_authentication_error">Ujjlenyomat hitelesítés hiba\n</string>
     <string name="fingerprint_authentication_help">Ujjlenyomat hitelesítés súgó\n</string>
     <string name="fingerprint_authentication_failed">Ujjlenyomat hitelesítés sikertelen.</string>
     <string name="fingerprint_authentication_successded">Ujjlenyomat hitelesítés sikeres.</string>
-    <string name="title_activity_main">Fő Tevékenység</string>
     <string name="title_fingerprint">Egyérintéses feloldás</string>
     <string name="desc_fingerprint">Kérjük helyezze ujját a szkennerre a személyazonosságának igazolásához</string>
     <string name="note">(A bejelentkezés ujjlenyomattal sokkal gyorsabbá teszi az alkalmazásba való belépést. Az eszköz beállításaiban legalább egy ujjlenyomatnak regisztrálva kell lennie.)</string>
-    <string name="title_activity_home">Ujjlenyomat</string>
-    <string name="activity_home_desc">Bejelentkezett ujjlenyomat hitelesítéssel</string>
-    <string name="activity_home_note">Az ujjlenyomat hitelesítési képernyő ismételt megjelenítéséhez zárja be, majd nyissa meg újra az alkalmazást</string>
     <string name="fingerprint_required">Ujjlenyomat szükséges</string>
     <string name="device_with_no_fingerprint_sensor">Eszközének nincs ujjlenyomat érzékelője</string>
     <string name="fingerprint_permission_manifest_missing">Az ujjlenyomat hitelesítési engedély nincs megadva</string>
@@ -468,12 +367,6 @@
     <string name="label_zoomin">Nagyítás</string>
     <string name="label_zoomout">Kicsinyítés</string>
     <string name="exception_pref">A tevékenység hibás preferencia miatt nem indítható el, kérjük törölje az alkalmazás adatait</string>
-    <string name="ipdetect">Az AFWall+ IPv6 kapcsolatot észlelt. Kérjük engedélyezze a Preferenciák-Szabályok/Kapcsolat menüpontban, majd jelentkezzen be újra</string>
-    <string name="delayDialog">A késleltetés hossza másodpercben</string>
-    <string name="pingDelayTitle">Ping időtúllépés</string>
-    <string name="notification_priority">Értesítés priorítása</string>
-    <string name="defaultPriority">Alapértelmezett prioritású</string>
-    <string name="lowPriority">Alacsony prioritású</string>
     <string name="dualAppsTitle">Dual Apps támogatás</string>
     <string name="dualAppsDesc">Dual Apps, MIUI, Island és Work profil alkalmazások támogatása</string>
     <string name="choose">Választ</string>
@@ -489,27 +382,16 @@
     <string name="input_chain_v6">INPUT lánc (IPv6)</string>
     <string name="output_chain_v6">OUTPUT lánc (IPv6)</string>
     <string name="forward_chain_v6">FORWARD lánc (IPv6)</string>
-    <string name="quick_apply_title">Gyors megjelenítés</string>
-    <string name="quick_apply_summary">Csak a támogatói verzión! Az alkalmaz gomb lebegő megjelenítése a szabályok gyors alkalmazásához</string>
     <string name="init_d">A szkript indítási könyvtárának elérési útja</string>
     <string name="mount_initd_error">Nem sikerült csatlakoztatni a könyvtárat</string>
     <string name="delete_initd_error">Nem lehet törölni az indító szkriptet</string>
-    <string name="runNotification_summary">A szabályok alkalmazásakor értesítés jelenik meg</string>
-    <string name="runNotification">Szabályok folyamata</string>
     <string name="displayBlockNotification">Értesítési napló letiltása</string>
     <string name="displayBlockNotification_enable">Értesítési napló engedélyezése</string>
-    <string name="applyRulesFasterTitle">Azonnali alkalmazás</string>
-    <string name="applyRulesFaster">Csak akkor használja ha a szabályok alkalmazása lassabb – Erősen kísérleti jellegű</string>
     <string name="purging_rules">A tűzfal összes iptables szabályának eltávolítása</string>
     <string name="showhost_desc">A DNS feloldott gazdagépnév megjelenítése (Támogatói funkció/Internet hozzáférés szükséges az AFWall+-nak)</string>
     <string name="show_host">Gazdagépnév megjelenítése</string>
-    <string name="host">Gazdagép:</string>
-    <string name="battery_optimization_title">Fehérlista afwall+ alvó</string>
-    <string name="battery_optimization_desc">Az AFWall+-nak a háttérben kell futnia és szabályokat kell alkalmaznia ha a kapcsolat megváltozik. Kérjük távolítsa el/hagyja figyelmen kívül az AFWall+ alkalmazást az akkumulátoroptimalizálás/Altatás beállításból.</string>
     <string name="firewall_service">Tűzfal szolgáltatás</string>
-    <string name="boot_notification">Boot szolgáltatás</string>
     <string name="app_notification">Alkalmazás értesítés</string>
-    <string name="hide">Elrejt</string>
     <string name="firewall_error_notify">Tűzfal probléma</string>
     <string name="firewall_log_notify">Értesítési napló</string>
     <string name="ui_themes_header">Témák</string>
@@ -530,8 +412,6 @@
     <string name="log_service_start">A Naplószolgáltatás indítása</string>
     <string name="log_service_stop">A Naplószolgáltatás leállítása</string>
     <string name="log_service_select">Először válassza ki a naplózási célt</string>
-    <string name="log_service_watcher">Naplófigyelő megnyitása...</string>
-    <string name="log_service_success">A naplószolgáltatás sikeresen elindítva!</string>
     <string name="unable_clone">Unable to clone</string>
     <string name="add_delay">Add Delay</string>
     <string name="add_delay_rules">Apply rules with 1sec delay.</string>
