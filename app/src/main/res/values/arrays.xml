@@ -234,4 +234,14 @@
         <item>P</item>
     </string-array>
 
+    <!-- same order as TaskerAction.NETWORKS -->
+    <string-array name="tasker_networks">
+        <item>All connection types in use</item>
+        <item>Wi-Fi</item>
+        <item>Mobile data</item>
+        <item>Roaming</item>
+        <item>VPN</item>
+        <item>LAN</item>
+        <item>Tethering</item>
+    </string-array>
 </resources>

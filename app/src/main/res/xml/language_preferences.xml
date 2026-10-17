@@ -13,7 +13,9 @@
 
 
 
-    <PreferenceCategory android:title="@string/tasker_prefs_title">
+    <PreferenceCategory
+        android:key="taskerCategory"
+        android:title="@string/tasker_prefs_title">
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="allowTaskerControl"
@@ -24,6 +26,20 @@
             android:key="disableTaskerToast"
             android:summary="@string/disableTasterSummary"
             android:title="@string/disable_toaster" />
+        <!-- default decided in G.taskerAcceptUnsigned() (on for updates, off for new installs); shown only
+             once an unprotected action has been received -->
+        <CheckBoxPreference
+            android:key="taskerAcceptUnsigned"
+            android:summary="@string/tasker_accept_unsigned_summary"
+            android:title="@string/tasker_accept_unsigned" />
+        <Preference
+            android:key="taskerRecent"
+            android:summary="@string/tasker_recent_summary"
+            android:title="@string/tasker_recent" />
+        <Preference
+            android:key="taskerRevoke"
+            android:summary="@string/tasker_revoke_summary"
+            android:title="@string/tasker_revoke" />
 
     </PreferenceCategory>
 

@@ -93,23 +93,24 @@ public final class FirewallActions {
      * mode blocked ones.
      */
     public static void setAppAccess(Context ctx, int uid, boolean allow) {
+        setAppAccess(ctx, uid, allow, null, null);
+    }
+
+    /**
+     * @param network one connection type ({@code wifi}, {@code mobile}, {@code roaming}, {@code vpn},
+     *                {@code lan}, {@code tether}), or null / {@code all} for all those in use
+     * @param done    called with the apply result, or with true right away while the firewall is
+     *                disabled; may be null
+     * @return false (and nothing changed) if {@code network} is a connection type that is turned off
+     */
+    public static boolean setAppAccess(Context ctx, int uid, boolean allow, String network, Done done) {
         final Context app = ctx.getApplicationContext();
+        java.util.List<String> keys = listKeys(network);
+        if (keys == null) {
+            return false;
+        }
         boolean whitelist = Api.MODE_WHITELIST.equals(G.pPrefs.getString(Api.PREF_MODE, Api.MODE_WHITELIST));
         boolean listed = whitelist == allow;
-        java.util.List<String> keys = new java.util.ArrayList<>(java.util.Arrays.asList(
-                Api.PREF_WIFI_PKG_UIDS, Api.PREF_3G_PKG_UIDS));
-        if (G.enableRoam()) {
-            keys.add(Api.PREF_ROAMING_PKG_UIDS);
-        }
-        if (G.enableVPN()) {
-            keys.add(Api.PREF_VPN_PKG_UIDS);
-        }
-        if (G.enableLAN()) {
-            keys.add(Api.PREF_LAN_PKG_UIDS);
-        }
-        if (G.enableTether()) {
-            keys.add(Api.PREF_TETHER_PKG_UIDS);
-        }
         android.content.SharedPreferences.Editor edit = G.pPrefs.edit();
         for (String key : keys) {
             java.util.Set<Integer> uids = new java.util.TreeSet<>(UidListParser.parse(G.pPrefs.getString(key, "")));
@@ -123,8 +124,74 @@ public final class FirewallActions {
         edit.apply();
         Api.applications = null; // the app list shows the new state
         if (Api.isEnabled(app)) {
-            Api.applySavedIptablesRules(app, true, new RootCommand().setFailureToast(R.string.error_apply));
+            RootCommand cmd = new RootCommand().setFailureToast(R.string.error_apply);
+            if (done != null) {
+                cmd.setCallback(new RootCommand.Callback() {
+                    @Override
+                    public void cbFunc(RootCommand state) {
+                        done.done(state.exitCode == 0);
+                    }
+                });
+            }
+            Api.applySavedIptablesRules(app, true, cmd);
+        } else if (done != null) {
+            done.done(true);
         }
+        return true;
+    }
+
+    /**
+     * @return the app lists for {@code network}, or null if that connection type is turned off
+     */
+    private static java.util.List<String> listKeys(String network) {
+        if (network == null || "all".equals(network)) {
+            java.util.List<String> keys = new java.util.ArrayList<>(java.util.Arrays.asList(
+                    Api.PREF_WIFI_PKG_UIDS, Api.PREF_3G_PKG_UIDS));
+            if (G.enableRoam()) {
+                keys.add(Api.PREF_ROAMING_PKG_UIDS);
+            }
+            if (G.enableVPN()) {
+                keys.add(Api.PREF_VPN_PKG_UIDS);
+            }
+            if (G.enableLAN()) {
+                keys.add(Api.PREF_LAN_PKG_UIDS);
+            }
+            if (G.enableTether()) {
+                keys.add(Api.PREF_TETHER_PKG_UIDS);
+            }
+            return keys;
+        }
+        String key;
+        boolean inUse;
+        switch (network) {
+            case "wifi":
+                key = Api.PREF_WIFI_PKG_UIDS;
+                inUse = true;
+                break;
+            case "mobile":
+                key = Api.PREF_3G_PKG_UIDS;
+                inUse = true;
+                break;
+            case "roaming":
+                key = Api.PREF_ROAMING_PKG_UIDS;
+                inUse = G.enableRoam();
+                break;
+            case "vpn":
+                key = Api.PREF_VPN_PKG_UIDS;
+                inUse = G.enableVPN();
+                break;
+            case "lan":
+                key = Api.PREF_LAN_PKG_UIDS;
+                inUse = G.enableLAN();
+                break;
+            case "tether":
+                key = Api.PREF_TETHER_PKG_UIDS;
+                inUse = G.enableTether();
+                break;
+            default:
+                return null;
+        }
+        return inUse ? java.util.Collections.singletonList(key) : null;
     }
 
     /**

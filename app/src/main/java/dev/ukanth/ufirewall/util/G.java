@@ -103,6 +103,8 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String FIX_START_LEAK = "fixLeak";
     private static final String DISABLE_TASKER_TOAST = "disableTaskerToast";
     private static final String ALLOW_TASKER_CONTROL = "allowTaskerControl";
+    public static final String TASKER_ACCEPT_UNSIGNED = "taskerAcceptUnsigned";
+    private static final String TASKER_UNSIGNED_SEEN = "taskerUnsignedSeen";
     private static final String REG_DO = "ipurchaseddonatekey";
     private static final String ENABLE_ROAM = "enableRoam";
     private static final String ENABLE_VPN = "enableVPN";
@@ -515,11 +517,43 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     }
 
     /**
-     * Tasker/Locale actions are accepted from any app (the plug-in API can't tell who sends them);
-     * on by default so existing setups keep working.
+     * The off switch for Tasker/Locale actions; on by default so existing setups keep working.
      */
     public static boolean allowTaskerControl() {
         return gPrefs.getBoolean(ALLOW_TASKER_CONTROL, true);
+    }
+
+    /**
+     * Run Tasker/Locale actions saved before 5.1.0, which aren't signed (so any app could send
+     * them). On for updates, so existing setups keep working while they are saved again; off for
+     * new installs, which have no such actions. Decided once and stored.
+     */
+    public static boolean taskerAcceptUnsigned(Context ctx) {
+        if (!gPrefs.contains(TASKER_ACCEPT_UNSIGNED)) {
+            boolean update = false;
+            try {
+                android.content.pm.PackageInfo info = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+                update = info.firstInstallTime != info.lastUpdateTime;
+            } catch (android.content.pm.PackageManager.NameNotFoundException ignored) {
+            }
+            gPrefs.edit().putBoolean(TASKER_ACCEPT_UNSIGNED, update).apply();
+            return update;
+        }
+        return gPrefs.getBoolean(TASKER_ACCEPT_UNSIGNED, false);
+    }
+
+    /**
+     * An unsigned Tasker/Locale action has reached AFWall+ (run or ignored): only then is the
+     * "Allow unprotected actions" setting shown.
+     */
+    public static boolean taskerUnsignedSeen() {
+        return gPrefs.getBoolean(TASKER_UNSIGNED_SEEN, false);
+    }
+
+    public static void taskerUnsignedSeen(boolean seen) {
+        if (seen != taskerUnsignedSeen()) {
+            gPrefs.edit().putBoolean(TASKER_UNSIGNED_SEEN, seen).apply();
+        }
     }
 
     public static boolean enableIPv6() {

@@ -40,11 +40,16 @@ public final class Notifications {
     public static final String CHANNEL_ERROR = "firewall.error";
     public static final String CHANNEL_APP = "firewall.app.notification";
     public static final String CHANNEL_LOG = "firewall.logservice";
+    public static final String CHANNEL_TASKER = "firewall.tasker";
 
     public static final int ID_STATUS = 1;
     public static final int ID_ERROR = 9;
     public static final int ID_SCRIPT_WARNING = 10;
     public static final int ID_LOG_WATCHER = 11;
+    // Tasker/Locale: an action loosened the firewall / actions were ignored / old actions to save again
+    public static final int ID_TASKER_ACTION = 12;
+    public static final int ID_TASKER_IGNORED = 13;
+    public static final int ID_TASKER_RESAVE = 14;
     // one notification per new app, tagged with its package name
     private static final int ID_NEW_APP = 100;
     private static final int ID_NEW_APP_SUMMARY = 101;
@@ -82,6 +87,8 @@ public final class Notifications {
                 ctx.getString(R.string.channel_app_desc), NotificationManager.IMPORTANCE_DEFAULT, false);
         createChannel(nm, CHANNEL_LOG, ctx.getString(R.string.firewall_log_notify),
                 ctx.getString(R.string.channel_log_desc), NotificationManager.IMPORTANCE_DEFAULT, false);
+        createChannel(nm, CHANNEL_TASKER, ctx.getString(R.string.channel_tasker),
+                ctx.getString(R.string.channel_tasker_desc), NotificationManager.IMPORTANCE_DEFAULT, false);
     }
 
     private static void createChannel(NotificationManager nm, String id, String name, String description,
@@ -243,6 +250,37 @@ public final class Notifications {
                 .setContentIntent(content)
                 .setAutoCancel(true)
                 .setOnlyAlertOnce(true)
+                .build();
+        nm.notify(id, n);
+    }
+
+    // ---- Tasker / Locale ----
+
+    /**
+     * About a Tasker/Locale action; opens the Tasker settings. Not affected by "disable Tasker toasts".
+     */
+    public static void tasker(Context ctx, int id, String title, String text) {
+        ensureChannels(ctx);
+        NotificationManager nm = manager(ctx);
+        if (nm == null) {
+            return;
+        }
+        Intent target = new Intent(ctx, dev.ukanth.ufirewall.preferences.PreferencesActivity.class)
+                .putExtra(android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT,
+                        dev.ukanth.ufirewall.preferences.LanguagePreferenceFragment.class.getName())
+                .putExtra(android.preference.PreferenceActivity.EXTRA_NO_HEADERS, true);
+        Notification n = new NotificationCompat.Builder(ctx, CHANNEL_TASKER)
+                .setSmallIcon(R.drawable.notification_warn)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .setContentIntent(activity(ctx, id, target))
+                .setWhen(System.currentTimeMillis())
+                .setShowWhen(true)
+                // an action that loosened the firewall alerts every time; the others once
+                .setOnlyAlertOnce(id != ID_TASKER_ACTION)
+                .setAutoCancel(true)
                 .build();
         nm.notify(id, n);
     }

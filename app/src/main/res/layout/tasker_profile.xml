@@ -7,11 +7,10 @@
     android:background="@color/primary_dark_material_light"
     android:fitsSystemWindows="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
-
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tasker_toolbar"
@@ -21,69 +20,150 @@
             android:minHeight="?attr/actionBarSize" />
 
         <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp">
 
                 <RadioGroup
-                    android:id="@+id/radioProfiles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:divider="@color/black">
+                    android:id="@+id/tasker_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <RadioButton
                         android:id="@+id/tasker_enable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:hint="0"
                         android:text="@string/enable_tasker" />
 
                     <RadioButton
                         android:id="@+id/tasker_disable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:hint="1"
                         android:text="@string/disable_tasker" />
 
                     <RadioButton
-                        android:id="@+id/defaultProfile"
+                        android:id="@+id/tasker_apply"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:hint="2"
-                        android:text="@string/defaultProfile" />
+                        android:text="@string/tasker_action_apply" />
 
                     <RadioButton
-                        android:id="@+id/profile1"
+                        android:id="@+id/tasker_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:hint="3"
-                        android:text="@string/profile1" />
+                        android:text="@string/tasker_action_profile" />
 
                     <RadioButton
-                        android:id="@+id/profile2"
+                        android:id="@+id/tasker_allow"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:hint="4"
-                        android:text="@string/profile2" />
+                        android:text="@string/tasker_action_allow" />
 
                     <RadioButton
-                        android:id="@+id/profile3"
+                        android:id="@+id/tasker_block"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:hint="5"
-                        android:text="@string/profile3" />
+                        android:text="@string/tasker_action_block" />
+
+                    <RadioButton
+                        android:id="@+id/tasker_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tasker_action_status" />
                 </RadioGroup>
+
+                <!-- switch profile -->
+                <LinearLayout
+                    android:id="@+id/tasker_profile_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tasker_profile_label"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:id="@+id/radioProfiles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/defaultProfile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/defaultProfile" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <!-- allow / block an app -->
+                <LinearLayout
+                    android:id="@+id/tasker_app_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:labelFor="@+id/tasker_package"
+                        android:text="@string/tasker_app_label"
+                        android:textStyle="bold" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/tasker_package"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:completionThreshold="1"
+                        android:hint="@string/tasker_app_hint"
+                        android:importantForAutofill="no"
+                        android:inputType="text|textNoSuggestions"
+                        android:maxLines="1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:labelFor="@+id/tasker_network"
+                        android:text="@string/tasker_network_label"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/tasker_network"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/tasker_networks" />
+                </LinearLayout>
+
+                <!-- get status -->
+                <TextView
+                    android:id="@+id/tasker_status_vars"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/tasker_status_vars"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tasker_security_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:alpha="0.7" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
