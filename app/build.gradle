@@ -28,8 +28,8 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
         release {
-            minifyEnabled false
-            proguardFiles 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
