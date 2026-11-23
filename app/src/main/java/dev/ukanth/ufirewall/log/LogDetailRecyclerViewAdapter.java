@@ -67,7 +67,7 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
             holder.bind(logData.get(position), recyclerItemClickListener);
             
             // Format timestamp with interface info (cached)
-            String timeAndInterface = pretty(data.getTimestamp());
+            String timeAndInterface = pretty(holder.itemView.getContext(), data.getTimestamp());
             if (data.getOut() != null && !data.getOut().isEmpty()) {
                 String interfaceType = getCachedInterfaceDisplayName(data.getOut());
                 timeAndInterface += " via " + interfaceType;
@@ -230,8 +230,10 @@ public class LogDetailRecyclerViewAdapter extends RecyclerView.Adapter<LogDetail
         }
     }
 
-    public static String pretty(Long timestamp) {
-        return android.text.format.DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date(timestamp)).toString();
+    public static String pretty(android.content.Context ctx, Long timestamp) {
+        // follow Android's 12/24-hour setting; the 12-hour clock needs an AM/PM marker
+        String pattern = android.text.format.DateFormat.is24HourFormat(ctx) ? "dd-MM-yyyy HH:mm:ss" : "dd-MM-yyyy hh:mm:ss a";
+        return android.text.format.DateFormat.format(pattern, new java.util.Date(timestamp)).toString();
     }
 
     @Override
