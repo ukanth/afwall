@@ -625,6 +625,14 @@ public class LogService extends Service {
                     return;
                 }
             }
+            if (!logWatcherShell.isRoot()) {
+                // build() falls back to a plain shell when there is no root. dmesg and /proc/kmsg
+                // can't be read from it (Android kills dmesg with SIGSYS), and its polling loop
+                // would respawn it forever.
+                closeLogWatcher();
+                reportNotStarted(getString(R.string.log_watcher_no_root));
+                return;
+            }
             
             Log.i(TAG, "Starting log watcher with command: " + logCommand);
             watcherStartedAt = SystemClock.elapsedRealtime();
