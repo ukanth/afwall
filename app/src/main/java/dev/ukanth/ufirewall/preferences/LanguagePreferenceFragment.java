@@ -3,13 +3,11 @@ package dev.ukanth.ufirewall.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
@@ -25,8 +23,6 @@ import dev.ukanth.ufirewall.util.G;
 public class LanguagePreferenceFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static CheckBoxPreference checkBoxPreference;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +32,6 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
         addPreferencesFromResource(R.xml.language_preferences);
         showCurrentLanguage();
         bindTasker();
-        checkXposed(findPreference("fixDownloadManagerLeak"));
-        //checkXposed(findPreference("lockScreenNotification"),this.getActivity().getApplicationContext());
     }
 
     /**
@@ -96,16 +90,6 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
         }
     }
 
-    public static void checkXposed(Preference pref) {
-        if (pref == null) {
-            return;
-        }
-        checkBoxPreference = (CheckBoxPreference) pref;
-        // gray out the fixDownloadManagerLeak preference if xposed module is not activated
-        Log.i(Api.TAG, "Checking Xposed:" + G.isXposedEnabled() + "");
-        checkBoxPreference.setEnabled(G.isXposedEnabled());
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -118,12 +102,6 @@ public class LanguagePreferenceFragment extends PreferenceFragment implements
         getPreferenceManager().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        checkBoxPreference = null;
     }
 
     @Override
