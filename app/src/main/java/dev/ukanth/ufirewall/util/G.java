@@ -191,7 +191,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
     private static final String PROFILES_MIGRATED = "profilesmigrated";
     private static final String WIDGET_X = "widgetX";
     private static final String WIDGET_Y = "widgetY";
-    //private static final String XPOSED_FIX_DM_LEAK = "fixDownloadManagerLeak";
 
     //ippreference
     private static final String IP4_INPUT = "input_chain";
@@ -1316,11 +1315,6 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return data;
     }*/
 
-    //This method is used for Xposed
-    public static boolean isXposedEnabled() {
-        // will be used by XPosed to return true
-        return false;
-    }
 
 
 
