@@ -127,6 +127,12 @@ public final class FireReceiver extends BroadcastReceiver {
             index = parts[0];
             name = parts[1].isEmpty() ? null : parts[1];
         }
+        if ("1".equals(index)) {
+            // Anyone can send an unsigned action, so it never turns the firewall off. Saving the
+            // action again in AFWall+ signs it.
+            ignored(app, app.getString(R.string.tasker_ignored_unsigned_disable));
+            return;
+        }
         final String profileId = bundle.getString(PluginBundleManager.BUNDLE_EXTRA_STRING_PROFILE_ID);
         TaskerHistory.add(app, name != null ? name : index, app.getString(R.string.tasker_ran_old));
         resaveNotice(app);
@@ -147,17 +153,6 @@ public final class FireReceiver extends BroadcastReceiver {
             case "0":
                 FirewallActions.setEnabled(app, true, false, ok -> {
                     toast(app, ok ? R.string.toast_enabled : R.string.toast_error_enabling, ok);
-                    finish.run();
-                });
-                return;
-            case "1":
-                if (!G.protectionLevel().equals("p0")) {
-                    toast(app, R.string.widget_disable_fail, false);
-                    finish.run();
-                    return;
-                }
-                FirewallActions.setEnabled(app, false, false, ok -> {
-                    toast(app, ok ? R.string.toast_disabled : R.string.toast_error_disabling, ok);
                     finish.run();
                 });
                 return;

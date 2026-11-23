@@ -44,7 +44,10 @@ public final class BackupCodec {
             "logChains", "kingDetect", "fingerprintEnabled", "passSetting", "profilePwd", "pwdEncrypt",
             "ipurchaseddonatekey", "profilesmigrated", "plusprofiles",
             // device-specific bookkeeping (AppLanguage, LogHistory)
-            "localeMigrated", "logHistoryMaintained"));
+            "localeMigrated", "logHistoryMaintained",
+            // Tasker: whether unsigned actions are accepted is decided per install, so a reinstall
+            // plus restore doesn't bring it back on (the signing keys are in the Keystore anyway)
+            "taskerAcceptUnsigned", "taskerUnsignedSeen", "taskerResaveShown"));
 
     // v1 wrote every preference as a string; these are known to be stored as other types
     private static final Set<String> V1_INT_KEYS = new HashSet<>(Arrays.asList("customDelay", "logPingTime"));

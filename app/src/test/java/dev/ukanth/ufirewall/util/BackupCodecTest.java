@@ -87,6 +87,16 @@ public class BackupCodecTest {
     }
 
     @Test
+    public void taskerTrustIsNotRestoredFromBackup() {
+        // a restore after a reinstall must not turn unsigned Tasker actions back on
+        for (String key : new String[]{"taskerAcceptUnsigned", "taskerUnsignedSeen", "taskerResaveShown"}) {
+            assertTrue(key, BackupCodec.NOT_BACKED_UP.contains(key));
+        }
+        // other Tasker settings still travel with a backup
+        assertFalse(BackupCodec.NOT_BACKED_UP.contains("allowTaskerControl"));
+    }
+
+    @Test
     public void appIsMatchedByPackageNotUid() throws Exception {
         FakeDevice from = new FakeDevice().pkg(10150, "com.example.chat");
         FakeDevice to = new FakeDevice().pkg(10150, "com.other.app").pkg(10321, "com.example.chat");

@@ -322,6 +322,7 @@
     <string name="tasker_ignored_off">ignored: Tasker/Locale control is turned off</string>
     <string name="tasker_ignored_rate">ignored: more than 10 actions in a minute</string>
     <string name="tasker_ignored_unsigned">ignored: unprotected action (save it again in Tasker), or sent by another app</string>
+    <string name="tasker_ignored_unsigned_disable">ignored: an unprotected action can\'t turn the firewall off (save it again in Tasker)</string>
     <string name="tasker_ignored_signature">ignored: not saved in AFWall+, changed since, or revoked</string>
     <string name="tasker_notify_loosened">%1$s changed the firewall</string>
     <string name="tasker_notify_ignored">AFWall+ ignored a Tasker/Locale action</string>
@@ -530,6 +531,7 @@
     <string name="log_empty_service_off">The log service is off. Enable it in Preferences → Log.</string>
     <string name="log_empty_nothing_yet">No blocked connections have been logged yet.</string>
     <string name="log_empty_watcher_failed">Log monitoring could not start: %1$s\n\nTry the other log target (LOG / NFLOG) in Preferences → Log.</string>
+    <string name="log_watcher_no_root">AFWall+ needs root access to read the firewall log</string>
     <string name="log_watcher_failed_title">Log monitoring could not start</string>
     <string name="log_watcher_failed_text">%1$s. Tap to choose another log target.</string>
     <string name="log_no_target">No log target is selected</string>
