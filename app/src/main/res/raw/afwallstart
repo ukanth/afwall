@@ -23,6 +23,11 @@ find_afwall() {
 pkg=$(find_afwall)
 if [ -z "$pkg" ]; then
   log -p i -t afwall "AFWall does not seem to be installed"
+  # left behind by an uninstalled AFWall+ (#1516): remove ourselves instead of blocking at
+  # every boot. Only ever delete a script that is really named like this one.
+  case "$0" in
+    */afwallstart) rm -f "$0" 2>/dev/null ;;
+  esac
   exit
 fi
 
@@ -31,6 +36,10 @@ doit() {
   do
     if [ -x "$i" ]
     then
+      # keep loopback open: system services talk to each other over localhost. AFWall+ inserts
+      # its own chains in front of these rules, so they do not open anything for apps.
+      "$i" -w -C INPUT -i lo -j ACCEPT 2>/dev/null || "$i" -w -I INPUT -i lo -j ACCEPT
+      "$i" -w -C OUTPUT -o lo -j ACCEPT 2>/dev/null || "$i" -w -I OUTPUT -o lo -j ACCEPT
       "$i" -w -P INPUT DROP
       "$i" -w -P OUTPUT DROP
       "$i" -w -P FORWARD DROP
@@ -39,6 +48,23 @@ doit() {
   done
 }
 
-doit /system/bin/iptables /data/data/$pkg/app_bin/iptables
-doit /system/bin/ip6tables /data/data/$pkg/app_bin/ip6tables
-log -p i -t afwall "IPv4/6 policy set to DROP"
+block() {
+  # Never touch the policies before netd is running: doing it earlier bootloops some ROMs
+  # (GrapheneOS, #1509). Give up after a minute rather than block the network for good.
+  n=0
+  while [ "$(getprop init.svc.netd)" != "running" ]; do
+    n=$((n + 1))
+    if [ "$n" -gt 60 ]; then
+      log -p w -t afwall "netd not running, boot leak protection skipped"
+      return
+    fi
+    sleep 1
+  done
+  doit /system/bin/iptables /data/data/$pkg/app_bin/iptables
+  doit /system/bin/ip6tables /data/data/$pkg/app_bin/ip6tables
+  log -p i -t afwall "IPv4/6 policy set to DROP"
+}
+
+# In the background, so that a boot stage which waits for its scripts (post-fs-data) is never
+# held up, and netd (started after that stage) can come up.
+block >/dev/null 2>&1 </dev/null &

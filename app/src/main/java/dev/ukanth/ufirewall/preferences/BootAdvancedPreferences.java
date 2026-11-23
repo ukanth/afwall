@@ -196,7 +196,17 @@ final class BootAdvancedPreferences {
             G.initPath(dirs.get(0)); // best available
         }
         new Thread(() -> {
-            boolean ok = enable ? Api.installFixLeakScript(ctx, SCRIPT) : Api.removeFixLeakScript(ctx, SCRIPT);
+            boolean ok;
+            if (enable) {
+                ok = Api.installFixLeakScript(ctx, SCRIPT);
+            } else {
+                // also copies left in other directories (an earlier choice, an older version):
+                // a script we no longer manage would keep blocking at every boot (#1516)
+                ok = Api.removeFixLeakScript(ctx, SCRIPT);
+                for (String dir : INIT_DIRS) {
+                    ok &= Api.removeFixLeakScriptAt(ctx, dir.endsWith("/") ? dir + SCRIPT : dir + "/" + SCRIPT);
+                }
+            }
             Api.toast(ctx, ctx.getString(ok ? (enable ? R.string.success_initd : R.string.remove_initd)
                     : (enable ? R.string.mount_initd_error : R.string.delete_initd_error)));
             refreshInstalledState();
