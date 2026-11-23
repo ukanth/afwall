@@ -787,6 +787,25 @@ public class LogService extends Service {
      * If the app is in the allowed list for the currently active network type,
      * suppress the log entry entirely.
      */
+    /**
+     * @return true for a private, link-local or unique-local address (what the LAN chain covers)
+     */
+    static boolean isLocalAddress(String dst) {
+        if (dst == null || !(dst.contains(":") || dst.matches("\\d{1,3}(\\.\\d{1,3}){3}"))) {
+            return false; // a literal only: never resolve a name here
+        }
+        try {
+            java.net.InetAddress address = java.net.InetAddress.getByName(dst);
+            if (address.isSiteLocalAddress() || address.isLinkLocalAddress()) {
+                return true;
+            }
+            byte[] raw = address.getAddress();
+            return raw.length == 16 && (raw[0] & 0xfe) == 0xfc; // fc00::/7
+        } catch (java.net.UnknownHostException e) {
+            return false;
+        }
+    }
+
     private boolean shouldSuppressLog(LogInfo info, Context ctx) {
         // Only suppress regular app traffic, not kernel or special IDs
         if (info.uid < 0) return false;
@@ -803,9 +822,16 @@ public class LogService extends Service {
         }
         
         // Rules are stored in G.pPrefs as pipe-separated UIDs: "1000|1005|..."
-        String selected = netType == ConnectivityManager.TYPE_WIFI
-                ? G.pPrefs.getString(Api.PREF_WIFI_PKG_UIDS, "")
-                : G.pPrefs.getString(Api.PREF_3G_PKG_UIDS, "");
+        String selected;
+        if (netType == ConnectivityManager.TYPE_WIFI) {
+            // With LAN control, a local destination is decided by the LAN list, not the Wi-Fi one:
+            // an app allowed on Wi-Fi but not on the LAN is blocked, and that block must show up.
+            selected = G.enableLAN() && isLocalAddress(info.dst)
+                    ? G.pPrefs.getString(Api.PREF_LAN_PKG_UIDS, "")
+                    : G.pPrefs.getString(Api.PREF_WIFI_PKG_UIDS, "");
+        } else {
+            selected = G.pPrefs.getString(Api.PREF_3G_PKG_UIDS, "");
+        }
         String list = "|" + selected + "|";
         boolean listed = list.contains("|" + info.uid + "|") || list.contains("|" + Api.SPECIAL_UID_ANY + "|");
 
