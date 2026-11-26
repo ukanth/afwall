@@ -9,8 +9,8 @@ android {
         applicationId "dev.ukanth.ufirewall"
         minSdkVersion 23
         targetSdk 36
-        versionCode 20261004
-        versionName "5.0.0"
+        versionCode 20261123
+        versionName "5.1.0"
         buildConfigField 'boolean', 'DONATE', 'false'
         vectorDrawables.useSupportLibrary = true
         ndk {

@@ -5,6 +5,7 @@ import com.topjohnwu.superuser.Shell;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import dev.ukanth.ufirewall.log.Log;
 
@@ -15,6 +16,8 @@ import dev.ukanth.ufirewall.log.Log;
 public final class RootFiles {
 
     private static final String TAG = "AFWall";
+
+    private static final Pattern SAFE_PATH = Pattern.compile("/[A-Za-z0-9._/-]*");
 
     // mount points remounted read-write by remount(..., true); only these are made read-only again
     private static final Set<String> remountedRw = new HashSet<>();
@@ -97,9 +100,17 @@ public final class RootFiles {
     }
 
     /**
+     * @return true for an absolute path made of the characters boot script directories use. The
+     * path goes into root commands, so anything a shell could interpret is refused.
+     */
+    public static boolean isSafePath(String path) {
+        return path != null && SAFE_PATH.matcher(path).matches();
+    }
+
+    /**
      * @return {@code s} as a single-quoted shell word
      */
-    static String quote(String s) {
+    public static String quote(String s) {
         return "'" + s.replace("'", "'\\''") + "'";
     }
 }

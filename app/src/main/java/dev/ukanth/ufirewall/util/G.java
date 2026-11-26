@@ -346,8 +346,12 @@ public class G extends Application implements Application.ActivityLifecycleCallb
         return val;
     }
 
+    /**
+     * @return the boot script directory, or null if none (or not a usable path) is set
+     */
     public static String initPath() {
-        return gPrefs.getString(INITPATH, null);
+        String path = gPrefs.getString(INITPATH, null);
+        return RootFiles.isSafePath(path) ? path : null;
     }
 
     public static String initPath(String val) {

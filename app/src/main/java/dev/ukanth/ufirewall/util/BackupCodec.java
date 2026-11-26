@@ -41,7 +41,7 @@ public final class BackupCodec {
      */
     public static final Set<String> NOT_BACKED_UP = new HashSet<>(Arrays.asList(
             "appVersion", "hasRoot", "storedProfile", "storedPid", "sort", "fixLeak", "enableLogService",
-            "logChains", "kingDetect", "fingerprintEnabled", "passSetting", "profilePwd", "pwdEncrypt",
+            "initPath", "logChains", "kingDetect", "fingerprintEnabled", "passSetting", "profilePwd", "pwdEncrypt",
             "ipurchaseddonatekey", "profilesmigrated", "plusprofiles",
             // device-specific bookkeeping (AppLanguage, LogHistory)
             "localeMigrated", "logHistoryMaintained",

@@ -268,7 +268,8 @@ public final class Notifications {
         Intent target = new Intent(ctx, dev.ukanth.ufirewall.preferences.PreferencesActivity.class)
                 .putExtra(android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT,
                         dev.ukanth.ufirewall.preferences.LanguagePreferenceFragment.class.getName())
-                .putExtra(android.preference.PreferenceActivity.EXTRA_NO_HEADERS, true);
+                .putExtra(android.preference.PreferenceActivity.EXTRA_NO_HEADERS, true)
+                .putExtra("validate", "yes");
         Notification n = new NotificationCompat.Builder(ctx, CHANNEL_TASKER)
                 .setSmallIcon(R.drawable.notification_warn)
                 .setContentTitle(title)

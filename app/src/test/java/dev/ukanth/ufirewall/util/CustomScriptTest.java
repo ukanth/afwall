@@ -143,6 +143,23 @@ public class CustomScriptTest {
     }
 
     @Test
+    public void everySpellingOfModprobeIsRejected() {
+        for (String option : new String[]{"-M/data/x", "-nM/data/x", "-vnM /data/x", "--modprobe /data/x",
+                "--modprob=/data/x", "--modp /data/x", "--mo=/data/x", "'-M/data/x'"}) {
+            assertEquals(option, CustomScript.Problem.FORBIDDEN_OPTION,
+                    rejected("iptables " + option + " -A INPUT -j ACCEPT").problem);
+        }
+    }
+
+    @Test
+    public void optionsResemblingModprobeAreAccepted() {
+        command("iptables -t nat -A POSTROUTING -jMASQUERADE");
+        command("iptables -A INPUT -m mark --mark 1 -j ACCEPT");
+        command("iptables -A INPUT -m statistic --mode random --probability 0.5 -j DROP");
+        command("iptables -A INPUT -m mac --mac-source 00:11:22:33:44:55 -j ACCEPT");
+    }
+
+    @Test
     public void lineNumbersOfRejectedLines() {
         CustomScript.Result r = CustomScript.parse("iptables -A INPUT -j ACCEPT\nfoo\n", "afwall");
         assertEquals(1, r.commands.size());

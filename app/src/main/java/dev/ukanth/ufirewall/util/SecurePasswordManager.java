@@ -28,8 +28,8 @@ public class SecurePasswordManager {
             if (encrypted != null) {
                 // Use G's helper method to store password
                 G.profile_pwd(encrypted);
+                G.isEnc(true);
                 G.gPrefs.edit()
-                    .putBoolean("enc", true)
                     .putBoolean("secure_enc", true) // Flag for new encryption
                     .apply();
                 Log.i(TAG, "Password stored with secure encryption");
@@ -59,7 +59,10 @@ public class SecurePasswordManager {
         }
         
         try {
-            if (G.isEnc()) {
+            // 4.0.0 to 5.0.0 converted plain text passwords without setting isEnc()
+            boolean converted = storedPassword.startsWith("AES:")
+                    && G.gPrefs.getBoolean("secure_enc", false);
+            if (G.isEnc() || converted) {
                 // Check if using new secure encryption
                 if (G.gPrefs.getBoolean("secure_enc", false)) {
                     String decrypted = SecureCrypto.decryptSecure(context, MASTER_KEY, storedPassword);

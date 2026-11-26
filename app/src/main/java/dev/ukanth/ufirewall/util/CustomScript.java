@@ -52,6 +52,9 @@ public final class CustomScript {
         FORBIDDEN_OPTION
     }
 
+    // short iptables options that can be followed by another option in the same word
+    private static final String FLAGS_WITHOUT_VALUE = "46Vbfnvx";
+
     /** A line that is not run. */
     public static final class Rejected {
         public final int lineNumber;
@@ -260,8 +263,9 @@ public final class CustomScript {
                 return new Rejected(lineNumber, line, Problem.VARIABLE,
                         a.equals(VAR_IPTABLES) ? "$IPTABLES" : "$IP6TABLES");
             }
-            if (a.equals("-M") || a.equals("--modprobe") || a.startsWith("--modprobe=")) {
-                return new Rejected(lineNumber, line, Problem.FORBIDDEN_OPTION, a.split("=", 2)[0]);
+            String modprobe = modprobeOption(a);
+            if (modprobe != null) {
+                return new Rejected(lineNumber, line, Problem.FORBIDDEN_OPTION, modprobe);
             }
             if (LISTING_OPS.contains(a)) {
                 return new Rejected(lineNumber, line, Problem.LISTING, a);
@@ -301,6 +305,29 @@ public final class CustomScript {
         }
         args.set(opIndex, op);
         return new Command(lineNumber, line, family, args, op, opIndex, table, chain, ruleNumIndex);
+    }
+
+    /**
+     * iptables runs the program named by -M / --modprobe, and accepts it in several spellings:
+     * "-M path", "-Mpath", after other flags ("-nMpath"), "--modprobe=path" and any shortened
+     * long form ("--modp=path").
+     *
+     * @return the option as written (without its value) if {@code a} is one of them, else null
+     */
+    private static String modprobeOption(String a) {
+        if (a.startsWith("--")) {
+            String name = a.split("=", 2)[0];
+            return name.length() > 2 && "--modprobe".startsWith(name) ? name : null;
+        }
+        if (!a.startsWith("-")) {
+            return null;
+        }
+        int i = 1;
+        while (i < a.length() && FLAGS_WITHOUT_VALUE.indexOf(a.charAt(i)) >= 0) {
+            i++;
+        }
+        // any other letter takes the rest of the word as its value (-jMASQUERADE)
+        return i < a.length() && a.charAt(i) == 'M' ? "-M" : null;
     }
 
     /**

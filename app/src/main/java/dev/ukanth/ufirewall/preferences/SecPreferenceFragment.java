@@ -44,6 +44,7 @@ import dev.ukanth.ufirewall.R;
 import dev.ukanth.ufirewall.admin.AdminDeviceReceiver;
 import dev.ukanth.ufirewall.util.FingerprintUtil;
 import dev.ukanth.ufirewall.util.G;
+import dev.ukanth.ufirewall.util.SecurePasswordManager;
 import haibison.android.lockpattern.LockPatternActivity;
 import haibison.android.lockpattern.utils.AlpSettings;
 
@@ -394,22 +395,8 @@ public class SecPreferenceFragment extends PreferenceFragment implements
                         @Override
                         public void onInput(MaterialDialog dialog, CharSequence input) {
                             String pass = input.toString();
-                            boolean isAllowed = false;
-                            if (G.isEnc()) {
-                                String decrypt = Api.unhideCrypt("AFW@LL_P@SSWORD_PR0T3CTI0N", G.profile_pwd());
-                                if (decrypt != null) {
-                                    if (decrypt.equals(pass)) {
-                                        isAllowed = true;
-                                        //Api.toast(getActivity(), getString(R.string.wrong_password));
-                                    }
-                                }
-                            } else {
-                                if (pass.equals(G.profile_pwd())) {
-                                    //reset password
-                                    isAllowed = true;
-                                    //Api.toast(getActivity(), getString(R.string.wrong_password));
-                                }
-                            }
+                            boolean isAllowed = SecurePasswordManager.verifyPassword(
+                                    getActivity().getApplicationContext(), pass);
                             if (isAllowed) {
                                 G.profile_pwd("");
                                 G.isEnc(false);

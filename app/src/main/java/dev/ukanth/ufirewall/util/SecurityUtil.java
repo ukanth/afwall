@@ -238,12 +238,8 @@ public class SecurityUtil {
                             }
                         })
                         .input(R.string.enterpass, R.string.password_empty, (dialog, input) -> {
-                            String pass = InputValidator.sanitizeString(input.toString(), 256);
-                            if (pass == null) {
-                                Api.toast(activity, context.getString(R.string.wrong_password));
-                                return;
-                            }
-                            
+                            // compared as typed: any character may be part of a password
+                            String pass = input.toString();
                             // Use secure password manager for verification and auto-migration
                             boolean isAllowed = SecurePasswordManager.verifyPassword(context, pass);
                             

@@ -168,7 +168,8 @@ public class LogService extends Service {
         Context appCtx = getApplicationContext();
         Intent prefs = new Intent(appCtx, dev.ukanth.ufirewall.preferences.PreferencesActivity.class)
                 .putExtra(android.preference.PreferenceActivity.EXTRA_SHOW_FRAGMENT,
-                        dev.ukanth.ufirewall.preferences.LogPreferenceFragment.class.getName());
+                        dev.ukanth.ufirewall.preferences.LogPreferenceFragment.class.getName())
+                .putExtra("validate", "yes");
         Api.showNotification(appCtx, Api.LOG_WATCHER_FAILED_NOTIFICATION_ID,
                 appCtx.getString(R.string.log_watcher_failed_title),
                 appCtx.getString(R.string.log_watcher_failed_text, reason), prefs);

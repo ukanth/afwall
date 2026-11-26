@@ -4771,7 +4771,7 @@ public final class Api {
         // Replace the installed script when it is missing or outdated (older versions did
         // nothing on devices with file-based encryption). The init dir is usually
         // root-only, so compare as root.
-        if (com.topjohnwu.superuser.Shell.cmd("cmp -s '" + srcPath + "' '" + dest + "'").exec().isSuccess()) {
+        if (com.topjohnwu.superuser.Shell.cmd("cmp -s " + RootFiles.quote(srcPath) + " " + RootFiles.quote(dest)).exec().isSuccess()) {
             return true;
         }
         Log.i(TAG, "Installing fix leak script to " + dest);
@@ -4781,12 +4781,13 @@ public final class Api {
             return false;
         }
         //make sure it's executable
-        com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + f.getAbsolutePath() + "'").exec();
+        com.topjohnwu.superuser.Shell.cmd("chmod 755 " + RootFiles.quote(f.getAbsolutePath())).exec();
         RootFiles.copy(srcPath, f.getAbsolutePath() + "/" + fileName);
         // init only runs executable scripts; synchronous, before remounting read-only
-        com.topjohnwu.superuser.Shell.cmd("chmod 755 '" + dest + "'").exec();
+        com.topjohnwu.superuser.Shell.cmd("chmod 755 " + RootFiles.quote(dest)).exec();
         mountDir(context, dest, "RO");
-        return com.topjohnwu.superuser.Shell.cmd("cmp -s '" + srcPath + "' '" + dest + "'").exec().isSuccess();
+        return com.topjohnwu.superuser.Shell.cmd("cmp -s " + RootFiles.quote(srcPath) + " " + RootFiles.quote(dest))
+                .exec().isSuccess();
     }
 
     /**
@@ -4809,7 +4810,7 @@ public final class Api {
             Log.w(TAG, "Unable to mount " + G.initPath() + " read-write");
             return false;
         }
-        boolean removed = com.topjohnwu.superuser.Shell.cmd("rm -f '" + dest + "'").exec().isSuccess();
+        boolean removed = com.topjohnwu.superuser.Shell.cmd("rm -f " + RootFiles.quote(dest)).exec().isSuccess();
         mountDir(context, dest, "RO");
         return removed;
     }

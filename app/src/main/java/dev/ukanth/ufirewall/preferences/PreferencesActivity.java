@@ -107,6 +107,9 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
         handleIntentExtras();
     }
 
+    // set when opened from outside the app's screens, which must pass the app lock first
+    private SecurityUtil security;
+
     private void handleIntentExtras() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -114,9 +117,22 @@ public class PreferencesActivity extends PreferenceActivity implements SharedPre
             if (data != null) {
                 String check = (String) data;
                 if (check.equals("yes")) {
-                    new SecurityUtil(PreferencesActivity.this).passCheck();
+                    security = new SecurityUtil(PreferencesActivity.this);
+                    security.passCheck(allowed -> {
+                        if (!allowed) {
+                            finish();
+                        }
+                    });
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (security != null) {
+            security.handleActivityResult(requestCode, resultCode);
         }
     }
 
