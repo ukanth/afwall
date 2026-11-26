@@ -1,6 +1,27 @@
 AFWall+ Changelog
 ==================
 
+AFWall+ v5.1.0
+
+    Added: Security - Tasker/Locale actions are saved and protected in AFWall+'s editor (screen lock asked when set); only actions saved there can control AFWall+
+    Added: Tasker/Locale actions - apply rules, allow or block an app per connection type, get status (%afw_enabled, %afw_profile, %afw_mode), profile chosen by name
+    Added: Tasker/Locale recent actions list (what ran, what was ignored), "Revoke all actions", at most 10 actions a minute, notification when an action loosened the firewall
+    Added: A new profile can start from the current rules (#1443)
+    Improved: Boot leak protection - waits for the network stack, keeps loopback open, runs in the background and removes itself when AFWall+ is uninstalled; turning it off removes it from every boot script directory (#1509, #1516)
+    Improved: Faster app list with Dual Apps / work profiles (#1513)
+    Improved: Smaller, optimized Play Store builds (R8)
+    Changed: Tasker/Locale actions saved before 5.1.0 still run after an update but should be saved again; an unprotected action can't turn the firewall off, and new installs and restored backups don't accept them
+    Fixed: Any app could turn the firewall off with a Tasker/Locale broadcast (#1520)
+    Fixed: Security - settings could be opened without the app lock (by other apps, from notifications, or by cancelling a pattern or device lock)
+    Fixed: Security - an imported backup could run commands as root through the boot script directory; custom scripts accepted other spellings of --modprobe
+    Fixed: App lock - passwords with characters like ; or & were always rejected; very old passwords stopped working after the first unlock
+    Fixed: DNS blocked for the system resolver's dns user (#1515); tethering DNS user rule added several times (#1510)
+    Fixed: IPv6 rules stayed in force after turning IPv6 support off (#1495)
+    Fixed: Log - blocked LAN connections of apps allowed on Wi-Fi were missing; log details ignored Android's 24-hour setting (#1519)
+    Fixed: Log monitoring crashed repeatedly without root (#1518)
+    Fixed: Manage Profiles ignored the chosen theme (#1512)
+    Fixed: AFWall+ detected as an Xposed module by LSPosed/Vector (#1522)
+
 AFWall+ v5.0.0
 
     Added: Backups, log and rule exports are saved to Download/AFWall (visible in file managers, kept after uninstall); import uses the system file picker and old backups are copied over automatically
